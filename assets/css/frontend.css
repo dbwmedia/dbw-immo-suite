@@ -1,0 +1,836 @@
+/* DBW ImmoSuite Frontend Styles */
+
+:root {
+	--dbw-primary: #2c3e50;
+	--dbw-secondary: #34495e;
+	--dbw-accent: #3498db;
+	--dbw-light: #ecf0f1;
+	--dbw-text: #333;
+	--dbw-gray: #7f8c8d;
+	--dbw-white: #ffffff;
+	--dbw-radius: 8px;
+	--dbw-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--dbw-transition: all 0.3s ease;
+}
+
+/* =========================================
+   Reset & Scoped Inputs (High Specificity)
+   ========================================= */
+#dbw-immo-suite {
+	box-sizing: border-box;
+}
+
+#dbw-immo-suite *,
+#dbw-immo-suite *::before,
+#dbw-immo-suite *::after {
+	box-sizing: border-box;
+}
+
+/* Overriding Theme Generics */
+#dbw-immo-suite input[type="text"],
+#dbw-immo-suite input[type="search"],
+#dbw-immo-suite input[type="number"],
+#dbw-immo-suite input[type="email"],
+#dbw-immo-suite select,
+#dbw-immo-suite textarea {
+	border: 1px solid #e0e0e0;
+	/* Restore our border */
+	border-radius: var(--dbw-radius);
+	/* Restore our radius */
+	padding: 10px 15px;
+	max-width: 100%;
+	background: #fff;
+	box-shadow: none;
+	font-family: inherit;
+	font-size: 1rem;
+	line-height: normal;
+	margin: 0;
+}
+
+/* Remove default focus outline if we have custom styles */
+#dbw-immo-suite input:focus,
+#dbw-immo-suite select:focus {
+	outline: none;
+	border-color: var(--dbw-accent);
+}
+
+/* Special case for Toolbar inputs which need no border */
+#dbw-immo-suite .dbw-main-search-input {
+	border: none !important;
+	/* Force no border here inside the styled wrapper */
+	padding: 4px 0;
+	box-shadow: none;
+	border-radius: 0;
+}
+
+#dbw-immo-suite .dbw-toolbar-select {
+	border: none !important;
+	background-color: transparent;
+	padding-right: 1.5rem;
+}
+
+/* Grid Layout */
+#dbw-immo-suite .dbw-property-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2rem;
+	margin: 2rem 0;
+}
+
+@media (max-width: 1024px) {
+	#dbw-immo-suite .dbw-property-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	#dbw-immo-suite .dbw-property-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Property Card */
+/* Property Card */
+#dbw-immo-suite .dbw-property-card {
+	background: var(--dbw-white);
+	border-radius: var(--dbw-radius);
+	box-shadow: var(--dbw-shadow);
+	overflow: hidden;
+	transition: var(--dbw-transition);
+	border: 1px solid #eee;
+	display: flex;
+	flex-direction: column;
+}
+
+#dbw-immo-suite .dbw-property-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+#dbw-immo-suite .dbw-property-image {
+	height: 250px;
+	background-color: var(--dbw-light);
+	background-size: cover;
+	background-position: center;
+	position: relative;
+	display: block;
+	text-decoration: none;
+}
+
+#dbw-immo-suite .dbw-property-tag {
+	position: absolute;
+	bottom: 15px;
+	left: 15px;
+	background: var(--dbw-accent);
+	color: var(--dbw-white);
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-transform: capitalize;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#dbw-immo-suite .dbw-property-content {
+	padding: 1.5rem;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+#dbw-immo-suite .dbw-property-title {
+	font-size: 1.25rem;
+	margin: 0 0 0.5rem 0;
+	color: var(--dbw-primary);
+	line-height: 1.4;
+}
+
+#dbw-immo-suite .dbw-property-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+#dbw-immo-suite .dbw-property-address {
+	color: var(--dbw-gray);
+	font-size: 0.9rem;
+	margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+#dbw-immo-suite .dbw-property-meta {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+	margin-top: auto;
+	padding-top: 1rem;
+	border-top: 1px solid #eee;
+	font-size: 0.9rem;
+	color: var(--dbw-secondary);
+}
+
+#dbw-immo-suite .dbw-meta-item {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+#dbw-immo-suite .dbw-meta-label {
+	font-size: 0.75rem;
+	color: var(--dbw-gray);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+#dbw-immo-suite .dbw-meta-value {
+	font-weight: 600;
+	font-size: 1rem;
+}
+
+#dbw-immo-suite .dbw-property-price {
+	font-size: 1.5rem;
+	color: var(--dbw-primary);
+	font-weight: 700;
+	margin-top: 1rem;
+	text-align: left;
+}
+
+#dbw-immo-suite .dbw-button-expose {
+	display: block;
+	width: 100%;
+	padding: 12px 20px;
+	margin-top: 1rem;
+	background: var(--dbw-accent);
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 50px;
+	font-weight: 600;
+	font-size: 0.95rem;
+	transition: all 0.3s ease;
+	border: none;
+	cursor: pointer;
+}
+
+#dbw-immo-suite .dbw-button-expose:hover {
+	background: var(--dbw-accent);
+	filter: brightness(0.9);
+	transform: translateY(-2px);
+	box-shadow: var(--dbw-shadow);
+}
+
+/* Single Property */
+/* Single Property */
+#dbw-immo-suite .dbw-single-property-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
+#dbw-immo-suite .dbw-single-header {
+	margin-bottom: 2rem;
+}
+
+#dbw-immo-suite .dbw-single-title {
+	font-size: 2.5rem;
+	color: var(--dbw-primary);
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+#dbw-immo-suite .dbw-single-address {
+	color: var(--dbw-gray);
+	font-size: 1.2rem;
+}
+
+#dbw-immo-suite .dbw-gallery-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 1rem;
+	height: 500px;
+	margin-bottom: 3rem;
+}
+
+#dbw-immo-suite .dbw-gallery-main {
+	background: var(--dbw-light);
+	border-radius: var(--dbw-radius);
+	overflow: hidden;
+}
+
+#dbw-immo-suite .dbw-gallery-side {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+#dbw-immo-suite .dbw-gallery-item {
+	background: var(--dbw-light);
+	border-radius: var(--dbw-radius);
+	flex: 1;
+}
+
+#dbw-immo-suite .dbw-details-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 3rem;
+}
+
+#dbw-immo-suite .dbw-section {
+	margin-bottom: 3rem;
+}
+
+#dbw-immo-suite .dbw-section-title {
+	font-size: 1.5rem;
+	border-bottom: 2px solid var(--dbw-light);
+	padding-bottom: 0.5rem;
+	margin-bottom: 1.5rem;
+	color: var(--dbw-secondary);
+}
+
+#dbw-immo-suite .dbw-features-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1rem;
+}
+
+#dbw-immo-suite .dbw-feature-item {
+	background: #f8f9fa;
+	padding: 1rem;
+	border-radius: var(--dbw-radius);
+}
+
+#dbw-immo-suite .dbw-agent-card {
+	background: var(--dbw-white);
+	padding: 2rem;
+	border-radius: var(--dbw-radius);
+	box-shadow: var(--dbw-shadow);
+	border: 1px solid #eee;
+	position: sticky;
+	top: 2rem;
+}
+
+@media (max-width: 768px) {
+	#dbw-immo-suite .dbw-gallery-grid {
+		grid-template-columns: 1fr;
+		height: auto;
+	}
+
+	#dbw-immo-suite .dbw-details-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* =========================================
+   List View Extensions
+   ========================================= */
+
+/* =========================================
+   List View Extensions
+   ========================================= */
+
+/* Filter Container */
+#dbw-immo-suite .dbw-filter-container {
+	background: #fff;
+	border-radius: var(--dbw-radius);
+	margin-bottom: 2rem;
+	border: 1px solid #e0e0e0;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	overflow: visible;
+	position: relative;
+	transition: all 0.3s ease;
+}
+
+#dbw-immo-suite .dbw-filter-container.is-expanded {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 1. Main Toolbar (Always Visible) */
+#dbw-immo-suite .dbw-filter-toolbar {
+	display: flex;
+	align-items: stretch;
+	/* Stretch items to full height */
+	padding: 0.5rem;
+	/* Reduced padding, using internal spacing */
+	background: #fff;
+	border-radius: var(--dbw-radius);
+	/* gap: 0; No gap, we use dividers */
+	flex-wrap: nowrap;
+	/* Attempt to keep single line on desktop */
+}
+
+@media (max-width: 900px) {
+	#dbw-immo-suite .dbw-filter-toolbar {
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 1rem;
+	}
+
+	#dbw-immo-suite .dbw-toolbar-divider {
+		display: none;
+	}
+
+	#dbw-immo-suite .dbw-toolbar-item {
+		flex-basis: 100%;
+		border-bottom: 1px solid #eee;
+		padding-bottom: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	#dbw-immo-suite .dbw-toolbar-item:last-of-type {
+		border-bottom: none;
+		margin-bottom: 0;
+	}
+}
+
+/* Expanded state needs bottom border on toolbar if content is visible */
+#dbw-immo-suite .is-expanded .dbw-filter-toolbar {
+	border-bottom: 1px solid #eee;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+/* Toolbar Items (Selects & Inputs) */
+/* Toolbar Items (Selects & Inputs) */
+#dbw-immo-suite .dbw-toolbar-item {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 0 1rem;
+	position: relative;
+	flex-grow: 1;
+	min-width: 120px;
+}
+
+#dbw-immo-suite .dbw-toolbar-label {
+	font-size: 0.7rem;
+	font-weight: 700;
+	color: #95a5a6;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 2px;
+}
+
+/* Custom Select Styling to look like text */
+/* Custom Select Styling to look like text */
+#dbw-immo-suite .dbw-toolbar-select {
+	appearance: none;
+	-webkit-appearance: none;
+	border: none;
+	background: transparent;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--dbw-text);
+	width: 100%;
+	cursor: pointer;
+	padding-right: 1.5rem;
+	background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5%22%20stroke%3D%22%23333%22%20stroke-width%3D%222%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E");
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-size: 12px;
+}
+
+#dbw-immo-suite .dbw-toolbar-select:focus {
+	outline: none;
+	color: var(--dbw-primary);
+}
+
+/* Divider */
+/* Divider */
+#dbw-immo-suite .dbw-toolbar-divider {
+	width: 1px;
+	background-color: #e0e0e0;
+	margin: 10px 0;
+}
+
+/* Search Input Area */
+#dbw-immo-suite .dbw-search-input-wrapper {
+	flex: 2;
+}
+
+#dbw-immo-suite .dbw-input-inner {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+#dbw-immo-suite .dbw-input-inner .dashicons {
+	color: var(--dbw-primary);
+	font-size: 1.1rem;
+	height: auto;
+	width: auto;
+}
+
+#dbw-immo-suite .dbw-main-search-input {
+	width: 100%;
+	border: none;
+	font-size: 1rem;
+	color: var(--dbw-text);
+	padding: 4px 0;
+	outline: none;
+	background: transparent;
+	font-weight: 600;
+}
+
+#dbw-immo-suite .dbw-main-search-input::placeholder {
+	color: #bdc3c7;
+	font-weight: 400;
+}
+
+/* Toolbar Actions (Buttons) */
+#dbw-immo-suite .dbw-toolbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-left: 1.5rem;
+	border-left: 1px solid #f0f0f0;
+	/* Clear separation for actions */
+	margin-left: 0.5rem;
+}
+
+/* Filter Toggle Button (Secondary) - FIXED */
+#dbw-immo-suite .dbw-filter-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border: 1px solid #dfe6e9;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	/* Circle */
+	cursor: pointer;
+	color: var(--dbw-secondary);
+	transition: all 0.2s ease;
+	padding: 0;
+	/* Reset padding for perfect centering */
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#dbw-immo-suite .dbw-filter-toggle-btn:hover,
+#dbw-immo-suite .is-expanded .dbw-filter-toggle-btn {
+	background: #f8f9fa;
+	border-color: var(--dbw-primary);
+	color: var(--dbw-primary);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transform: translateY(-1px);
+}
+
+#dbw-immo-suite .dbw-filter-toggle-btn .dashicons {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	line-height: 1;
+	/* Fix vertical alignment */
+}
+
+
+/* Suchen Button (Primary) */
+#dbw-immo-suite .dbw-main-search-submit {
+	background: var(--dbw-primary);
+	color: #fff;
+	border: none;
+	height: 48px;
+	padding: 0 32px;
+	border-radius: 50px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+	box-shadow: 0 4px 10px rgba(44, 62, 80, 0.2);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#dbw-immo-suite .dbw-main-search-submit:hover {
+	background: var(--dbw-secondary);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 14px rgba(44, 62, 80, 0.3);
+}
+
+
+/* 2. Collapsible Content (Advanced Filters) */
+#dbw-immo-suite .dbw-filter-content {
+	display: none;
+	/* Hidden by default */
+	background: #fdfdfd;
+	padding: 1.5rem;
+	border-bottom-left-radius: var(--dbw-radius);
+	border-bottom-right-radius: var(--dbw-radius);
+}
+
+#dbw-immo-suite .dbw-filter-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1.5rem;
+	align-items: end;
+	margin-bottom: 0;
+}
+
+#dbw-immo-suite .dbw-filter-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+#dbw-immo-suite .dbw-filter-group label {
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: #95a5a6;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+#dbw-immo-suite .dbw-filter-double .dbw-input-group {
+	display: flex;
+	gap: 0.5rem;
+}
+
+#dbw-immo-suite .dbw-filter-double input {
+	width: 50%;
+}
+
+#dbw-immo-suite .dbw-filter-select,
+#dbw-immo-suite .dbw-filter-group input {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	font-size: 0.95rem;
+	background: #fff;
+	transition: border 0.2s;
+}
+
+#dbw-immo-suite .dbw-filter-select:focus,
+#dbw-immo-suite .dbw-filter-group input:focus {
+	border-color: var(--dbw-accent);
+	outline: none;
+}
+
+#dbw-immo-suite .dbw-filter-footer {
+	margin-top: 1.5rem;
+	padding-top: 1rem;
+	border-top: 1px solid #f0f0f0;
+	text-align: right;
+}
+
+#dbw-immo-suite .dbw-filter-reset {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	color: var(--dbw-gray);
+	text-decoration: none;
+	font-size: 0.85rem;
+	font-weight: 500;
+}
+
+#dbw-immo-suite .dbw-filter-reset:hover {
+	color: var(--dbw-primary);
+}
+
+
+/* Archive Header */
+#dbw-immo-suite .dbw-archive-header-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid #eee;
+}
+
+#dbw-immo-suite .dbw-result-count {
+	font-size: 1.1rem;
+	color: var(--dbw-text);
+}
+
+/* View Switcher */
+#dbw-immo-suite .dbw-view-switcher {
+	display: flex;
+	background: #f1f2f6;
+	padding: 3px;
+	border-radius: 6px;
+	gap: 2px;
+}
+
+#dbw-immo-suite .dbw-view-btn {
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	padding: 6px 10px;
+	border-radius: 4px;
+	color: #95a5a6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+
+#dbw-immo-suite .dbw-view-btn:hover {
+	color: var(--dbw-primary);
+}
+
+#dbw-immo-suite .dbw-view-btn.active {
+	background: #fff;
+	color: var(--dbw-primary);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#dbw-immo-suite .dbw-view-btn .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+#dbw-immo-suite .dbw-sort-select {
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: white;
+	color: var(--dbw-text);
+}
+
+
+/* Status Tags (Overlay) */
+#dbw-immo-suite .dbw-status-tag {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 6px 12px;
+	border-radius: 4px;
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: white;
+	text-transform: uppercase;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	z-index: 2;
+}
+
+#dbw-immo-suite .dbw-tag-buy {
+	background-color: #e74c3c;
+	/* Red for Buy */
+}
+
+#dbw-immo-suite .dbw-tag-rent {
+	background-color: #2ecc71;
+	/* Green for Rent */
+}
+
+#dbw-immo-suite .dbw-tag-default {
+	background-color: var(--dbw-accent);
+}
+
+
+/* =========================================
+   LIST VIEW OVERRIDES
+   ========================================= */
+
+/* Switch Grid to 1 Column */
+#dbw-immo-suite .dbw-property-grid.is-list-view {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+/* Horizontal Card Layout */
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-card {
+	flex-direction: row;
+	height: auto;
+	/* Allow auto height */
+	min-height: 220px;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-image {
+	width: 40%;
+	/* Left side image */
+	height: auto;
+	/* Fill height */
+	min-height: 220px;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-content {
+	width: 60%;
+	padding: 2rem;
+	justify-content: space-between;
+}
+
+/* Adjustments for List View Content */
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-title {
+	font-size: 1.5rem;
+	margin-bottom: 1rem;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-meta {
+	border-top: none;
+	padding-top: 0;
+	margin-top: 1rem;
+	display: flex;
+	gap: 2rem;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-meta-item {
+	align-items: flex-start;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-price {
+	font-size: 1.8rem;
+	/* Move price to top right or keep bottom? Let's keep it clean at bottom for now */
+	margin-top: 1rem;
+}
+
+/* Responsive adjustment for List View on mobile */
+@media (max-width: 768px) {
+	#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-card {
+		flex-direction: column;
+	}
+
+	#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-image {
+		width: 100%;
+		height: 250px;
+	}
+
+	#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-property-content {
+		width: 100%;
+	}
+}
+
+/* Pagination */
+#dbw-immo-suite .dbw-pagination {
+	margin-top: 3rem;
+	display: flex;
+	justify-content: center;
+}
+
+#dbw-immo-suite .dbw-page-list {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	gap: 0.5rem;
+	margin: 0;
+}
+
+#dbw-immo-suite .dbw-page-item .page-numbers {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: white;
+	border: 1px solid #eee;
+	color: var(--dbw-text);
+	text-decoration: none;
+	font-weight: 600;
+	transition: var(--dbw-transition);
+}
+
+#dbw-immo-suite .dbw-page-item .page-numbers.current,
+#dbw-immo-suite .dbw-page-item .page-numbers:hover {
+	background: var(--dbw-primary);
+	color: white;
+	border-color: var(--dbw-primary);
+}

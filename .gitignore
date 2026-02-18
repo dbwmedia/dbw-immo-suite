@@ -1,0 +1,36 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Composer
+vendor/
+composer.lock
+
+# Logs
+*.log
+debug.log
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+.env.local

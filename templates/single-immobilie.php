@@ -57,11 +57,28 @@ while (have_posts()):
 	$gallery_images = array();
 	$floor_plans = array();
 
+	$seen_urls = array();
+
 	foreach ($raw_attachments as $att_id => $att_post) {
-		// Skip contact person image from property gallery
-		if ($contact_img_id && $att_id == $contact_img_id) {
+		$img_url = wp_get_attachment_image_url($att_id, 'large');
+
+		// 1. Skip if no URL
+		if (!$img_url)
+			continue;
+
+		// 2. Skip Contact Image (ID check match OR URL match)
+		if ($contact_img_id && (int)$att_id === (int)$contact_img_id) {
 			continue;
 		}
+		if ($contact_img_url && $img_url === $contact_img_url) {
+			continue;
+		}
+
+		// 3. Dedup by URL (prevent same image appearing multiple times due to bad imports)
+		if (in_array($img_url, $seen_urls)) {
+			continue;
+		}
+		$seen_urls[] = $img_url;
 
 		$group = get_post_meta($att_id, '_openimmo_gruppe', true);
 		$img_url = wp_get_attachment_image_url($att_id, 'large');

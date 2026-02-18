@@ -522,6 +522,7 @@ class Importer
         $existing_att = new \WP_Query(array(
             'post_type' => 'attachment',
             'post_parent' => $post_id,
+            'post_status' => 'inherit', // Attachments use 'inherit' status
             'meta_key' => '_openimmo_filename',
             'meta_value' => $file_name,
             'fields' => 'ids',

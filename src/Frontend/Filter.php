@@ -219,7 +219,7 @@ class Filter
                     <!-- Actions -->
                     <div class="dbw-toolbar-actions">
                         <button type="button" class="dbw-filter-toggle-btn" id="dbw-filter-toggle" title="<?php _e('Erweiterte Filter', 'dbw-immo-suite'); ?>">
-                            <span class="dashicons dashicons-sliders"></span>
+                            <span class="dashicons dashicons-arrow-down-alt2"></span>
                         </button>
                         
                         <button type="submit" class="dbw-main-search-submit">

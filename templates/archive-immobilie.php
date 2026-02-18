@@ -41,7 +41,7 @@ get_header(); ?>
 						if (class_exists('DBW\ImmoSuite\Frontend\Filter')) {
 							$tag_data = \DBW\ImmoSuite\Frontend\Filter::get_status_label(get_the_ID());
 							if ($tag_data) {
-								echo '<span class="dbw-status-tag ' . esc_attr($tag_data['class']) . '">' . esc_html($tag_data['label']) . '</span>';
+								echo '<span class="dbw-property-tag ' . esc_attr($tag_data['class']) . '">' . esc_html($tag_data['label']) . '</span>';
 							}
 						}
 						?>
@@ -59,12 +59,17 @@ get_header(); ?>
 							</div>
 							<?php endif; ?>
 
-							<!-- Meta Grid (2x2) -->
+							<!-- Meta Grid (Uniform 4 Items) -->
 							<div class="dbw-card-meta-grid">
-								<!-- Wohnfläche -->
+								<!-- 1. Wohnfläche -->
 								<?php if ( $area && get_theme_mod( 'dbw_immo_archive_show_area', true ) ) : ?>
 								<div class="dbw-meta-item">
-									<div class="dbw-meta-icon"><span class="dashicons dashicons-admin-home"></span></div>
+									<div class="dbw-meta-icon">
+										<!-- Icon: Area/Home -->
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+											<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+										</svg>
+									</div>
 									<div class="dbw-meta-data">
 										<span class="dbw-meta-value"><?php echo esc_html( $area ); ?> m²</span>
 										<span class="dbw-meta-label">Wohnfläche</span>
@@ -72,10 +77,15 @@ get_header(); ?>
 								</div>
 								<?php endif; ?>
 
-								<!-- Zimmer -->
+								<!-- 2. Zimmer -->
 								<?php if ( $rooms && get_theme_mod( 'dbw_immo_archive_show_rooms', true ) ) : ?>
 								<div class="dbw-meta-item">
-									<div class="dbw-meta-icon"><span class="dashicons dashicons-layout"></span></div>
+									<div class="dbw-meta-icon">
+										<!-- Icon: Rooms/Grid -->
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+											<path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>
+										</svg>
+									</div>
 									<div class="dbw-meta-data">
 										<span class="dbw-meta-value"><?php echo esc_html( $rooms ); ?></span>
 										<span class="dbw-meta-label">Zimmer</span>
@@ -83,28 +93,38 @@ get_header(); ?>
 								</div>
 								<?php endif; ?>
 
-								<!-- Baujahr -->
-								<?php 
-								$year = get_post_meta( get_the_ID(), 'energiepass_baujahr', true );
-								if ( $year && get_theme_mod( 'dbw_immo_archive_show_year', true ) ) : ?>
-								<div class="dbw-meta-item">
-									<div class="dbw-meta-icon"><span class="dashicons dashicons-calendar-alt"></span></div>
-									<div class="dbw-meta-data">
-										<span class="dbw-meta-value"><?php echo esc_html( $year ); ?></span>
-										<span class="dbw-meta-label">Baujahr</span>
-									</div>
-								</div>
-								<?php endif; ?>
-
-								<!-- Schlafzimmer (Optional 4th) -->
+								<!-- 3. Schlafzimmer -->
 								<?php 
 								$bedrooms = get_post_meta( get_the_ID(), 'anzahl_schlafzimmer', true );
 								if ( $bedrooms ) : ?>
 								<div class="dbw-meta-item">
-									<div class="dbw-meta-icon"><span class="dashicons dashicons-rest"></span></div>
+									<div class="dbw-meta-icon">
+										<!-- Icon: Bed -->
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+											<path d="M20 10V7c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v3c-1.1 0-2 .9-2 2v5h1.33L4 19h1v-1h14v1h1l.67-2H22v-5c0-1.1-.9-2-2-2zm-9-3h-4v2h4V7zm5 0h-4v2h4V7z"/>
+										</svg>
+									</div>
 									<div class="dbw-meta-data">
 										<span class="dbw-meta-value"><?php echo esc_html( $bedrooms ); ?></span>
 										<span class="dbw-meta-label">Schlafzimmer</span>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- 4. Baujahr -->
+								<?php 
+								$year = get_post_meta( get_the_ID(), 'energiepass_baujahr', true );
+								if ( $year && get_theme_mod( 'dbw_immo_archive_show_year', true ) ) : ?>
+								<div class="dbw-meta-item">
+									<div class="dbw-meta-icon">
+										<!-- Icon: Calendar -->
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+											<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+										</svg>
+									</div>
+									<div class="dbw-meta-data">
+										<span class="dbw-meta-value"><?php echo esc_html( $year ); ?></span>
+										<span class="dbw-meta-label">Baujahr</span>
 									</div>
 								</div>
 								<?php endif; ?>

@@ -21,76 +21,121 @@ class Importer
      */
     public function run_import()
     {
+        // 1. Check Lock
+        if (get_transient('dbw_immo_import_lock')) {
+            return array('success' => false, 'message' => 'Import läuft bereits. Bitte warten.');
+        }
+
+        // 2. Set Lock (expires in 10 mins security fallback)
+        set_transient('dbw_immo_import_lock', time(), 600);
+
         $this->log_debug('--- Starte Import ---');
-        // Increase limits for large imports
-        @set_time_limit(600);
-        @ini_set('max_execution_time', 600);
-        @ini_set('memory_limit', '2048M');
 
-        $options = get_option('dbw_immo_suite_settings');
-        $xml_path = isset($options['xml_path']) ? $options['xml_path'] : '';
+        try {
+            // Increase limits
+            @set_time_limit(600);
+            @ini_set('max_execution_time', 600);
+            @ini_set('memory_limit', '2048M');
 
-        // 1. Try raw path (absolute)
-        if (!empty($xml_path) && is_dir($xml_path)) {
-            $xml_path = trailingslashit($xml_path);
-        }
-        // 2. Try relative to WordPress Root (ABSPATH) - handles "openimmo" and "/openimmo"
-        elseif (!empty($xml_path) && is_dir(ABSPATH . ltrim($xml_path, '/'))) {
-            $xml_path = trailingslashit(ABSPATH . ltrim($xml_path, '/'));
-        }
-        // 3. Fallback to default uploads if nothing input
-        elseif (empty($xml_path)) {
-            $upload_dir = wp_upload_dir();
-            $xml_path = $upload_dir['basedir'] . '/openimmo/';
-        }
-        // 4. Input provided but invalid, return specific error to help user debug
-        else {
-            return array(
-                'success' => false,
-                'message' => sprintf('Fehler: Das Verzeichnis "%s" konnte nicht gefunden werden. (Geprüft auch relativ zu: %s)', $xml_path, ABSPATH)
+            $options = get_option('dbw_immo_suite_settings');
+            $xml_path = isset($options['xml_path']) ? $options['xml_path'] : '';
+
+            // Path Logic (same as before)
+            if (!empty($xml_path) && is_dir($xml_path)) {
+                $xml_path = trailingslashit($xml_path);
+            }
+            elseif (!empty($xml_path) && is_dir(ABSPATH . ltrim($xml_path, '/'))) {
+                $xml_path = trailingslashit(ABSPATH . ltrim($xml_path, '/'));
+            }
+            elseif (empty($xml_path)) {
+                $upload_dir = wp_upload_dir();
+                $xml_path = $upload_dir['basedir'] . '/openimmo/';
+            }
+            else {
+                throw new \Exception(sprintf('Verzeichnis "%s" nicht gefunden.', $xml_path));
+            }
+
+            if (!is_dir($xml_path)) {
+                throw new \Exception('Kein gültiges Import-Verzeichnis: ' . $xml_path);
+            }
+
+            // ZIP Extraction
+            $zips = glob($xml_path . '*.zip');
+            if (!empty($zips)) {
+                foreach ($zips as $zip_file) {
+                    $this->extract_zip($zip_file, $xml_path);
+                }
+            }
+
+            // XML Search
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
+            $xml_files = array();
+            foreach ($files as $file) {
+                if ($file->isFile() && strtolower($file->getExtension()) === 'xml') {
+                    $xml_files[] = $file->getPathname();
+                }
+            }
+
+            if (empty($xml_files)) {
+                throw new \Exception('Keine XML-Dateien gefunden in: ' . $xml_path);
+            }
+
+            $stats = array(
+                'created' => 0,
+                'updated' => 0,
+                'errors' => 0,
             );
-        }
 
-        if (!is_dir($xml_path)) {
-            return array('success' => false, 'message' => 'Kein gültiges Import-Verzeichnis gefunden: ' . $xml_path);
-        }
+            // Process Files
+            foreach ($xml_files as $file) {
+                $this->process_file($file, $stats);
 
-        // Process ZIP files first
-        $zips = glob($xml_path . '*.zip');
-        if (!empty($zips)) {
-            foreach ($zips as $zip_file) {
-                $this->extract_zip($zip_file, $xml_path);
+                // Add to History
+                $this->log_history($file, $stats, 'success');
             }
-        }
 
-        // Look for XML files (now including extracted ones)
-        // We search recursively in subfolders because unzip creates folders
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
-        $xml_files = array();
-        foreach ($files as $file) {
-            if ($file->isFile() && strtolower($file->getExtension()) === 'xml') {
-                $xml_files[] = $file->getPathname();
-            }
-        }
+            // Release Lock
+            delete_transient('dbw_immo_import_lock');
 
-        if (empty($xml_files)) {
-            return array('success' => false, 'message' => 'Keine XML-Dateien (oder ZIP-Archive) gefunden in: ' . $xml_path);
-        }
+            return array(
+                'success' => true,
+                'message' => sprintf('Import fertig. Erstellt: %d, Aktualisiert: %d, Fehler: %d', $stats['created'], $stats['updated'], $stats['errors']),
+            );
 
-        $stats = array(
-            'created' => 0,
-            'updated' => 0,
-            'errors' => 0,
+        }
+        catch (\Exception $e) {
+            // Error Handling
+            delete_transient('dbw_immo_import_lock');
+            $this->log_debug('Error: ' . $e->getMessage());
+
+            // Log failed run
+            $this->log_history('System', array('created' => 0, 'updated' => 0, 'errors' => 1), 'error');
+
+            return array('success' => false, 'message' => $e->getMessage());
+        }
+    }
+
+    private function log_history($file, $stats, $status)
+    {
+        $history = get_option('dbw_immo_import_history', array());
+
+        $entry = array(
+            'date' => current_time('mysql'),
+            'file' => basename($file),
+            'status' => $status,
+            'created' => $stats['created'],
+            'updated' => $stats['updated'],
+            'errors' => $stats['errors']
         );
 
-        foreach ($xml_files as $file) {
-            $this->process_file($file, $stats);
+        $history[] = $entry;
+
+        // Keep last 50
+        if (count($history) > 50) {
+            $history = array_slice($history, -50);
         }
 
-        return array(
-            'success' => true,
-            'message' => sprintf('Import abgeschlossen. Erstellt: %d, Aktualisiert: %d, Fehler: %d', $stats['created'], $stats['updated'], $stats['errors']),
-        );
+        update_option('dbw_immo_import_history', $history);
     }
 
     /**
@@ -166,13 +211,49 @@ class Importer
             return;
         }
 
+        // Check Action Type (DELETE, ARCHIVE, etc.)
+        $action_type = '';
+        if (isset($verwaltung_techn->aktion)) {
+            $action_type = (string)$verwaltung_techn->aktion['actiontype'];
+            // Sometimes it's the node value
+            if (empty($action_type)) {
+                $action_type = (string)$verwaltung_techn->aktion;
+            }
+            $action_type = strtoupper($action_type);
+        }
+
+        $existing_id = $this->get_property_by_openimmo_id($openimmo_id);
+
+        // HANDLE DELETION
+        if ($action_type === 'DELETE' || $action_type === 'LÖSCHEN' || $action_type === 'LOESCHEN') {
+            if ($existing_id) {
+                // Move to trash
+                wp_trash_post($existing_id);
+                $this->log_debug("Immobilie $openimmo_id ($existing_id) wurde in den Papierkorb verschoben (Action: $action_type).");
+                $stats['updated']++; // Count as handled
+            }
+            return; // Stop processing this property
+        }
+
+        // HANDLE ARCHIVING
+        if ($action_type === 'ARCHIVE' || $action_type === 'ARCHIVIEREN') {
+            if ($existing_id) {
+                $update_data = array(
+                    'ID' => $existing_id,
+                    'post_status' => 'draft' // Set to draft
+                );
+                wp_update_post($update_data);
+                $this->log_debug("Immobilie $openimmo_id ($existing_id) wurde archiviert/Entwurf (Action: $action_type).");
+                $stats['updated']++;
+            }
+            return; // Stop processing
+        }
+
+
         // Title Generation
         $geo = $immobilie->geo;
         $freitexte = $immobilie->freitexte;
         $titel = isset($freitexte->objekttitel) ? (string)$freitexte->objekttitel : 'Immobilie ' . $openimmo_id;
-
-        // Check if exists
-        $existing_id = $this->get_property_by_openimmo_id($openimmo_id);
 
         $post_data = array(
             'post_title' => $titel,
@@ -279,6 +360,17 @@ class Importer
             }
             // Optional: Store all as array for easier looping if needed
             update_post_meta($post_id, 'infrastruktur_all', $infra_data);
+        }
+
+        // Zustand & Baujahr (Generic)
+        if (isset($xml->zustand_angaben)) {
+            $zustand = $xml->zustand_angaben;
+            if (isset($zustand->baujahr)) {
+                update_post_meta($post_id, 'energiepass_baujahr', (string)$zustand->baujahr);
+            }
+            if (isset($zustand->zustand_art)) {
+                update_post_meta($post_id, 'zustand_art', (string)$zustand->zustand_art);
+            }
         }
 
         // Energy Pass

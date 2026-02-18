@@ -24,18 +24,19 @@ class Customizer
      */
     public function register_settings($wp_customize)
     {
-        // 1. Panel: Immobilien
+        // 1. Panel: Immobilien Suite
         $wp_customize->add_panel('dbw_immo_panel', array(
             'title' => __('Immobilien Suite', 'dbw-immo-suite'),
             'description' => __('Einstellungen für das Immobilien Plugin', 'dbw-immo-suite'),
             'priority' => 20,
         ));
 
-        // 2. Section: Design (Global)
+        // 2. Section: Design System (Global)
         $wp_customize->add_section('dbw_immo_design_section', array(
-            'title' => __('Design & Farben', 'dbw-immo-suite'),
+            'title' => __('Design System', 'dbw-immo-suite'),
             'panel' => 'dbw_immo_panel',
             'priority' => 10,
+            'description' => __('Globale Design-Einstellungen für alle Immobilien-Elemente.', 'dbw-immo-suite'),
         ));
 
         $this->add_color_setting($wp_customize, 'dbw_immo_color_primary', '#2c3e50', __('Hauptfarbe (Primary)', 'dbw-immo-suite'), 'dbw_immo_design_section');
@@ -55,32 +56,31 @@ class Customizer
             'input_attrs' => array('min' => 0, 'max' => 50),
         ));
 
-        // 3. Section: Listenansicht (Archive)
+        // 3. Section: Archiv & Suche
         $wp_customize->add_section('dbw_immo_archive_section', array(
-            'title' => __('Listenansicht', 'dbw-immo-suite'),
+            'title' => __('Archiv & Suche', 'dbw-immo-suite'),
             'panel' => 'dbw_immo_panel',
             'priority' => 20,
         ));
 
-        // Items per page
+        // Layout Settings
         $wp_customize->add_setting('dbw_immo_archive_per_page', array(
             'default' => 9,
             'sanitize_callback' => 'absint',
         ));
         $wp_customize->add_control('dbw_immo_archive_per_page', array(
-            'label' => __('Immobilien pro Seite', 'dbw-immo-suite'),
+            'label' => __('Objekte pro Seite', 'dbw-immo-suite'),
             'section' => 'dbw_immo_archive_section',
             'type' => 'number',
             'input_attrs' => array('min' => 1, 'max' => 100),
         ));
 
-        // Columns Desktop
         $wp_customize->add_setting('dbw_immo_archive_columns', array(
             'default' => 3,
             'sanitize_callback' => 'absint',
         ));
         $wp_customize->add_control('dbw_immo_archive_columns', array(
-            'label' => __('Spalten (Desktop)', 'dbw-immo-suite'),
+            'label' => __('Spalten (Desktop Grid)', 'dbw-immo-suite'),
             'section' => 'dbw_immo_archive_section',
             'type' => 'select',
             'choices' => array(
@@ -90,14 +90,14 @@ class Customizer
             ),
         ));
 
-        // Metadata Toggles
+        // Toggles
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_year', true, __('Baujahr anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_area', true, __('Wohnfläche anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_rooms', true, __('Zimmer anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price', true, __('Preis anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
 
 
-        // 4. Section: Detailansicht (Single)
+        // 4. Section: Detailseite (Single)
         $wp_customize->add_section('dbw_immo_single_section', array(
             'title' => __('Detailansicht', 'dbw-immo-suite'),
             'panel' => 'dbw_immo_panel',
@@ -106,17 +106,17 @@ class Customizer
 
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_map', true, __('Lage / Karte anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_energy', true, __('Energieausweis anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
-        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_gallery', true, __('Galerie anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_gallery', false, __('Galerie-Modul anzeigen (Beta)', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_contact', true, __('Kontaktbox anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
 
-        // Expose Button Text
+        // Text Labels
         $wp_customize->add_setting('dbw_immo_expose_btn_text', array(
             'default' => 'Zum Exposé',
             'sanitize_callback' => 'sanitize_text_field',
         ));
         $wp_customize->add_control('dbw_immo_expose_btn_text', array(
             'label' => __('Button Text "Zum Exposé"', 'dbw-immo-suite'),
-            'section' => 'dbw_immo_design_section', // Put in Design or Single? Design fits better for global buttons
+            'section' => 'dbw_immo_design_section', // Kept in Design as requested
             'type' => 'text',
         ));
     }
@@ -143,13 +143,21 @@ class Customizer
     {
         $wp_customize->add_setting($id, array(
             'default' => $default,
-            'sanitize_callback' => 'dbw_immo_sanitize_checkbox', // We need a custom or generic boolean sanitizer
+            'sanitize_callback' => array($this, 'sanitize_checkbox'), // FIXED: Use class method
         ));
         $wp_customize->add_control($id, array(
             'label' => $label,
             'section' => $section,
             'type' => 'checkbox',
         ));
+    }
+
+    /**
+     * Sanitize checkbox helper
+     */
+    public function sanitize_checkbox($checked)
+    {
+        return (isset($checked) && $checked == true) ? true : false;
     }
 
     /**
@@ -170,7 +178,7 @@ class Customizer
         if ($cols != 3) {
             $grid_style = "
             @media (min-width: 1025px) {
-                .dbw-property-grid {
+                #dbw-immo-suite .dbw-property-grid:not(.is-list-view) {
                     grid-template-columns: repeat({$cols}, 1fr) !important;
                 }
             }
@@ -202,7 +210,7 @@ class Customizer
 }
 
 /**
- * Sanitize checkbox helper (global or static)
+ * Sanitize checkbox helper (global fallback to prevent fatal errors)
  */
 function dbw_immo_sanitize_checkbox($checked)
 {

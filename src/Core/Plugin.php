@@ -42,6 +42,12 @@ class Plugin
         $plugin_settings = new \DBW\ImmoSuite\Admin\Settings();
         $this->loader->add_action('init', $plugin_settings, 'init');
 
+        $property_details = new \DBW\ImmoSuite\Admin\PropertyDetails();
+        $this->loader->add_action('admin_init', $property_details, 'init');
+
+        $import_dashboard = new \DBW\ImmoSuite\Admin\ImportDashboard();
+        $this->loader->add_action('init', $import_dashboard, 'init');
+
         // AJAX Import
         $importer = new \DBW\ImmoSuite\Import\Importer();
         $this->loader->add_action('wp_ajax_dbw_immo_run_import', $importer, 'ajax_run_import');
@@ -50,6 +56,22 @@ class Plugin
 
         // Admin Assets
         $this->loader->add_action('admin_enqueue_scripts', $this, 'enqueue_admin_scripts');
+
+        // CRON Automation
+        $this->loader->add_action('dbw_immo_cron_hook', $importer, 'run_import');
+
+        // Scheduler Check
+        $this->schedule_cron();
+    }
+
+    /**
+     * Schedule the hourly import event if not already scheduled.
+     */
+    private function schedule_cron()
+    {
+        if (!wp_next_scheduled('dbw_immo_cron_hook')) {
+            wp_schedule_event(time(), 'hourly', 'dbw_immo_cron_hook');
+        }
     }
 
     /**

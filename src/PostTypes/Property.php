@@ -48,7 +48,7 @@ class Property
             'label' => __('Immobilie', 'dbw-immo-suite'),
             'description' => __('Immobilienverwaltung für DBW ImmoSuite', 'dbw-immo-suite'),
             'labels' => $labels,
-            'supports' => array('title', 'editor', 'thumbnail', 'revisions', 'custom-fields'),
+            'supports' => array('title', 'thumbnail', 'revisions'), // Removed 'editor' and 'custom-fields' (handled by PropertyDetails)
             'taxonomies' => array('objektart', 'vermarktungsart', 'ort'),
             'hierarchical' => false,
             'public' => true,
@@ -63,7 +63,7 @@ class Property
             'exclude_from_search' => false,
             'publicly_queryable' => true,
             'capability_type' => 'post',
-            'show_in_rest' => true, // Gutenberg support
+            'show_in_rest' => false, // Disable Gutenberg
         );
         register_post_type(self::POST_TYPE, $args);
     }

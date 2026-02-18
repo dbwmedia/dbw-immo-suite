@@ -44,72 +44,84 @@ get_header(); ?>
 								echo '<span class="dbw-status-tag ' . esc_attr($tag_data['class']) . '">' . esc_html($tag_data['label']) . '</span>';
 							}
 						}
-						
-						// Legacy VERMARKTUNGSART tag (optional, maybe keep as secondary or remove?)
-						// Keeping it but maybe moving position if needed. For now replacing with new logic or keeping both if different?
-						// Prompt said "Status / Typ Tag auf dem Immobilienbild" -> "Wohnung zur Miete".
-						// Let's stick to the new cleaner tag logic above for the primary "Buy/Rent" indicator.
 						?>
 					</a>
 
 					<div class="dbw-property-content">
-						<h2 class="dbw-property-title">
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</h2>
-						
-						<?php if ( $location ) : ?>
-						<div class="dbw-property-address">
-							<span class="dashicons dashicons-location"></span> <?php echo esc_html( $location ); ?>
+						<div class="dbw-card-body">
+							<h2 class="dbw-property-title">
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+							</h2>
+							
+							<?php if ( $location ) : ?>
+							<div class="dbw-property-address">
+								<span class="dashicons dashicons-location"></span> <?php echo esc_html( $location ); ?>
+							</div>
+							<?php endif; ?>
+
+							<!-- Meta Grid (2x2) -->
+							<div class="dbw-card-meta-grid">
+								<!-- Wohnfläche -->
+								<?php if ( $area && get_theme_mod( 'dbw_immo_archive_show_area', true ) ) : ?>
+								<div class="dbw-meta-item">
+									<div class="dbw-meta-icon"><span class="dashicons dashicons-admin-home"></span></div>
+									<div class="dbw-meta-data">
+										<span class="dbw-meta-value"><?php echo esc_html( $area ); ?> m²</span>
+										<span class="dbw-meta-label">Wohnfläche</span>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- Zimmer -->
+								<?php if ( $rooms && get_theme_mod( 'dbw_immo_archive_show_rooms', true ) ) : ?>
+								<div class="dbw-meta-item">
+									<div class="dbw-meta-icon"><span class="dashicons dashicons-layout"></span></div>
+									<div class="dbw-meta-data">
+										<span class="dbw-meta-value"><?php echo esc_html( $rooms ); ?></span>
+										<span class="dbw-meta-label">Zimmer</span>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- Baujahr -->
+								<?php 
+								$year = get_post_meta( get_the_ID(), 'energiepass_baujahr', true );
+								if ( $year && get_theme_mod( 'dbw_immo_archive_show_year', true ) ) : ?>
+								<div class="dbw-meta-item">
+									<div class="dbw-meta-icon"><span class="dashicons dashicons-calendar-alt"></span></div>
+									<div class="dbw-meta-data">
+										<span class="dbw-meta-value"><?php echo esc_html( $year ); ?></span>
+										<span class="dbw-meta-label">Baujahr</span>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- Schlafzimmer (Optional 4th) -->
+								<?php 
+								$bedrooms = get_post_meta( get_the_ID(), 'anzahl_schlafzimmer', true );
+								if ( $bedrooms ) : ?>
+								<div class="dbw-meta-item">
+									<div class="dbw-meta-icon"><span class="dashicons dashicons-rest"></span></div>
+									<div class="dbw-meta-data">
+										<span class="dbw-meta-value"><?php echo esc_html( $bedrooms ); ?></span>
+										<span class="dbw-meta-label">Schlafzimmer</span>
+									</div>
+								</div>
+								<?php endif; ?>
+							</div>
 						</div>
-						<?php endif; ?>
 
-						<!-- Meta Grid -->
-						<div class="dbw-property-meta">
-							<!-- Baujahr -->
-							<?php 
-							$year = get_post_meta( get_the_ID(), 'energiepass_baujahr', true );
-							if ( $year && get_theme_mod( 'dbw_immo_archive_show_year', true ) ) : ?>
-							<div class="dbw-meta-item">
-								<span class="dbw-meta-label">Baujahr</span>
-								<span class="dbw-meta-value"><?php echo esc_html( $year ); ?></span>
+						<!-- Card Footer (Price & Action) -->
+						<div class="dbw-card-footer">
+							<?php if ( $price && get_theme_mod( 'dbw_immo_archive_show_price', true ) ) : ?>
+							<div class="dbw-property-price">
+								<span class="dbw-price-label">Kaufpreis</span>
+								<span class="dbw-price-value"><?php echo esc_html( number_format_i18n( (float)$price, 0 ) ); ?> €</span>
 							</div>
 							<?php endif; ?>
 
-							<!-- Wohnfläche -->
-							<?php if ( $area && get_theme_mod( 'dbw_immo_archive_show_area', true ) ) : ?>
-							<div class="dbw-meta-item">
-								<span class="dbw-meta-label">Wohnfläche</span>
-								<span class="dbw-meta-value"><?php echo esc_html( $area ); ?> m²</span>
-							</div>
-							<?php endif; ?>
-
-							<!-- Zimmer -->
-							<?php if ( $rooms && get_theme_mod( 'dbw_immo_archive_show_rooms', true ) ) : ?>
-							<div class="dbw-meta-item">
-								<span class="dbw-meta-label">Zimmer</span>
-								<span class="dbw-meta-value"><?php echo esc_html( $rooms ); ?></span>
-							</div>
-							<?php endif; ?>
-
-							<!-- Schlafzimmer -->
-							<?php 
-							$bedrooms = get_post_meta( get_the_ID(), 'anzahl_schlafzimmer', true );
-							if ( $bedrooms ) : ?>
-							<div class="dbw-meta-item">
-								<span class="dbw-meta-label">Schlafzimmer</span>
-								<span class="dbw-meta-value"><?php echo esc_html( $bedrooms ); ?></span>
-							</div>
-							<?php endif; ?>
+							<a href="<?php the_permalink(); ?>" class="dbw-button-expose"><?php echo esc_html( get_theme_mod( 'dbw_immo_expose_btn_text', 'Zum Exposé' ) ); ?></a>
 						</div>
-
-						<?php if ( $price && get_theme_mod( 'dbw_immo_archive_show_price', true ) ) : ?>
-						<div class="dbw-property-price">
-							<small style="font-size: 0.8rem; font-weight: normal; color: #7f8c8d; display: block; margin-bottom: 5px;">Kaufpreis</small>
-							<?php echo esc_html( number_format_i18n( (float)$price, 0 ) ); ?> €
-						</div>
-						<?php endif; ?>
-
-						<a href="<?php the_permalink(); ?>" class="dbw-button-expose"><?php echo esc_html( get_theme_mod( 'dbw_immo_expose_btn_text', 'Zum Exposé' ) ); ?></a>
 					</div>
 				</article>
 			<?php endwhile; ?>

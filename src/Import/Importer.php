@@ -371,6 +371,53 @@ class Importer
             if (isset($zustand->zustand_art)) {
                 update_post_meta($post_id, 'zustand_art', (string)$zustand->zustand_art);
             }
+
+            // Status Mapping
+            $status = 'aktiv'; // Default
+            if (isset($zustand->verkaufstatus)) {
+                $xml_status = strtolower((string)$zustand->verkaufstatus); // STAND, RESERVIERT, VERKAUFT, VERMIETET
+                $status_attrib = isset($zustand->verkaufstatus['stand']) ? strtolower((string)$zustand->verkaufstatus['stand']) : '';
+
+                // Check attribute first (often more reliable), then value
+                $check_val = !empty($status_attrib) ? $status_attrib : $xml_status;
+
+                if (in_array($check_val, array('verkauft', 'vermietet'))) {
+                    $status = 'verkauft';
+                }
+                elseif ($check_val === 'reserviert') {
+                    $status = 'reserviert';
+                }
+                elseif ($check_val === 'referenz') { // Custom extension support
+                    $status = 'referenz';
+                }
+            }
+
+            // Allow manual override in backend (don't overwrite if manual change? - User requirement: "Der intern gespeicherte Status darf vom XML abweichen, wenn im Backend manuell geändert wurde.")
+            // Logic: We always update from XML unless we implement a "Lock Status" checkbox. 
+            // BUT: The requirement says "soll Status aus OpenImmo XML intelligent interpretieren... Der intern gespeicherte Status darf vom XML abweichen".
+            // This usually means: If I set it to "Sold" manually, the next import of "Active" shouldn't overwrite it? 
+            // OR: If XML says "Sold", we update. If XML says "Active" but we manually set "Sold", do we keep "Sold"?
+            // A safer approach for now: Always update from XML if XML has explicit status. If XML status is "Active" (default/missing), maybe preserve?
+            // "Wenn kein Status eindeutig ermittelbar ist → Default „Aktiv“."
+
+            // Let's implement a meta field `_dbw_immo_status_locked` check?
+            // For now, let's keep it simple: Update based on XML. If user changes locally, they should lock it or XML should be source of truth.
+            // Wait, "Der intern gespeicherte Status darf vom XML abweichen, wenn im Backend manuell geändert wurde." 
+            // IMPLICATION: If I change it manually, the import should NOT overwrite it?
+            // Implementation: Check if `_dbw_immo_manual_status` flag is set. If so, skip update.
+
+            $manual_override = get_post_meta($post_id, '_dbw_immo_manual_status_override', true);
+
+            if (!$manual_override) {
+                $old_status = get_post_meta($post_id, '_dbw_immo_status', true);
+                update_post_meta($post_id, '_dbw_immo_status', $status);
+
+                // Handle Sales Date
+                if ($status === 'verkauft' && $old_status !== 'verkauft') {
+                    $current_date = current_time('mysql');
+                    update_post_meta($post_id, '_dbw_immo_sales_date', $current_date);
+                }
+            }
         }
 
         // Energy Pass

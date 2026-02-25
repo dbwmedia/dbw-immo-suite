@@ -161,6 +161,33 @@ class Filter
                     $query->set('order', 'DESC');
             }
         }
+
+        // Filter Sold Items (Global Setting)
+        $settings = get_option('dbw_immo_suite_settings');
+        if (isset($settings['filter_sold_from_main']) && $settings['filter_sold_from_main']) {
+            // Exclude 'verkauft' and 'referenz'
+            $current_meta = $query->get('meta_query');
+            if (!is_array($current_meta)) $current_meta = array();
+            
+            $exclude_query = array(
+                'relation' => 'OR',
+                array(
+                    'key'     => '_dbw_immo_status',
+                    'compare' => 'NOT EXISTS' 
+                ),
+                array(
+                    'key'     => '_dbw_immo_status',
+                    'value'   => array('verkauft', 'referenz'),
+                    'compare' => 'NOT IN'
+                )
+            );
+            
+            // If we already have a meta query (AND relation usually at top level), we need to be careful
+            // WP_Query handles array of arrays as AND by default.
+            $current_meta[] = $exclude_query;
+            
+            $query->set('meta_query', $current_meta);
+        }
     }
 
     /**
@@ -340,8 +367,32 @@ class Filter
      */
     public static function get_status_label($post_id)
     {
-        $status = '';
+        $status_label = '';
         $style_class = 'dbw-tag-default';
+
+        // 0. Check Internal Status (Sold/Reference)
+        $immo_status = get_post_meta($post_id, '_dbw_immo_status', true);
+        $settings = get_option('dbw_immo_suite_settings');
+
+        if ($immo_status === 'referenz') {
+            $status_label = isset($settings['reference_badge_text']) && !empty($settings['reference_badge_text']) 
+                ? $settings['reference_badge_text'] : 'Referenz';
+            $style_class = 'dbw-tag-reference';
+            return array('label' => $status_label, 'class' => $style_class);
+        }
+        
+        if ($immo_status === 'verkauft') {
+            $status_label = isset($settings['sold_badge_text']) && !empty($settings['sold_badge_text']) 
+                ? $settings['sold_badge_text'] : 'Verkauft';
+            $style_class = 'dbw-tag-sold';
+            return array('label' => $status_label, 'class' => $style_class);
+        }
+        
+        if ($immo_status === 'reserviert') {
+            $status_label = 'Reserviert';
+            $style_class = 'dbw-tag-reserved'; // Need CSS for this
+            return array('label' => $status_label, 'class' => $style_class);
+        }
 
         // 1. Object Type
         $objektart_terms = get_the_terms($post_id, 'objektart');
@@ -381,12 +432,12 @@ class Filter
 
         // Combine
         if ($marketing) {
-            $status = $objektart . ' ' . $marketing;
+            $status_label = $objektart . ' ' . $marketing;
         } else {
-            $status = $objektart; // Fallback just object type
+            $status_label = $objektart; // Fallback just object type
         }
 
-        return array('label' => $status, 'class' => $style_class);
+        return array('label' => $status_label, 'class' => $style_class);
     }
 
     /**

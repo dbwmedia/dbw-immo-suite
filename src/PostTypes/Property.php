@@ -54,7 +54,7 @@ class Property
             'public' => true,
             'show_ui' => true,
             'show_in_menu' => true,
-            'menu_position' => 5,
+            'menu_position' => 25,
             'menu_icon' => 'dashicons-admin-home',
             'show_in_admin_bar' => true,
             'show_in_nav_menus' => true,
@@ -63,6 +63,7 @@ class Property
             'exclude_from_search' => false,
             'publicly_queryable' => true,
             'capability_type' => 'post',
+            'map_meta_cap' => true,
             'show_in_rest' => false, // Disable Gutenberg
         );
         register_post_type(self::POST_TYPE, $args);

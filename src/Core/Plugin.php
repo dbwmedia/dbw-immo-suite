@@ -48,6 +48,9 @@ class Plugin
         $import_dashboard = new \DBW\ImmoSuite\Admin\ImportDashboard();
         $this->loader->add_action('init', $import_dashboard, 'init');
 
+        $page_generator = new \DBW\ImmoSuite\Core\PageGenerator();
+        $this->loader->add_action('init', $page_generator, 'init');
+
         // AJAX Import
         $importer = new \DBW\ImmoSuite\Import\Importer();
         $this->loader->add_action('wp_ajax_dbw_immo_run_import', $importer, 'ajax_run_import');
@@ -106,10 +109,27 @@ class Plugin
         $plugin_filter = new \DBW\ImmoSuite\Frontend\Filter();
         $this->loader->add_action('init', $plugin_filter, 'init');
 
+        $plugin_rewrites = new \DBW\ImmoSuite\Core\Rewrites();
+        $this->loader->add_action('init', $plugin_rewrites, 'init');
+
         $plugin_templates = new \DBW\ImmoSuite\Frontend\TemplateLoader();
         $this->loader->add_action('init', $plugin_templates, 'init');
 
+        $plugin_shortcode = new \DBW\ImmoSuite\Frontend\Shortcode();
+        $this->loader->add_action('init', $plugin_shortcode, 'init');
+
+        $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
+        $this->loader->add_action('init', $plugin_block_references, 'init');
+
+        $plugin_block_grid = new \DBW\ImmoSuite\blocks\GridBlock();
+        $this->loader->add_action('init', $plugin_block_grid, 'init');
+
+        $this->loader->add_filter('block_categories_all', $this, 'register_block_categories', 10, 2);
+
         $this->loader->add_action('wp_enqueue_scripts', $this, 'enqueue_public_scripts');
+
+        // Register custom block categories
+        $this->loader->add_filter('block_categories_all', $this, 'register_block_categories', 10, 2);
     }
 
     /**
@@ -120,6 +140,23 @@ class Plugin
         wp_enqueue_style('dbw-immo-frontend', DBW_IMMO_SUITE_URL . 'assets/css/frontend.css', array(), DBW_IMMO_SUITE_VERSION, 'all');
         wp_enqueue_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', array('jquery'), DBW_IMMO_SUITE_VERSION, true);
         wp_enqueue_script('dbw-immo-view-switch-js', DBW_IMMO_SUITE_URL . 'assets/js/view-switch.js', array(), DBW_IMMO_SUITE_VERSION, true);
+    }
+
+    /**
+     * Register custom block categories.
+     */
+    public function register_block_categories($categories, $post)
+    {
+        return array_merge(
+            $categories,
+            array(
+                array(
+                'slug' => 'dbw-immo-suite',
+                'title' => __('dbw Immo Suite', 'dbw-immo-suite'),
+                'icon' => 'admin-home',
+            ),
+        )
+        );
     }
 
     /**

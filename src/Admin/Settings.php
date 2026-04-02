@@ -259,8 +259,7 @@ class Settings
 
 		echo '<div style="display:flex; flex-direction:column; gap:8px; max-width:600px;">';
 
-		// Preset Dropdown with safe keys
-		printf('<select id="dbw_xml_path_preset" name="%s[xml_path_key]" style="max-width:100%;" onchange="dbwPathPresetChange(this)">', $this->option_name);
+		echo '<select id="dbw_xml_path_preset" name="' . esc_attr($this->option_name) . '[xml_path_key]" style="max-width:100%;" onchange="dbwPathPresetChange(this)">';
 		echo '<option value="">' . esc_html__('-- Bitte wählen --', 'dbw-immo-suite') . '</option>';
 		echo '<option value="preset_uploads"' . selected($current_key, 'preset_uploads', false) . '>wp-content/uploads/openimmo/ (Standard)</option>';
 		echo '<option value="preset_root"' . selected($current_key, 'preset_root', false) . '>WordPress-Root/openimmo/</option>';
@@ -269,15 +268,9 @@ class Settings
 
 		// Custom path input
 		$custom_display = $is_custom ? 'flex' : 'none';
-		printf(
-			'<div id="dbw_custom_path_wrap" style="display:%s; align-items:center; gap:8px;">
-				<input type="text" id="xml_path_custom" name="%s[xml_path_custom]" value="%s" class="regular-text" placeholder="%s" style="flex:1;" />
-			</div>',
-			$custom_display,
-			$this->option_name,
-			esc_attr($is_custom ? $val : ''),
-			esc_attr('openimmo oder /absoluter/pfad/')
-		);
+		echo '<div id="dbw_custom_path_wrap" style="display:' . esc_attr($custom_display) . '; align-items:center; gap:8px;">';
+		echo '<input type="text" id="xml_path_custom" name="' . esc_attr($this->option_name) . '[xml_path_custom]" value="' . esc_attr($is_custom ? $val : '') . '" class="regular-text" placeholder="' . esc_attr('openimmo oder /absoluter/pfad/') . '" style="flex:1;" />';
+		echo '</div>';
 
 		// Validate button
 		echo '<div style="display:flex; align-items:center; gap:10px;">';

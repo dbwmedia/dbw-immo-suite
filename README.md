@@ -83,6 +83,7 @@ Entwickelt für den professionellen Einsatz und nahtlose Integration in jede Wor
 *   **Optimierung**: Immobilien-Grid verwendet nun durchgehend feine, Outline-SVGs für einen wesentlich hochwertigeren und moderneren Look (Icon-Fill & Hover-Color entfernt).
 *   **Feature**: Ähnliche Objekte ("Das könnte Sie auch interessieren") am Fuß der Detailseite ergänzt (inkl. Customizer-Option).
 *   🎉 **Premium-Feature**: Native Lightbox für Galerie- und Grundrissbilder mit Keyboard-Navigation (Esc/Pfeiltasten), Touch-Swipe und sanftem Fade-Übergang.
+*   **Optimierung**: Einstellungsseite für Import-Pfad komplett überarbeitet – Dropdown mit vorgeschlagenen Pfaden, „Pfad prüfen"-Button mit Live-AJAX-Validierung und Server-Info-Box.
 *   **Fix**: Scroll/Sticky-Verhalten zwischen Agent-Card und Highlights optimiert.
 
 ### Version 1.2.0 (2026-02-25)

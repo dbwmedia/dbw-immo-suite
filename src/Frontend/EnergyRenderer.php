@@ -38,7 +38,7 @@ class EnergyRenderer
 
         // It's a small badge positioned top-right
         echo sprintf(
-            '<div class="dbw-energy-flag" style="position: absolute; top: 20px; right: 20px; background: %s; color: #fff; padding: 0px 15px 0px 10px; font-weight: bold; font-size: 14px; clip-path: polygon(0 0, calc(100%% - 8px) 0, 100%% 50%%, calc(100%% - 8px) 100%%, 0 100%%); z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">%s</div>',
+            '<div class="dbw-energy-flag" style="position: absolute; top: 20px; right: 20px; background: %s; color: #fff; padding: 0px 15px 0px 10px; font-weight: bold; font-size: 14px; clip-path: polygon(0 0, calc(100%% - 8px) 0, 100%% 50%%, calc(100%% - 8px) 100%%, 0 100%%); z-index: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">%s</div>',
             esc_attr($color),
             esc_html($class)
         );

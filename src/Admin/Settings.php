@@ -15,6 +15,7 @@ class Settings
 	{
 		add_action('admin_menu', array($this, 'add_plugin_page'));
 		add_action('admin_init', array($this, 'page_init'));
+		add_action('wp_ajax_dbw_immo_validate_path', array($this, 'ajax_validate_path'));
 	}
 
 	public function add_plugin_page()
@@ -230,12 +231,125 @@ class Settings
 		$options = get_option($this->option_name);
 		$val = isset($options['xml_path']) ? $options['xml_path'] : '';
 
-		printf(
-			'<input type="text" id="xml_path" name="%s[xml_path]" value="%s" class="regular-text" />',
-			$this->option_name,
-			esc_attr($val)
+		// Build preset paths for dropdown
+		$upload_dir = wp_upload_dir();
+		$presets = array(
+			'' => __('-- Bitte wählen --', 'dbw-immo-suite'),
+			$upload_dir['basedir'] . '/openimmo/' => 'wp-content/uploads/openimmo/ (Standard)',
+			ABSPATH . 'openimmo/' => 'WordPress-Root/openimmo/',
 		);
-		echo '<p class="description">' . __('Relativer Pfad vom WordPress-Root (z.B. "openimmo") oder absoluter Server-Pfad.', 'dbw-immo-suite') . '</p>';
+
+		// Check if current value is a custom path not in presets
+		$is_custom = !empty($val) && !array_key_exists($val, $presets);
+
+		echo '<div style="display:flex; flex-direction:column; gap:8px; max-width:600px;">';
+
+		// Preset Dropdown
+		echo '<select id="dbw_xml_path_preset" style="max-width:100%;" onchange="dbwPathPresetChange(this)">';
+		foreach ($presets as $path => $label) {
+			$selected = (!$is_custom && $val === $path) ? 'selected' : '';
+			printf('<option value="%s" %s>%s</option>', esc_attr($path), $selected, esc_html($label));
+		}
+		$custom_selected = $is_custom ? 'selected' : '';
+		echo '<option value="__custom__" ' . $custom_selected . '>' . __('Eigener Pfad...', 'dbw-immo-suite') . '</option>';
+		echo '</select>';
+
+		// Custom path input (hidden by default unless custom is selected)
+		$custom_display = $is_custom ? 'flex' : 'none';
+		printf(
+			'<div id="dbw_custom_path_wrap" style="display:%s; align-items:center; gap:8px;">
+				<input type="text" id="xml_path" name="%s[xml_path]" value="%s" class="regular-text" placeholder="%s" style="flex:1;" />
+			</div>',
+			$custom_display,
+			$this->option_name,
+			esc_attr($val),
+			esc_attr('/var/www/vhosts/example.de/httpdocs/openimmo/')
+		);
+
+		// Hidden field for preset value (syncs with dropdown)
+		if (!$is_custom) {
+			printf(
+				'<input type="hidden" id="xml_path_preset_hidden" name="%s[xml_path]" value="%s" />',
+				$this->option_name,
+				esc_attr($val)
+			);
+		}
+
+		// Validate button + status
+		echo '<div style="display:flex; align-items:center; gap:10px;">';
+		echo '<button type="button" class="button" onclick="dbwValidatePath()" style="white-space:nowrap;">📂 Pfad prüfen</button>';
+		echo '<span id="dbw_path_status"></span>';
+		echo '</div>';
+
+		// Info box
+		echo '<div style="background:#f0f0f1; border-left:4px solid #2271b1; padding:8px 12px; font-size:12px; color:#555; border-radius:0 4px 4px 0;">';
+		echo '<strong>Server-Info:</strong><br>';
+		echo 'WordPress-Root: <code>' . esc_html(ABSPATH) . '</code><br>';
+		echo 'Uploads: <code>' . esc_html($upload_dir['basedir']) . '</code>';
+		echo '</div>';
+
+		echo '</div>';
+
+		// Inline JS for preset switching + AJAX validation
+		?>
+		<script>
+		function dbwPathPresetChange(sel) {
+			var customWrap = document.getElementById('dbw_custom_path_wrap');
+			var presetHidden = document.getElementById('xml_path_preset_hidden');
+			var customInput = document.getElementById('xml_path');
+
+			if (sel.value === '__custom__') {
+				customWrap.style.display = 'flex';
+				if (presetHidden) presetHidden.remove();
+				customInput.name = '<?php echo esc_js($this->option_name); ?>[xml_path]';
+			} else {
+				customWrap.style.display = 'none';
+				// Sync preset value
+				if (!presetHidden) {
+					presetHidden = document.createElement('input');
+					presetHidden.type = 'hidden';
+					presetHidden.id = 'xml_path_preset_hidden';
+					presetHidden.name = '<?php echo esc_js($this->option_name); ?>[xml_path]';
+					sel.parentNode.appendChild(presetHidden);
+				}
+				presetHidden.value = sel.value;
+				// Remove name from custom input to avoid conflict
+				customInput.name = '';
+			}
+			document.getElementById('dbw_path_status').innerHTML = '';
+		}
+
+		function dbwValidatePath() {
+			var preset = document.getElementById('dbw_xml_path_preset');
+			var path = '';
+			if (preset.value === '__custom__') {
+				path = document.getElementById('xml_path').value;
+			} else {
+				path = preset.value;
+			}
+			var status = document.getElementById('dbw_path_status');
+			status.innerHTML = '<span style="color:#666;">⏳ Prüfe...</span>';
+
+			var data = new FormData();
+			data.append('action', 'dbw_immo_validate_path');
+			data.append('path', path);
+			data.append('_wpnonce', '<?php echo wp_create_nonce('dbw_validate_path'); ?>');
+
+			fetch(ajaxurl, { method: 'POST', body: data })
+				.then(function(r) { return r.json(); })
+				.then(function(res) {
+					if (res.success) {
+						status.innerHTML = '<span style="color:#00a32a; font-weight:bold;">✅ ' + res.data.message + '</span>';
+					} else {
+						status.innerHTML = '<span style="color:#d63638; font-weight:bold;">❌ ' + res.data.message + '</span>';
+					}
+				})
+				.catch(function() {
+					status.innerHTML = '<span style="color:#d63638;">❌ Fehler bei der Prüfung</span>';
+				});
+		}
+		</script>
+		<?php
 	}
 
 	public function enable_garbage_collection_callback()
@@ -307,5 +421,50 @@ class Settings
 		);
 		if ($desc)
 			echo '<p class="description">' . $desc . '</p>';
+	}
+
+	/**
+	 * AJAX handler to validate the import path
+	 */
+	public function ajax_validate_path()
+	{
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array('message' => 'Keine Berechtigung.'));
+		}
+
+		check_ajax_referer('dbw_validate_path', '_wpnonce');
+
+		$path = isset($_POST['path']) ? sanitize_text_field(wp_unslash($_POST['path'])) : '';
+
+		if (empty($path)) {
+			wp_send_json_error(array('message' => 'Kein Pfad angegeben.'));
+		}
+
+		// Try absolute path first
+		$resolved = $path;
+		if (!is_dir($resolved)) {
+			// Try relative from ABSPATH
+			$resolved = ABSPATH . ltrim($path, '/');
+		}
+
+		if (!is_dir($resolved)) {
+			wp_send_json_error(array(
+				'message' => sprintf('Verzeichnis nicht gefunden: %s', $path)
+			));
+		}
+
+		// Check for XML/ZIP files
+		$zips = glob(trailingslashit($resolved) . '*.zip');
+		$xmls = glob(trailingslashit($resolved) . '*.xml');
+		$file_count = count($zips) + count($xmls);
+
+		$msg = sprintf('Verzeichnis existiert (%s)', $resolved);
+		if ($file_count > 0) {
+			$msg .= sprintf(' — %d Datei(en) gefunden (%d ZIP, %d XML)', $file_count, count($zips), count($xmls));
+		} else {
+			$msg .= ' — Noch keine Import-Dateien vorhanden.';
+		}
+
+		wp_send_json_success(array('message' => $msg));
 	}
 }

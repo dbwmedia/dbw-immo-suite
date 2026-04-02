@@ -145,7 +145,7 @@ get_header(); ?>
 
 				<!-- Floating Buttons - Top Left -->
 				<a href="<?php echo esc_url(get_post_type_archive_link('immobilie')); ?>" class="dbw-gallery-btn"
-					style="position: absolute; top: 20px; left: 20px; z-index: 10; display:flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-decoration: none;">
+					style="position: absolute; top: 20px; left: 20px; z-index: 1; display:flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-decoration: none;">
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 						stroke-linecap="round" stroke-linejoin="round">
 						<line x1="19" y1="12" x2="5" y2="12"></line>
@@ -154,7 +154,7 @@ get_header(); ?>
 				</a>
 
 				<!-- Floating Buttons - Top Right -->
-				<div style="position: absolute; top: 20px; right: 20px; z-index: 10; display:flex; gap: 10px;">
+				<div style="position: absolute; top: 20px; right: 20px; z-index: 1; display:flex; gap: 10px;">
 					<?php if (get_theme_mod('dbw_immo_single_show_share', true)): ?>
 						<button
 							onclick="navigator.share ? navigator.share({title: document.title, url: window.location.href}).catch(console.error) : alert('Ihr Browser unterstützt diese Funktion leider nicht direkt. Bitte kopieren Sie die URL.')"
@@ -187,7 +187,7 @@ get_header(); ?>
 				<!-- Floating Block - Bottom Left -->
 				<?php if (!empty($floor_plans)): ?>
 					<a href="#dbw-floorplans" class="dbw-gallery-btn"
-						style="position: absolute; bottom: 100px; left: 20px; z-index: 10; display:flex; align-items:center; gap: 8px; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-weight: 700; font-size: 0.9rem; text-decoration: none;">
+						style="position: absolute; bottom: 100px; left: 20px; ; display:flex; align-items:center; gap: 8px; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-weight: 700; font-size: 0.9rem; text-decoration: none;">
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 							stroke-linecap="round" stroke-linejoin="round">
 							<path
@@ -226,9 +226,9 @@ get_header(); ?>
 
 				<!-- Navigation Buttons -->
 				<button onclick="document.getElementById('dbwGallerySlider').scrollBy({left: -600, behavior: 'smooth'})"
-					style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10;">&#10094;</button>
+					style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1;">&#10094;</button>
 				<button onclick="document.getElementById('dbwGallerySlider').scrollBy({left: 600, behavior: 'smooth'})"
-					style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10;">&#10095;</button>
+					style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1;">&#10095;</button>
 
 				<!-- Thumbnails Strip -->
 				<div class="dbw-gallery-thumbs"
@@ -367,7 +367,8 @@ get_header(); ?>
 							style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); height:auto; gap:1rem;">
 							<?php foreach ($floor_plans as $fp_index => $fp): ?>
 								<div class="dbw-gallery-item" onclick="dbwLightbox.open('floorplan', <?php echo $fp_index; ?>)"
-									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd; cursor: pointer; border-radius: var(--dbw-radius, 8px); transition: box-shadow 0.2s;"></div>
+									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd; cursor: pointer; border-radius: var(--dbw-radius, 8px); transition: box-shadow 0.2s;">
+								</div>
 								<?php
 							endforeach; ?>
 						</div>
@@ -719,104 +720,126 @@ get_header(); ?>
 </div> <!-- End of .dbw-single-property-container -->
 
 <!-- Lightbox Overlay -->
-<div id="dbwLightboxOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
+<div id="dbwLightboxOverlay"
+	style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
 	<!-- Close -->
-	<button onclick="dbwLightbox.close()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
-		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+	<button onclick="dbwLightbox.close()"
+		style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;"
+		onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+			stroke-linecap="round" stroke-linejoin="round">
+			<line x1="18" y1="6" x2="6" y2="18"></line>
+			<line x1="6" y1="6" x2="18" y2="18"></line>
+		</svg>
 	</button>
 	<!-- Prev -->
-	<button id="dbwLbPrev" onclick="dbwLightbox.prev()" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+	<button id="dbwLbPrev" onclick="dbwLightbox.prev()"
+		style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
+		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+		onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+			stroke-linecap="round" stroke-linejoin="round">
+			<polyline points="15 18 9 12 15 6"></polyline>
+		</svg>
 	</button>
 	<!-- Next -->
-	<button id="dbwLbNext" onclick="dbwLightbox.next()" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+	<button id="dbwLbNext" onclick="dbwLightbox.next()"
+		style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
+		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+		onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+			stroke-linecap="round" stroke-linejoin="round">
+			<polyline points="9 18 15 12 9 6"></polyline>
+		</svg>
 	</button>
 	<!-- Image -->
-	<img id="dbwLbImage" src="" alt="" style="max-width:90vw; max-height:85vh; object-fit:contain; border-radius:4px; user-select:none; transition: opacity 0.25s ease;">
+	<img id="dbwLbImage" src="" alt=""
+		style="max-width:90vw; max-height:85vh; object-fit:contain; border-radius:4px; user-select:none; transition: opacity 0.25s ease;">
 	<!-- Counter -->
-	<div id="dbwLbCounter" style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-size:0.9rem; font-family:inherit;"></div>
+	<div id="dbwLbCounter"
+		style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-size:0.9rem; font-family:inherit;">
+	</div>
 </div>
 
 <script>
-(function() {
-	// Image datasets
-	var galleryImages = [
-		<?php if (!empty($gallery_images)): ?>
-			<?php foreach ($gallery_images as $gi): ?>
-				<?php echo json_encode($gi['full']); ?>,
-			<?php endforeach; ?>
+	(function () {
+		// Image datasets
+		var galleryImages = [
+			<?php if (!empty($gallery_images)): ?>
+					<?php foreach ($gallery_images as $gi): ?>
+								<?php echo json_encode($gi['full']); ?>,
+				<?php endforeach; ?>
 		<?php endif; ?>
-	];
-	var floorplanImages = [
-		<?php if (!empty($floor_plans)): ?>
-			<?php foreach ($floor_plans as $fpi): ?>
-				<?php echo json_encode($fpi['full']); ?>,
-			<?php endforeach; ?>
+		];
+		var floorplanImages = [
+			<?php if (!empty($floor_plans)): ?>
+					<?php foreach ($floor_plans as $fpi): ?>
+								<?php echo json_encode($fpi['full']); ?>,
+				<?php endforeach; ?>
 		<?php endif; ?>
-	];
+		];
 
-	var overlay = document.getElementById('dbwLightboxOverlay');
-	var lbImage = document.getElementById('dbwLbImage');
-	var lbCounter = document.getElementById('dbwLbCounter');
-	var currentSet = [];
-	var currentIdx = 0;
+		var overlay = document.getElementById('dbwLightboxOverlay');
+		var lbImage = document.getElementById('dbwLbImage');
+		var lbCounter = document.getElementById('dbwLbCounter');
+		var currentSet = [];
+		var currentIdx = 0;
 
-	window.dbwLightbox = {
-		open: function(type, index) {
-			currentSet = (type === 'gallery') ? galleryImages : floorplanImages;
-			currentIdx = index || 0;
-			this.show();
-			overlay.style.display = 'flex';
-			document.body.style.overflow = 'hidden';
-		},
-		close: function() {
-			overlay.style.display = 'none';
-			document.body.style.overflow = '';
-		},
-		prev: function() {
-			currentIdx = (currentIdx - 1 + currentSet.length) % currentSet.length;
-			this.show();
-		},
-		next: function() {
-			currentIdx = (currentIdx + 1) % currentSet.length;
-			this.show();
-		},
-		show: function() {
-			lbImage.style.opacity = '0';
-			setTimeout(function() {
-				lbImage.src = currentSet[currentIdx];
-				lbImage.onload = function() { lbImage.style.opacity = '1'; };
-				lbCounter.textContent = (currentIdx + 1) + ' / ' + currentSet.length;
-			}, 120);
-		}
-	};
+		window.dbwLightbox = {
+			open: function (type, index) {
+				currentSet = (type === 'gallery') ? galleryImages : floorplanImages;
+				currentIdx = index || 0;
+				this.show();
+				overlay.style.display = 'flex';
+				document.body.style.overflow = 'hidden';
+			},
+			close: function () {
+				overlay.style.display = 'none';
+				document.body.style.overflow = '';
+			},
+			prev: function () {
+				currentIdx = (currentIdx - 1 + currentSet.length) % currentSet.length;
+				this.show();
+			},
+			next: function () {
+				currentIdx = (currentIdx + 1) % currentSet.length;
+				this.show();
+			},
+			show: function () {
+				lbImage.style.opacity = '0';
+				setTimeout(function () {
+					lbImage.src = currentSet[currentIdx];
+					lbImage.onload = function () { lbImage.style.opacity = '1'; };
+					lbCounter.textContent = (currentIdx + 1) + ' / ' + currentSet.length;
+				}, 120);
+			}
+		};
 
-	// Keyboard
-	document.addEventListener('keydown', function(e) {
-		if (overlay.style.display !== 'flex') return;
-		if (e.key === 'Escape') dbwLightbox.close();
-		if (e.key === 'ArrowLeft') dbwLightbox.prev();
-		if (e.key === 'ArrowRight') dbwLightbox.next();
-	});
+		// Keyboard
+		document.addEventListener('keydown', function (e) {
+			if (overlay.style.display !== 'flex') return;
+			if (e.key === 'Escape') dbwLightbox.close();
+			if (e.key === 'ArrowLeft') dbwLightbox.prev();
+			if (e.key === 'ArrowRight') dbwLightbox.next();
+		});
 
-	// Click on backdrop to close
-	overlay.addEventListener('click', function(e) {
-		if (e.target === overlay) dbwLightbox.close();
-	});
+		// Click on backdrop to close
+		overlay.addEventListener('click', function (e) {
+			if (e.target === overlay) dbwLightbox.close();
+		});
 
-	// Touch Swipe
-	var startX = 0;
-	overlay.addEventListener('touchstart', function(e) {
-		startX = e.changedTouches[0].screenX;
-	}, {passive: true});
-	overlay.addEventListener('touchend', function(e) {
-		var diff = e.changedTouches[0].screenX - startX;
-		if (Math.abs(diff) > 50) {
-			if (diff > 0) dbwLightbox.prev(); else dbwLightbox.next();
-		}
-	}, {passive: true});
-})();
+		// Touch Swipe
+		var startX = 0;
+		overlay.addEventListener('touchstart', function (e) {
+			startX = e.changedTouches[0].screenX;
+		}, { passive: true });
+		overlay.addEventListener('touchend', function (e) {
+			var diff = e.changedTouches[0].screenX - startX;
+			if (Math.abs(diff) > 50) {
+				if (diff > 0) dbwLightbox.prev(); else dbwLightbox.next();
+			}
+		}, { passive: true });
+	})();
 </script>
 
 <?php

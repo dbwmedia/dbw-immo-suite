@@ -168,7 +168,17 @@ class Settings
 	public function sanitize($input)
 	{
 		$new_input = array();
-		if (isset($input['xml_path'])) {
+		// Resolve path key to absolute path (avoids WAF blocking raw paths)
+		if (isset($input['xml_path_key'])) {
+			$key = sanitize_text_field($input['xml_path_key']);
+			$presets = $this->get_path_presets();
+			if (isset($presets[$key])) {
+				$new_input['xml_path'] = $presets[$key];
+			} elseif ($key === 'custom' && isset($input['xml_path_custom'])) {
+				$new_input['xml_path'] = sanitize_text_field($input['xml_path_custom']);
+			}
+		} elseif (isset($input['xml_path'])) {
+			// Fallback for legacy
 			$new_input['xml_path'] = sanitize_text_field($input['xml_path']);
 		}
 		if (isset($input['cpt_slug'])) {
@@ -231,51 +241,45 @@ class Settings
 		$options = get_option($this->option_name);
 		$val = isset($options['xml_path']) ? $options['xml_path'] : '';
 
-		// Build preset paths for dropdown
 		$upload_dir = wp_upload_dir();
-		$presets = array(
-			'' => __('-- Bitte wählen --', 'dbw-immo-suite'),
-			$upload_dir['basedir'] . '/openimmo/' => 'wp-content/uploads/openimmo/ (Standard)',
-			ABSPATH . 'openimmo/' => 'WordPress-Root/openimmo/',
-		);
+		$preset_map = $this->get_path_presets();
 
-		// Check if current value is a custom path not in presets
-		$is_custom = !empty($val) && !array_key_exists($val, $presets);
+		// Determine current selection
+		$current_key = '';
+		foreach ($preset_map as $key => $abs_path) {
+			if ($val === $abs_path) {
+				$current_key = $key;
+				break;
+			}
+		}
+		$is_custom = !empty($val) && empty($current_key);
+		if ($is_custom) {
+			$current_key = 'custom';
+		}
 
 		echo '<div style="display:flex; flex-direction:column; gap:8px; max-width:600px;">';
 
-		// Preset Dropdown
-		echo '<select id="dbw_xml_path_preset" style="max-width:100%;" onchange="dbwPathPresetChange(this)">';
-		foreach ($presets as $path => $label) {
-			$selected = (!$is_custom && $val === $path) ? 'selected' : '';
-			printf('<option value="%s" %s>%s</option>', esc_attr($path), $selected, esc_html($label));
-		}
-		$custom_selected = $is_custom ? 'selected' : '';
-		echo '<option value="__custom__" ' . $custom_selected . '>' . __('Eigener Pfad...', 'dbw-immo-suite') . '</option>';
+		// Preset Dropdown with safe keys
+		printf('<select id="dbw_xml_path_preset" name="%s[xml_path_key]" style="max-width:100%;" onchange="dbwPathPresetChange(this)">', $this->option_name);
+		echo '<option value="">' . esc_html__('-- Bitte wählen --', 'dbw-immo-suite') . '</option>';
+		echo '<option value="preset_uploads"' . selected($current_key, 'preset_uploads', false) . '>wp-content/uploads/openimmo/ (Standard)</option>';
+		echo '<option value="preset_root"' . selected($current_key, 'preset_root', false) . '>WordPress-Root/openimmo/</option>';
+		echo '<option value="custom"' . selected($current_key, 'custom', false) . '>' . esc_html__('Eigener Pfad...', 'dbw-immo-suite') . '</option>';
 		echo '</select>';
 
-		// Custom path input (hidden by default unless custom is selected)
+		// Custom path input
 		$custom_display = $is_custom ? 'flex' : 'none';
 		printf(
 			'<div id="dbw_custom_path_wrap" style="display:%s; align-items:center; gap:8px;">
-				<input type="text" id="xml_path" name="%s[xml_path]" value="%s" class="regular-text" placeholder="%s" style="flex:1;" />
+				<input type="text" id="xml_path_custom" name="%s[xml_path_custom]" value="%s" class="regular-text" placeholder="%s" style="flex:1;" />
 			</div>',
 			$custom_display,
 			$this->option_name,
-			esc_attr($val),
-			esc_attr('/var/www/vhosts/example.de/httpdocs/openimmo/')
+			esc_attr($is_custom ? $val : ''),
+			esc_attr('openimmo oder /absoluter/pfad/')
 		);
 
-		// Hidden field for preset value (syncs with dropdown)
-		if (!$is_custom) {
-			printf(
-				'<input type="hidden" id="xml_path_preset_hidden" name="%s[xml_path]" value="%s" />',
-				$this->option_name,
-				esc_attr($val)
-			);
-		}
-
-		// Validate button + status
+		// Validate button
 		echo '<div style="display:flex; align-items:center; gap:10px;">';
 		echo '<button type="button" class="button" onclick="dbwValidatePath()" style="white-space:nowrap;">📂 Pfad prüfen</button>';
 		echo '<span id="dbw_path_status"></span>';
@@ -290,51 +294,23 @@ class Settings
 
 		echo '</div>';
 
-		// Inline JS for preset switching + AJAX validation
 		?>
 		<script>
 		function dbwPathPresetChange(sel) {
-			var customWrap = document.getElementById('dbw_custom_path_wrap');
-			var presetHidden = document.getElementById('xml_path_preset_hidden');
-			var customInput = document.getElementById('xml_path');
-
-			if (sel.value === '__custom__') {
-				customWrap.style.display = 'flex';
-				if (presetHidden) presetHidden.remove();
-				customInput.name = '<?php echo esc_js($this->option_name); ?>[xml_path]';
-			} else {
-				customWrap.style.display = 'none';
-				// Sync preset value
-				if (!presetHidden) {
-					presetHidden = document.createElement('input');
-					presetHidden.type = 'hidden';
-					presetHidden.id = 'xml_path_preset_hidden';
-					presetHidden.name = '<?php echo esc_js($this->option_name); ?>[xml_path]';
-					sel.parentNode.appendChild(presetHidden);
-				}
-				presetHidden.value = sel.value;
-				// Remove name from custom input to avoid conflict
-				customInput.name = '';
-			}
+			document.getElementById('dbw_custom_path_wrap').style.display = (sel.value === 'custom') ? 'flex' : 'none';
 			document.getElementById('dbw_path_status').innerHTML = '';
 		}
-
 		function dbwValidatePath() {
 			var preset = document.getElementById('dbw_xml_path_preset');
-			var path = '';
-			if (preset.value === '__custom__') {
-				path = document.getElementById('xml_path').value;
-			} else {
-				path = preset.value;
-			}
 			var status = document.getElementById('dbw_path_status');
 			status.innerHTML = '<span style="color:#666;">⏳ Prüfe...</span>';
-
 			var data = new FormData();
 			data.append('action', 'dbw_immo_validate_path');
-			data.append('path', path);
+			data.append('path_key', preset.value);
+			if (preset.value === 'custom') {
+				data.append('custom_path', document.getElementById('xml_path_custom').value);
+			}
 			data.append('_wpnonce', '<?php echo wp_create_nonce('dbw_validate_path'); ?>');
-
 			fetch(ajaxurl, { method: 'POST', body: data })
 				.then(function(r) { return r.json(); })
 				.then(function(res) {
@@ -350,6 +326,18 @@ class Settings
 		}
 		</script>
 		<?php
+	}
+
+	/**
+	 * Resolve safe key to absolute path
+	 */
+	private function get_path_presets()
+	{
+		$upload_dir = wp_upload_dir();
+		return array(
+			'preset_uploads' => trailingslashit($upload_dir['basedir']) . 'openimmo/',
+			'preset_root'    => ABSPATH . 'openimmo/',
+		);
 	}
 
 	public function enable_garbage_collection_callback()
@@ -434,22 +422,33 @@ class Settings
 
 		check_ajax_referer('dbw_validate_path', '_wpnonce');
 
-		$path = isset($_POST['path']) ? sanitize_text_field(wp_unslash($_POST['path'])) : '';
+		$path_key = isset($_POST['path_key']) ? sanitize_text_field(wp_unslash($_POST['path_key'])) : '';
 
-		if (empty($path)) {
-			wp_send_json_error(array('message' => 'Kein Pfad angegeben.'));
+		if (empty($path_key)) {
+			wp_send_json_error(array('message' => 'Kein Pfad ausgewählt.'));
 		}
 
-		// Try absolute path first
-		$resolved = $path;
-		if (!is_dir($resolved)) {
-			// Try relative from ABSPATH
-			$resolved = ABSPATH . ltrim($path, '/');
+		// Resolve key to absolute path
+		$presets = $this->get_path_presets();
+		if (isset($presets[$path_key])) {
+			$resolved = $presets[$path_key];
+		} elseif ($path_key === 'custom') {
+			$custom = isset($_POST['custom_path']) ? sanitize_text_field(wp_unslash($_POST['custom_path'])) : '';
+			if (empty($custom)) {
+				wp_send_json_error(array('message' => 'Bitte einen Pfad eingeben.'));
+			}
+			$resolved = $custom;
+			// Try relative from ABSPATH if not absolute
+			if (!is_dir($resolved)) {
+				$resolved = ABSPATH . ltrim($custom, '/');
+			}
+		} else {
+			wp_send_json_error(array('message' => 'Ungültige Auswahl.'));
 		}
 
 		if (!is_dir($resolved)) {
 			wp_send_json_error(array(
-				'message' => sprintf('Verzeichnis nicht gefunden: %s', $path)
+				'message' => sprintf('Verzeichnis nicht gefunden: %s', $resolved)
 			));
 		}
 

@@ -74,6 +74,15 @@ Entwickelt für den professionellen Einsatz und nahtlose Integration in jede Wor
 
 ## 📦 Changelog
 
+### Version 1.3.0 (2026-04-02)
+*   🎉 **Premium-Feature**: Detailseiten komplett überarbeitet mit nativen Glassmorphism "Floating Actions" im Galerie-Slider (Zurück, Teilen, Drucken, Grundrisse-Anker).
+*   🎉 **Premium-Feature**: Komplettes Print-Exposé Layout integriert (`@media print`). Beim Drucken der Detailseite entsteht nun automatisch ein perfekt gesetztes Makler-Dokument im A4-Format ohne überflüssige Web-Elemente.
+*   *   **Web Share API**: Native Teilen-Funktion für moderne Betriebssysteme (WhatsApp, AirDrop, etc.).
+*   **Feature**: "Highlights"-Karte auf Detailseiten mit direktem Customizer-Farbzugriff integriert.
+*   **Feature**: Erweitertes Energiepass-Rendering mit grafischer Pfeil-Skala und Detailwerten.
+*   **Optimierung**: Immobilien-Grid verwendet nun durchgehend feine, Outline-SVGs für einen wesentlich hochwertigeren und moderneren Look (Icon-Fill & Hover-Color entfernt).
+*   **Fix**: Scroll/Sticky-Verhalten zwischen Agent-Card und Highlights optimiert.
+
 ### Version 1.2.0 (2026-02-25)
 *   🎉 **Feature**: Eigener Gutenberg-Block `dbw/immo-references` für die Anzeige von Referenzen und verkauften Objekten hinzugefügt.
 *   🎉 **Feature**: Eigener Gutenberg-Block `dbw/immo-grid` zum freien Anzeigen und Filtern aktueller Immobilien hinzugefügt.

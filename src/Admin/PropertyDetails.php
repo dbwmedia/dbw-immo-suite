@@ -89,6 +89,14 @@ class PropertyDetails
 
             <!-- TAB: Basis -->
             <div id="tab-basis" class="dbw-tab-content active">
+                <div class="dbw-field-row" style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; border-left: 4px solid #0073aa; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="_dbw_immo_is_highlight" value="1" <?php checked('1', $val('_dbw_immo_is_highlight')); ?>>
+                        <strong><?php _e('🌟 Als Highlight markieren', 'dbw-immo-suite'); ?></strong>
+                    </label>
+                    <p class="description" style="margin-top: 5px; margin-left: 24px; font-weight: normal;"><?php _e('Diese Immobilie im "Immobilien Grid" Block als Highlight priorisiert hervorheben.', 'dbw-immo-suite'); ?></p>
+                </div>
+
                 <div class="dbw-field-row">
                     <label><?php _e('OpenImmo ID (Objekt-Nr.)', 'dbw-immo-suite'); ?></label>
                     <input type="text" name="openimmo_id" value="<?php echo $val('openimmo_id'); ?>" readonly style="background:#f9f9f9; color:#777;">
@@ -128,6 +136,14 @@ class PropertyDetails
                 <div class="dbw-field-row">
                     <label><?php _e('Hausgeld', 'dbw-immo-suite'); ?></label>
                     <input type="number" step="0.01" name="hausgeld" value="<?php echo $val('hausgeld'); ?>"> €
+                </div>
+                 <div class="dbw-field-row">
+                    <label><?php _e('Nebenkosten', 'dbw-immo-suite'); ?></label>
+                    <input type="number" step="0.01" name="nebenkosten" value="<?php echo $val('nebenkosten'); ?>"> €
+                </div>
+                 <div class="dbw-field-row">
+                    <label><?php _e('Käuferprovision (inkl. Text)', 'dbw-immo-suite'); ?></label>
+                    <input type="text" name="provision_kaeufer" value="<?php echo $val('provision_kaeufer'); ?>" placeholder="z.B. 3,57% inkl. MwSt.">
                 </div>
             </div>
 
@@ -243,7 +259,7 @@ class PropertyDetails
         // List of allowed fields to save
         $fields = [
             'openimmo_id', 'strasse', 'hausnummer', 'plz', 'ort', 'geo_breite', 'geo_laenge',
-            'kaufpreis', 'kaltmiete', 'warmmiete', 'hausgeld',
+            'kaufpreis', 'kaltmiete', 'warmmiete', 'hausgeld', 'nebenkosten', 'provision_kaeufer',
             'wohnflaeche', 'nutzflaeche', 'grundstuecksflaeche', 'anzahl_zimmer', 'anzahl_schlafzimmer', 'anzahl_badezimmer',
             'energiepass_baujahr', 'zustand_art', 'energiepass_art', 'energiepass_endenergie', 'energiepass_wertklasse',
             'kontaktperson_vorname', 'kontaktperson_name', 'kontaktperson_firma', 'kontaktperson_email', 'kontaktperson_tel'
@@ -253,6 +269,13 @@ class PropertyDetails
             if (isset($_POST[$field])) {
                 update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
             }
+        }
+
+        // Handle Checkbox for Highlights (because un-checked checkboxes are not sent in $_POST)
+        if (isset($_POST['_dbw_immo_is_highlight'])) {
+            update_post_meta($post_id, '_dbw_immo_is_highlight', '1');
+        } else {
+            delete_post_meta($post_id, '_dbw_immo_is_highlight');
         }
     }
 }

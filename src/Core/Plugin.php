@@ -56,6 +56,7 @@ class Plugin
         $this->loader->add_action('wp_ajax_dbw_immo_run_import', $importer, 'ajax_run_import');
         $this->loader->add_action('wp_ajax_dbw_immo_prepare_import', $importer, 'ajax_prepare_import');
         $this->loader->add_action('wp_ajax_dbw_immo_process_batch', $importer, 'ajax_process_batch');
+        $this->loader->add_action('wp_ajax_dbw_immo_finalize_import', $importer, 'ajax_finalize_import');
 
         // Admin Assets
         $this->loader->add_action('admin_enqueue_scripts', $this, 'enqueue_admin_scripts');
@@ -127,6 +128,7 @@ class Plugin
         $this->loader->add_filter('block_categories_all', $this, 'register_block_categories', 10, 2);
 
         $this->loader->add_action('wp_enqueue_scripts', $this, 'enqueue_public_scripts');
+        $this->loader->add_action('enqueue_block_assets', $this, 'enqueue_block_assets');
 
         // Register custom block categories
         $this->loader->add_filter('block_categories_all', $this, 'register_block_categories', 10, 2);
@@ -140,6 +142,15 @@ class Plugin
         wp_enqueue_style('dbw-immo-frontend', DBW_IMMO_SUITE_URL . 'assets/css/frontend.css', array(), DBW_IMMO_SUITE_VERSION, 'all');
         wp_enqueue_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', array('jquery'), DBW_IMMO_SUITE_VERSION, true);
         wp_enqueue_script('dbw-immo-view-switch-js', DBW_IMMO_SUITE_URL . 'assets/js/view-switch.js', array(), DBW_IMMO_SUITE_VERSION, true);
+    }
+
+    /**
+     * Enqueue assets for blocks (both frontend AND editor)
+     */
+    public function enqueue_block_assets()
+    {
+        // Enqueuing the CSS on 'enqueue_block_assets' loads it for both the frontend AND the editor.
+        wp_enqueue_style('dbw-immo-frontend', DBW_IMMO_SUITE_URL . 'assets/css/frontend.css', array(), filemtime(DBW_IMMO_SUITE_PATH . 'assets/css/frontend.css'), 'all');
     }
 
     /**

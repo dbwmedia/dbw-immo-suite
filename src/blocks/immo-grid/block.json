@@ -33,6 +33,10 @@
         "showDate": {
             "type": "boolean",
             "default": false
+        },
+        "onlyHighlights": {
+            "type": "boolean",
+            "default": false
         }
     }
 }

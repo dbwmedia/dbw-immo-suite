@@ -18,6 +18,7 @@
    ========================================= */
 #dbw-immo-suite {
 	box-sizing: border-box;
+	padding-top: 6rem;
 }
 
 #dbw-immo-suite *,
@@ -253,14 +254,13 @@
 }
 
 #dbw-immo-suite .dbw-property-card:hover .dbw-meta-icon {
-	background: #eef2f7;
-	color: var(--dbw-accent);
+	background: #f0f2f5;
+	color: var(--dbw-primary);
 }
 
 #dbw-immo-suite .dbw-meta-icon svg {
 	width: 20px;
 	height: 20px;
-	fill: currentColor;
 }
 
 #dbw-immo-suite .dbw-meta-data {
@@ -428,6 +428,7 @@
 	display: grid;
 	grid-template-columns: 2fr 1fr;
 	gap: 3rem;
+	align-items: start;
 }
 
 #dbw-immo-suite .dbw-section {
@@ -460,8 +461,6 @@
 	border-radius: var(--dbw-radius);
 	box-shadow: var(--dbw-shadow);
 	border: 1px solid #eee;
-	position: sticky;
-	top: 2rem;
 }
 
 @media (max-width: 768px) {
@@ -1025,4 +1024,141 @@
 	background: var(--dbw-primary);
 	color: white;
 	border-color: var(--dbw-primary);
+}
+
+/* ==========================================================================
+   Print Styles (Exposé Layout)
+   ========================================================================== */
+@media print {
+
+	/* 1. Hide Website Chrome & Unnecessary Elements */
+	header,
+	footer,
+	nav,
+	.site-header,
+	.site-footer,
+	#masthead,
+	#colophon,
+	.dbw-gallery-btn,
+	.dbw-energy-scale-wrapper,
+	iframe,
+	.wpadminbar {
+		display: none !important;
+	}
+
+	/* 2. Reset Page Background & Margins */
+	body,
+	html,
+	#page,
+	.site-main {
+		background: #fff !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100% !important;
+	}
+
+	@page {
+		margin: 1.5cm;
+		size: A4 portrait;
+	}
+
+	/* 3. Reformat the Main Container */
+	#dbw-immo-suite {
+		width: 100% !important;
+		max-width: none !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	/* 4. Transform Gallery Slider into a Grid (First image big, rest small) */
+	.dbw-gallery-wrapper {
+		margin-bottom: 2cm !important;
+	}
+
+	.dbw-gallery-slider {
+		display: block !important;
+		height: auto !important;
+		overflow: visible !important;
+		box-shadow: none !important;
+	}
+
+	.dbw-gallery-slide {
+		page-break-inside: avoid;
+		margin-bottom: 1rem;
+	}
+
+	/* Make the very first image the main cover */
+	.dbw-gallery-slide:first-child {
+		height: 15cm !important;
+		margin-bottom: 2rem !important;
+	}
+
+	.dbw-gallery-slide:not(:first-child) {
+		display: inline-block !important;
+		width: 48% !important;
+		height: 6cm !important;
+		margin-right: 2% !important;
+		vertical-align: top;
+	}
+
+	.dbw-gallery-slide:nth-child(even):not(:first-child) {
+		margin-right: 0 !important;
+	}
+
+	/* 5. Linear Layout instead of Sidebar Grid */
+	.dbw-single-grid {
+		display: block !important;
+		/* Stack everything vertically */
+	}
+
+	.dbw-content-area {
+		width: 100% !important;
+	}
+
+	.dbw-sidebar {
+		width: 100% !important;
+		margin-top: 2rem !important;
+		position: static !important;
+		/* Remove sticky */
+	}
+
+	/* 6. Typography & Box styling for print */
+	body {
+		font-size: 12pt !important;
+		color: #000 !important;
+	}
+
+	.dbw-single-title {
+		font-size: 24pt !important;
+		page-break-after: avoid;
+	}
+
+	.dbw-section {
+		page-break-inside: avoid;
+		border: 1px solid #ccc !important;
+		padding: 1.5rem !important;
+		margin-bottom: 1.5rem !important;
+		box-shadow: none !important;
+	}
+
+	.dbw-highlights-card,
+	.dbw-agent-card {
+		box-shadow: none !important;
+		border: 1px solid #ccc !important;
+		page-break-inside: avoid;
+		background: #fff !important;
+		color: #000 !important;
+	}
+
+	/* Ensure all text inside highlights is printable */
+	.dbw-highlights-card * {
+		color: #000 !important;
+	}
+
+	/* Force colors to print correctly (Energy badges, Highlights background) */
+	* {
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
+		color-adjust: exact !important;
+	}
 }

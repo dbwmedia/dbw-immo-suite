@@ -1,33 +1,8 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
 import { __ } from '@wordpress/i18n';
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-
-/**
- * Validates the allowed types of children.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-components/
- */
 import { PanelBody, ToggleControl, RangeControl, CheckboxControl } from '@wordpress/components';
+import ServerSideRender from '@wordpress/server-side-render';
 
-/**
- * The edit function describes the structure of your block in the context of the editor.
- * This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {WPElement} Element to render.
- */
 export default function Edit({ attributes, setAttributes }) {
     const { status, hidePrice, showDate, postsPerPage } = attributes;
 
@@ -85,15 +60,11 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div className="models-preview-placeholder">
-                <div className="components-placeholder__label">{__('DBW Immo Referenzen', 'dbw-immo-suite')}</div>
-                <div className="components-placeholder__fieldset">
-                    <p>{__('Vorschau der Referenz-Objekte', 'dbw-immo-suite')}</p>
-                    <ul>
-                        <li>Status: {status.join(', ')}</li>
-                        <li>Anzahl: {postsPerPage}</li>
-                    </ul>
-                </div>
+            <div id="dbw-immo-suite">
+                <ServerSideRender
+                    block="dbw/immo-references"
+                    attributes={attributes}
+                />
             </div>
         </div>
     );

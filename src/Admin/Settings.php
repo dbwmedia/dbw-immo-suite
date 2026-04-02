@@ -91,6 +91,14 @@ class Settings
 			'setting_section_id'
 		);
 
+		add_settings_field(
+			'enable_garbage_collection',
+			__('Garbage Collection (Full Sync)', 'dbw-immo-suite'),
+			array($this, 'enable_garbage_collection_callback'),
+			'dbw-immo-suite-settings',
+			'setting_section_id'
+		);
+
 		// -- Reference Section --
 		add_settings_section(
 			'reference_section_id',
@@ -165,6 +173,7 @@ class Settings
 		if (isset($input['cpt_slug'])) {
 			$new_input['cpt_slug'] = sanitize_title($input['cpt_slug']);
 		}
+		$new_input['enable_garbage_collection'] = isset($input['enable_garbage_collection']) ? 1 : 0;
 
 		// Reference Settings
 		$new_input['enable_references'] = isset($input['enable_references']) ? 1 : 0;
@@ -227,6 +236,11 @@ class Settings
 			esc_attr($val)
 		);
 		echo '<p class="description">' . __('Relativer Pfad vom WordPress-Root (z.B. "openimmo") oder absoluter Server-Pfad.', 'dbw-immo-suite') . '</p>';
+	}
+
+	public function enable_garbage_collection_callback()
+	{
+		$this->checkbox_callback('enable_garbage_collection', '<br>WICHTIG: Nur aktivieren, wenn Ihre Maklersoftware immer den <b>kompletten Bestand</b> (Full Sync) überträgt! Fehlt ein Objekt in der ZIP, wird es andernfalls archiviert.');
 	}
 
 	// -- Reference Callbacks --

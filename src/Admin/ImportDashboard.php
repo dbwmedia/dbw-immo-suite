@@ -88,7 +88,25 @@ class ImportDashboard
                         foreach ($history as $entry) : 
                             if ($count >= 20) break;
                             $count++;
-                            $status_color = ($entry['status'] === 'success') ? '#46b450' : '#dc3232';
+                            
+                            $status_color = '';
+                            $status_text = '';
+                            
+                            switch ($entry['status']) {
+                                case 'success':
+                                    $status_color = '#46b450';
+                                    $status_text = 'OK';
+                                    break;
+                                case 'skipped':
+                                    $status_color = '#2271b1';
+                                    $status_text = 'Übersprungen';
+                                    break;
+                                case 'error':
+                                default:
+                                    $status_color = '#dc3232';
+                                    $status_text = 'Fehler';
+                                    break;
+                            }
                         ?>
                         <tr>
                             <td><?php echo esc_html($entry['date']); ?></td>
@@ -97,7 +115,7 @@ class ImportDashboard
                             <td><?php echo esc_html($entry['updated']); ?></td>
                             <td><?php echo esc_html($entry['errors']); ?></td>
                             <td style="color: <?php echo $status_color; ?>; font-weight: bold;">
-                                <?php echo ($entry['status'] === 'success') ? 'OK' : 'Fehler'; ?>
+                                <?php echo esc_html($status_text); ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

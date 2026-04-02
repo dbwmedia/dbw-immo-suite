@@ -10,7 +10,6 @@ import { registerBlockType } from '@wordpress/blocks';
  * All files containing `style` keyword are bundled together. The code used
  * gets applied to the front of your site.
  */
-import './editor.scss';
 
 /**
  * Internal dependencies

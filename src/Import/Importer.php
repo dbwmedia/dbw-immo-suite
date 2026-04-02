@@ -15,6 +15,12 @@ class Importer
     private $current_xml_file;
 
     /**
+     * IDs of properties processed in the current run (for GC).
+     * @var array
+     */
+    private $processed_openimmo_ids = array();
+
+    /**
      * Run the import process.
      *
      * @return array Result stats.
@@ -26,8 +32,8 @@ class Importer
             return array('success' => false, 'message' => 'Import läuft bereits. Bitte warten.');
         }
 
-        // 2. Set Lock (expires in 10 mins security fallback)
-        set_transient('dbw_immo_import_lock', time(), 600);
+        // 2. Set Lock (expires in 5 mins security fallback)
+        set_transient('dbw_immo_import_lock', time(), 300);
 
         $this->log_debug('--- Starte Import ---');
 
@@ -59,39 +65,107 @@ class Importer
                 throw new \Exception('Kein gültiges Import-Verzeichnis: ' . $xml_path);
             }
 
-            // ZIP Extraction
-            $zips = glob($xml_path . '*.zip');
-            if (!empty($zips)) {
-                foreach ($zips as $zip_file) {
-                    $this->extract_zip($zip_file, $xml_path);
-                }
-            }
-
-            // XML Search
-            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
-            $xml_files = array();
-            foreach ($files as $file) {
-                if ($file->isFile() && strtolower($file->getExtension()) === 'xml') {
-                    $xml_files[] = $file->getPathname();
-                }
-            }
-
-            if (empty($xml_files)) {
-                throw new \Exception('Keine XML-Dateien gefunden in: ' . $xml_path);
-            }
-
             $stats = array(
                 'created' => 0,
                 'updated' => 0,
                 'errors' => 0,
             );
 
-            // Process Files
-            foreach ($xml_files as $file) {
-                $this->process_file($file, $stats);
+            $xmls_processed = 0;
 
-                // Add to History
-                $this->log_history($file, $stats, 'success');
+            // ZIP Processing
+            $zips = glob($xml_path . '*.zip');
+            if (!empty($zips)) {
+                foreach ($zips as $zip_file) {
+                    $temp_dir = $xml_path . 'tmp_' . uniqid() . '/';
+
+                    $zip = new \ZipArchive;
+                    if ($zip->open($zip_file) === TRUE) {
+                        mkdir($temp_dir, 0755, true);
+                        $zip->extractTo($temp_dir);
+                        $zip->close();
+
+                        // Find XMLs inside temp_dir
+                        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($temp_dir));
+                        $temp_xmls = array();
+                        foreach ($files as $file) {
+                            if ($file->isFile() && strtolower($file->getExtension()) === 'xml') {
+                                $temp_xmls[] = $file->getPathname();
+                            }
+                        }
+
+                        if (!empty($temp_xmls)) {
+                            // Idempotency: Hashing XMLs
+                            $hash = '';
+                            foreach ($temp_xmls as $xf) {
+                                $hash .= md5_file($xf);
+                            }
+                            $hash = md5($hash);
+
+                            $last_hash = get_option('dbw_immo_last_xml_hash_' . basename($zip_file), '');
+
+                            if ($hash === $last_hash && !empty($hash)) {
+                                $this->log_debug('ZIP übersprungen (XML Hash identisch): ' . basename($zip_file));
+                                $this->delete_directory($temp_dir);
+                                rename($zip_file, $zip_file . '.skipped');
+
+                                // NEW: Log skipped explicitly in history array
+                                $this->log_history($zip_file, array('created' => 0, 'updated' => 0, 'errors' => 0), 'skipped');
+
+                                continue;
+                            }
+
+                            // Process XMLs
+                            foreach ($temp_xmls as $file) {
+                                $this->process_file($file, $stats);
+                                $this->log_history($file, $stats, 'success');
+                                $xmls_processed++;
+                            }
+
+                            update_option('dbw_immo_last_xml_hash_' . basename($zip_file), $hash);
+                        }
+                        else {
+                            $this->log_debug('Keine XML in ZIP gefunden: ' . basename($zip_file));
+                        }
+
+                        // Cleanup temp dir and rename ZIP
+                        $this->delete_directory($temp_dir);
+                        rename($zip_file, $zip_file . '.processed');
+                        $this->log_debug('ZIP erfolgreich verarbeitet: ' . basename($zip_file));
+                    }
+                }
+            }
+
+            // Loose XML Processing (Fallback)
+            $loose_files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
+            $xml_files = array();
+            foreach ($loose_files as $file) {
+                // Ignore contents of tmp_ directories and .processed files
+                if ($file->isFile() && strtolower($file->getExtension()) === 'xml' && strpos($file->getPathname(), '/tmp_') === false) {
+                    $xml_files[] = $file->getPathname();
+                }
+            }
+
+            if (!empty($xml_files)) {
+                foreach ($xml_files as $file) {
+                    $this->process_file($file, $stats);
+                    $this->log_history($file, $stats, 'success');
+                    $xmls_processed++;
+
+                    // Rename XML file to prevent hour-by-hour reimports
+                    rename($file, $file . '.processed');
+                    $this->log_debug('Lose XML-Datei archiviert: ' . basename($file));
+                }
+            }
+            else if (empty($zips)) {
+                // Nur werfen, wenn gar keine Dateien da waren
+                // Optional message
+                $this->log_debug('Keine neuen Import-Dateien gefunden.');
+            }
+
+            // Garbage Collection
+            if ($xmls_processed > 0 && !empty($options['enable_garbage_collection'])) {
+                $this->run_garbage_collection();
             }
 
             // Release Lock
@@ -224,6 +298,17 @@ class Importer
 
         $existing_id = $this->get_property_by_openimmo_id($openimmo_id);
 
+        $this->processed_openimmo_ids[] = $openimmo_id; // Add to tracked IDs for GC
+
+        // If in batch mode, track in transient
+        $batch_ids = get_transient('dbw_immo_batch_processed_ids');
+        if (is_array($batch_ids)) {
+            if (!in_array($openimmo_id, $batch_ids)) {
+                $batch_ids[] = $openimmo_id;
+                set_transient('dbw_immo_batch_processed_ids', $batch_ids, 3600);
+            }
+        }
+
         // HANDLE DELETION
         if ($action_type === 'DELETE' || $action_type === 'LÖSCHEN' || $action_type === 'LOESCHEN') {
             if ($existing_id) {
@@ -299,10 +384,16 @@ class Importer
             $kaufpreis = (string)$xml->preise->kaufpreis;
             $kaltmiete = (string)$xml->preise->kaltmiete;
             $warmmiete = (string)$xml->preise->warmmiete;
+            $hausgeld = (string)$xml->preise->hausgeld;
+            $nebenkosten = (string)$xml->preise->nebenkosten;
+            $provision_kaeufer = (string)$xml->preise->aussen_courtage;
 
             update_post_meta($post_id, 'kaufpreis', $kaufpreis);
             update_post_meta($post_id, 'kaltmiete', $kaltmiete);
             update_post_meta($post_id, 'warmmiete', $warmmiete);
+            update_post_meta($post_id, 'hausgeld', $hausgeld);
+            update_post_meta($post_id, 'nebenkosten', $nebenkosten);
+            update_post_meta($post_id, 'provision_kaeufer', $provision_kaeufer);
 
             // Set Marketing Type Taxonomy
             $marketing_terms = array();
@@ -488,50 +579,78 @@ class Importer
      */
     private function process_attachments($post_id, $xml, $base_path)
     {
-        if (!isset($xml->anhaenge) || !isset($xml->anhaenge->anhang)) {
-            return;
+        $valid_filenames = array();
+
+        if (isset($xml->anhaenge) && isset($xml->anhaenge->anhang)) {
+            $menu_order = 0;
+            foreach ($xml->anhaenge->anhang as $anhang) {
+                $file_name = (string)$anhang->daten->pfad;
+                $group = (string)$anhang->attributes()->gruppe; // TITELBILD, BILD, GRUNDRISS
+                $title = (string)$anhang->anhangtitel;
+
+                if (empty($file_name)) {
+                    continue;
+                }
+
+                $valid_filenames[] = $file_name;
+
+                $att_id = $this->upload_image($file_name, $base_path, $post_id);
+
+                if (!is_wp_error($att_id) && $att_id) {
+                    // Save OpenImmo specific meta
+                    update_post_meta($att_id, '_openimmo_gruppe', $group);
+                    update_post_meta($att_id, '_openimmo_titel', $title);
+
+                    // Update Attachment post for title/alt/caption/order
+                    $att_update = array(
+                        'ID' => $att_id,
+                        'post_title' => $title ? $title : basename($file_name),
+                        'post_excerpt' => $title, // Caption
+                        'menu_order' => $menu_order
+                    );
+                    wp_update_post($att_update);
+
+                    // Update Alt Text
+                    if ($title) {
+                        update_post_meta($att_id, '_wp_attachment_image_alt', $title);
+                    }
+
+                    // Set Featured Image (TITELBILD takes precedence, otherwise first found)
+                    if ($group === 'TITELBILD') {
+                        set_post_thumbnail($post_id, $att_id);
+                    }
+                    elseif (!has_post_thumbnail($post_id) && $group !== 'GRUNDRISS') {
+                        set_post_thumbnail($post_id, $att_id);
+                    }
+                }
+                $menu_order++;
+            }
         }
 
-        $menu_order = 0;
-        foreach ($xml->anhaenge->anhang as $anhang) {
-            $file_name = (string)$anhang->daten->pfad;
-            $group = (string)$anhang->attributes()->gruppe; // TITELBILD, BILD, GRUNDRISS
-            $title = (string)$anhang->anhangtitel;
+        // Orphan Cleanup: Delete legacy attachments that are no longer in this XML sync
+        $existing_atts = new \WP_Query(array(
+            'post_type' => 'attachment',
+            'post_parent' => $post_id,
+            'post_status' => 'any',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'meta_query' => array(
+                    array(
+                    'key' => '_openimmo_filename',
+                    'compare' => 'EXISTS'
+                )
+            )
+        ));
 
-            if (empty($file_name)) {
-                continue;
-            }
-
-            $att_id = $this->upload_image($file_name, $base_path, $post_id);
-
-            if (!is_wp_error($att_id) && $att_id) {
-                // Save OpenImmo specific meta
-                update_post_meta($att_id, '_openimmo_gruppe', $group);
-                update_post_meta($att_id, '_openimmo_titel', $title);
-
-                // Update Attachment post for title/alt/caption/order
-                $att_update = array(
-                    'ID' => $att_id,
-                    'post_title' => $title ? $title : basename($file_name),
-                    'post_excerpt' => $title, // Caption
-                    'menu_order' => $menu_order
-                );
-                wp_update_post($att_update);
-
-                // Update Alt Text
-                if ($title) {
-                    update_post_meta($att_id, '_wp_attachment_image_alt', $title);
-                }
-
-                // Set Featured Image (TITELBILD takes precedence, otherwise first found)
-                if ($group === 'TITELBILD') {
-                    set_post_thumbnail($post_id, $att_id);
-                }
-                elseif (!has_post_thumbnail($post_id) && $group !== 'GRUNDRISS') {
-                    set_post_thumbnail($post_id, $att_id);
+        if ($existing_atts->have_posts()) {
+            foreach ($existing_atts->posts as $att_id) {
+                $filename = get_post_meta($att_id, '_openimmo_filename', true);
+                if (!empty($filename) && !in_array($filename, $valid_filenames)) {
+                    // This attachment is no longer in the XML -> Delete it
+                    wp_delete_attachment($att_id, true);
+                    $this->log_debug("Altes Bild gelöscht (Post ID $post_id): $filename");
                 }
             }
-            $menu_order++;
         }
     }
 
@@ -662,28 +781,69 @@ class Importer
             if (!is_dir($xml_path))
                 wp_send_json_error('Verzeichnis existiert nicht: ' . $xml_path);
 
-            // 2. Extract ZIPs
+            // 2. Extract ZIPs & Check Hashes
             $zips = glob($xml_path . '*.zip');
+            $active_zips = array();
+
             if (!empty($zips)) {
                 foreach ($zips as $zip_file) {
-                    $this->extract_zip($zip_file, $xml_path);
+                    $temp_dir = $xml_path . 'tmp_' . uniqid() . '/';
+                    $zip = new \ZipArchive;
+                    if ($zip->open($zip_file) === TRUE) {
+                        mkdir($temp_dir, 0755, true);
+                        $zip->extractTo($temp_dir);
+                        $zip->close();
+
+                        // Check MD5 Hash
+                        $temp_xmls = glob($temp_dir . '*.xml');
+                        if (!empty($temp_xmls)) {
+                            $hash = '';
+                            foreach ($temp_xmls as $xml_file) {
+                                $hash .= md5_file($xml_file);
+                            }
+                            $hash = md5($hash);
+                            $last_hash = get_option('dbw_immo_last_xml_hash_' . basename($zip_file), '');
+
+                            if ($hash === $last_hash && !empty($hash)) {
+                                $this->log_debug('ZIP übersprungen (XML Hash identisch): ' . basename($zip_file));
+                                $this->delete_directory($temp_dir);
+                                rename($zip_file, $zip_file . '.skipped');
+                                $this->log_history($zip_file, array('created' => 0, 'updated' => 0, 'errors' => 0), 'skipped');
+                                continue;
+                            }
+
+                            $active_zips[] = array(
+                                'file' => $zip_file,
+                                'temp_dir' => $temp_dir,
+                                'hash' => $hash,
+                                'xmls' => $temp_xmls
+                            );
+                        }
+                    }
                 }
             }
 
-            // 3. Find XMLs
-            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
+            // Save active ZIPs for cleanup phase
+            if (!empty($active_zips)) {
+                set_transient('dbw_immo_batch_zips', $active_zips, 3600);
+            }
+
+            // Allow garbage collection to track across batches
+            set_transient('dbw_immo_batch_processed_ids', array(), 3600);
+
+            // 3. Collect XML files for JS queue
             $xml_files_data = array();
 
-            foreach ($files as $file) {
-                if ($file->isFile() && strtolower($file->getExtension()) === 'xml') {
-                    // Count properties
+            // a) From active ZIPs
+            foreach ($active_zips as $az) {
+                foreach ($az['xmls'] as $xml_file) {
                     libxml_use_internal_errors(true);
-                    $xml = @simplexml_load_file($file->getPathname());
+                    $xml = @simplexml_load_file($xml_file);
                     if ($xml && isset($xml->anbieter->immobilie)) {
                         $count = count($xml->anbieter->immobilie);
                         if ($count > 0) {
                             $xml_files_data[] = array(
-                                'file' => $file->getPathname(),
+                                'file' => $xml_file,
                                 'count' => $count
                             );
                         }
@@ -691,8 +851,31 @@ class Importer
                 }
             }
 
-            if (empty($xml_files_data))
-                wp_send_json_error('Keine gültigen OpenImmo XML-Dateien gefunden in: ' . $xml_path);
+            // b) From loose XML files
+            $loose_files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($xml_path));
+            foreach ($loose_files as $file) {
+                if ($file->isFile() && strtolower($file->getExtension()) === 'xml' && strpos($file->getPathname(), '/tmp_') === false) {
+                    libxml_use_internal_errors(true);
+                    $xml = @simplexml_load_file($file->getPathname());
+                    if ($xml && isset($xml->anbieter->immobilie)) {
+                        $count = count($xml->anbieter->immobilie);
+                        if ($count > 0) {
+                            $xml_files_data[] = array(
+                                'file' => $file->getPathname(),
+                                'count' => $count,
+                                'loose' => true
+                            );
+                        }
+                    }
+                }
+            }
+
+            if (empty($xml_files_data)) {
+                wp_send_json_success(array(
+                    'files' => array(),
+                    'message' => 'Analyse beendet. Keine Verarbeitung notwendig (Dateien unverändert oder nicht lesbar).'
+                ));
+            }
 
             wp_send_json_success(array(
                 'files' => $xml_files_data,
@@ -749,6 +932,58 @@ class Importer
     }
 
     /**
+     * AJAX: Finalize Import (Step 3)
+     */
+    public function ajax_finalize_import()
+    {
+        try {
+            if (!current_user_can('manage_options'))
+                wp_send_json_error('Keine Berechtigung');
+
+            // 1. Cleanup ZIPs
+            $active_zips = get_transient('dbw_immo_batch_zips');
+            if (is_array($active_zips)) {
+                foreach ($active_zips as $az) {
+                    update_option('dbw_immo_last_xml_hash_' . basename($az['file']), $az['hash']);
+                    $this->delete_directory($az['temp_dir']);
+                    rename($az['file'], $az['file'] . '.processed');
+                    $this->log_debug('ZIP erfolgreich verarbeitet: ' . basename($az['file']));
+                    $this->log_history($az['file'], array('created' => 0, 'updated' => 0, 'errors' => 0), 'success'); // Basic logging for manual
+                }
+                delete_transient('dbw_immo_batch_zips');
+            }
+
+            // 2. Cleanup Loose XMLs passed from UI
+            $loose_files = isset($_POST['loose_files']) ? $_POST['loose_files'] : array();
+            if (is_array($loose_files) && !empty($loose_files)) {
+                foreach ($loose_files as $lf) {
+                    if (file_exists($lf)) {
+                        rename($lf, $lf . '.processed');
+                        $this->log_debug('Lose XML-Datei archiviert: ' . basename($lf));
+                    }
+                }
+            }
+
+            // 3. Garbage Collection
+            $options = get_option('dbw_immo_suite_settings');
+            if (!empty($options['enable_garbage_collection'])) {
+                $batch_ids = get_transient('dbw_immo_batch_processed_ids');
+                if (is_array($batch_ids) && !empty($batch_ids)) {
+                    // Populate instance variable for the GC run
+                    $this->processed_openimmo_ids = $batch_ids;
+                    $this->run_garbage_collection();
+                }
+            }
+            delete_transient('dbw_immo_batch_processed_ids');
+
+            wp_send_json_success('Import und Cleanup erfolgreich abgeschlossen.');
+        }
+        catch (\Throwable $e) {
+            wp_send_json_error('Fehler bei Cleanup: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * AJAX Handler for triggering import.
      */
     public function ajax_run_import()
@@ -780,5 +1015,75 @@ class Importer
         $entry = date('Y-m-d H:i:s') . ' - ' . $msg . PHP_EOL;
         // Simple file append
         @file_put_contents($log_file, $entry, FILE_APPEND);
+    }
+
+    /**
+     * Recursively delete a directory.
+     * 
+     * @param string $dir
+     * @return bool
+     */
+    private function delete_directory($dir)
+    {
+        if (!file_exists($dir)) {
+            return true;
+        }
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+            if (!$this->delete_directory($dir . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+        }
+        return rmdir($dir);
+    }
+
+    /**
+     * Garbage Collection.
+     * Archives all properties that were not in the current Full Sync.
+     */
+    private function run_garbage_collection()
+    {
+        $all_properties = new \WP_Query(array(
+            'post_type' => 'immobilie',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'meta_query' => array(
+                    array(
+                    'key' => 'openimmo_id',
+                    'compare' => 'EXISTS'
+                )
+            )
+        ));
+
+        $archived_count = 0;
+
+        if ($all_properties->have_posts()) {
+            foreach ($all_properties->posts as $post_id) {
+                $oid = get_post_meta($post_id, 'openimmo_id', true);
+                if (!empty($oid) && !in_array($oid, $this->processed_openimmo_ids)) {
+                    // Not in the feed -> Archive it
+                    $update_data = array(
+                        'ID' => $post_id,
+                        'post_status' => 'draft'
+                    );
+                    wp_update_post($update_data);
+
+                    update_post_meta($post_id, '_dbw_immo_status', 'archiviert');
+
+                    $this->log_debug("Garbage Collection: Immobilie $oid ($post_id) archiviert, da nicht mehr im Feed.");
+                    $archived_count++;
+                }
+            }
+        }
+
+        if ($archived_count > 0) {
+            $this->log_debug("Garbage Collection abgeschlossen: $archived_count Objekte archiviert.");
+        }
     }
 }

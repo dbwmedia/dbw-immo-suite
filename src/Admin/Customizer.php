@@ -95,6 +95,7 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_area', true, __('Wohnfläche anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_rooms', true, __('Zimmer anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price', true, __('Preis anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_energy_class', true, __('Energieklasse (Flag) anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
 
 
         // 4. Section: Detailseite (Single)
@@ -108,6 +109,34 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_energy', true, __('Energieausweis anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_gallery', false, __('Galerie-Modul anzeigen (Beta)', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_contact', true, __('Kontaktbox anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_share', true, __('Teilen-Button im Slider anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_print', true, __('Drucken-Button im Slider anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_similar', true, __('Ähnliche Objekte anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+
+        // Highlights Box
+        $wp_customize->add_setting('dbw_immo_highlights_bg_style', array(
+            'default' => 'primary',
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control('dbw_immo_highlights_bg_style', array(
+            'label' => __('Highlights-Box Hintergrund', 'dbw-immo-suite'),
+            'section' => 'dbw_immo_single_section',
+            'type' => 'select',
+            'choices' => array(
+                'primary' => __('Primärfarbe', 'dbw-immo-suite'),
+                'accent' => __('Akzentfarbe', 'dbw-immo-suite')
+            ),
+        ));
+
+        $wp_customize->add_setting('dbw_immo_highlights_text_color', array(
+            'default' => '#ffffff',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ));
+        $wp_customize->add_control(new \WP_Customize_Color_Control($wp_customize, 'dbw_immo_highlights_text_color', array(
+            'label' => __('Highlights-Box Textfarbe', 'dbw-immo-suite'),
+            'section' => 'dbw_immo_single_section',
+        )));
 
         // Text Labels
         $wp_customize->add_setting('dbw_immo_expose_btn_text', array(

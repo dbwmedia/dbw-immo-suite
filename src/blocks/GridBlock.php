@@ -79,9 +79,11 @@ class GridBlock
         // Meta Query to exclude sold items by default from regular grid?
         // Let's exclude "referenz" and "verkauft" using the global setting if necessary, 
         // or just outright from the active listing block.
+        $meta_query = array('relation' => 'AND'); // Default to AND if we add multiple constraints
+
         $settings = get_option('dbw_immo_suite_settings');
         if (isset($settings['filter_sold_from_main']) && $settings['filter_sold_from_main']) {
-            $args['meta_query'] = array(
+            $meta_query[] = array(
                 'relation' => 'OR',
                 array(
                     'key'     => '_dbw_immo_status',
@@ -95,6 +97,18 @@ class GridBlock
             );
         }
 
+        if (isset($attributes['onlyHighlights']) && $attributes['onlyHighlights']) {
+             $meta_query[] = array(
+                'key'     => '_dbw_immo_is_highlight',
+                'value'   => '1',
+                'compare' => '='
+             );
+        }
+
+        if (count($meta_query) > 1) { // More than just 'relation' => 'AND'
+             $args['meta_query'] = $meta_query;
+        }
+
         $query = new \WP_Query($args);
 
         ob_start();
@@ -104,6 +118,7 @@ class GridBlock
             // Required for rendering tags properly using our filter
             $has_filter = class_exists('\DBW\ImmoSuite\Frontend\Filter');
 
+            echo '<div id="dbw-immo-suite">';
             echo '<div class="dbw-immo-suite-block dbw-immo-grid-block">'; // Generic wrapper
             echo '<div class="dbw-property-grid">';
             
@@ -214,6 +229,7 @@ class GridBlock
             }
 
             echo '</div>'; // block container
+            echo '</div>'; // #dbw-immo-suite
             
         } else {
             if (is_admin()) {

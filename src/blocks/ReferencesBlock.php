@@ -64,6 +64,7 @@ class ReferencesBlock
         ob_start();
         
         if ($query->have_posts()) {
+            echo '<div id="dbw-immo-suite">';
             echo '<div class="dbw-immo-references-block">';
             echo '<div class="dbw-property-grid">';
             
@@ -93,6 +94,7 @@ class ReferencesBlock
             }
 
             echo '</div>'; // block container
+            echo '</div>'; // #dbw-immo-suite
             
         } else {
             if (is_admin()) {

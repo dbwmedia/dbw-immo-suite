@@ -2,9 +2,10 @@ import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, RangeControl, SelectControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { postsPerPage, marketing, propertyType, hidePrice, showDate } = attributes;
+    const { postsPerPage, marketing, propertyType, hidePrice, showDate, onlyHighlights } = attributes;
     const blockProps = useBlockProps();
 
     // Fetch tax terms for the editor dynamically
@@ -58,6 +59,12 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
                 <PanelBody title={__('Filter', 'dbw-immo-suite')} initialOpen={true}>
                     <p className="components-base-control__help">{__('Nur Immobilien anzeigen, die folgende Kriterien erfüllen:', 'dbw-immo-suite')}</p>
+                    <ToggleControl
+                        label={__('🌟 Nur Highlights anzeigen', 'dbw-immo-suite')}
+                        help={__('Zeigt nur Immobilien an, bei denen "Als Highlight markieren" gesetzt ist.', 'dbw-immo-suite')}
+                        checked={onlyHighlights}
+                        onChange={(value) => setAttributes({ onlyHighlights: value })}
+                    />
                     <SelectControl
                         label={__('Vermarktungsart', 'dbw-immo-suite')}
                         value={marketing}
@@ -73,16 +80,11 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div className="models-preview-placeholder">
-                <div className="components-placeholder__label">{__('DBW Immo Grid', 'dbw-immo-suite')}</div>
-                <div className="components-placeholder__fieldset">
-                    <p>{__('Vorschau in Entwicklung. Zeigt Immobilien an.', 'dbw-immo-suite')}</p>
-                    <ul>
-                        <li>Anzahl: {postsPerPage}</li>
-                        <li>Vermarktung: {marketing || 'Alle'}</li>
-                        <li>Typ: {propertyType || 'Alle'}</li>
-                    </ul>
-                </div>
+            <div id="dbw-immo-suite">
+                <ServerSideRender
+                    block="dbw/immo-grid"
+                    attributes={attributes}
+                />
             </div>
         </div>
     );

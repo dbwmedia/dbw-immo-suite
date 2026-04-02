@@ -655,7 +655,6 @@ get_header(); ?>
 						<a href="<?php the_permalink(); ?>" class="dbw-similar-card" style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s;">
 							<style>
 								.dbw-similar-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; color: inherit !important; }
-								.dbw-similar-card:hover .dbw-sim-img { transform: scale(1.05); }
 							</style>
 							<div style="height: 200px; overflow: hidden; position: relative;">
 								<div class="dbw-sim-img" style="width: 100%; height: 100%; background-color:#eaeaea; background-image: url('<?php echo esc_url($img_url); ?>'); background-size: cover; background-position: center; transition: transform 0.4s ease;"></div>

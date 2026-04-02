@@ -208,7 +208,8 @@ get_header(); ?>
 					</style>
 					<?php foreach ($gallery_images as $index => $img): ?>
 						<div class="dbw-gallery-slide" id="slide-<?php echo $index; ?>"
-							style="flex: 0 0 100%; scroll-snap-align: start; position: relative; background-color: #f0f0f0;">
+							style="flex: 0 0 100%; scroll-snap-align: start; position: relative; background-color: #f0f0f0; cursor: pointer;"
+							onclick="dbwLightbox.open('gallery', <?php echo $index; ?>)">
 							<img src="<?php echo esc_url($img['full']); ?>" alt="<?php echo esc_attr($img['alt']); ?>"
 								style="width: 100%; height: 100%; object-fit: cover; display: block;">
 							<?php if ($img['alt']): ?>
@@ -364,9 +365,9 @@ get_header(); ?>
 						<h3 class="dbw-section-title">Grundrisse</h3>
 						<div class="dbw-gallery-grid"
 							style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); height:auto; gap:1rem;">
-							<?php foreach ($floor_plans as $fp): ?>
-								<a href="<?php echo esc_url($fp['full']); ?>" target="_blank" class="dbw-gallery-item"
-									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd;"></a>
+							<?php foreach ($floor_plans as $fp_index => $fp): ?>
+								<div class="dbw-gallery-item" onclick="dbwLightbox.open('floorplan', <?php echo $fp_index; ?>)"
+									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd; cursor: pointer; border-radius: var(--dbw-radius, 8px); transition: box-shadow 0.2s;"></div>
 								<?php
 							endforeach; ?>
 						</div>
@@ -387,7 +388,7 @@ get_header(); ?>
 			</div>
 
 			<!-- Sidebar -->
-			<aside class="dbw-sidebar" style="position: sticky; top: 20px;">
+			<aside class="dbw-sidebar" style="position: sticky; top: 200px;">
 
 				<!-- Highligts Box -->
 				<?php
@@ -597,11 +598,11 @@ get_header(); ?>
 		$vermarktung = wp_get_post_terms(get_the_ID(), 'vermarktungsart', array('fields' => 'ids'));
 
 		$args = array(
-			'post_type'      => 'immobilie',
+			'post_type' => 'immobilie',
 			'posts_per_page' => 3,
-			'post__not_in'   => array(get_the_ID()), // Exclude current property
-			'orderby'        => 'rand',     // Random similar items, or date
-			'tax_query'      => array(
+			'post__not_in' => array(get_the_ID()), // Exclude current property
+			'orderby' => 'rand',     // Random similar items, or date
+			'tax_query' => array(
 				'relation' => 'AND',
 			)
 		);
@@ -609,18 +610,18 @@ get_header(); ?>
 		if (!empty($terms) && !is_wp_error($terms)) {
 			$args['tax_query'][] = array(
 				'taxonomy' => 'objektart',
-				'field'    => 'id',
-				'terms'    => $terms,
+				'field' => 'id',
+				'terms' => $terms,
 			);
 		}
 		if (!empty($vermarktung) && !is_wp_error($vermarktung)) {
 			$args['tax_query'][] = array(
 				'taxonomy' => 'vermarktungsart',
-				'field'    => 'id',
-				'terms'    => $vermarktung,
+				'field' => 'id',
+				'terms' => $vermarktung,
 			);
 		}
-		
+
 		// Fallback if tax_query is empty, remove it
 		if (count($args['tax_query']) === 1) {
 			unset($args['tax_query']);
@@ -630,19 +631,22 @@ get_header(); ?>
 
 		if ($similar_query->have_posts()) {
 			?>
-			<div class="dbw-similar-properties" style="margin: 4rem auto 2rem auto; border-top: 1px solid #eaeaea; font-family: inherit; padding-top: 3rem;">
-				<h3 class="dbw-section-title" style="margin-bottom: 2rem; font-size: 1.5rem;">Das könnte Sie auch interessieren</h3>
-				<div class="dbw-property-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+			<div class="dbw-similar-properties" style="margin: 4rem auto 2rem auto; font-family: inherit; padding-top: 3rem;">
+				<h3 class="dbw-section-title" style="margin-bottom: 2rem; font-size: 1.5rem;">Das könnte Sie auch interessieren
+				</h3>
+				<div class="dbw-property-grid"
+					style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
 					<?php
 					while ($similar_query->have_posts()) {
 						$similar_query->the_post();
 						$sim_id = get_the_ID();
 						$sim_price = get_post_meta($sim_id, 'kaufpreis', true);
-						if (!$sim_price) $sim_price = get_post_meta($sim_id, 'kaltmiete', true);
+						if (!$sim_price)
+							$sim_price = get_post_meta($sim_id, 'kaltmiete', true);
 						$sim_area = get_post_meta($sim_id, 'wohnflaeche', true);
 						$sim_rooms = get_post_meta($sim_id, 'anzahl_zimmer', true);
 						$sim_city = get_post_meta($sim_id, 'ort', true);
-						
+
 						$img_url = get_the_post_thumbnail_url($sim_id, 'large');
 						if (!$img_url) {
 							$images = get_attached_media('image', $sim_id);
@@ -652,36 +656,51 @@ get_header(); ?>
 							}
 						}
 						?>
-						<a href="<?php the_permalink(); ?>" class="dbw-similar-card" style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s;">
+						<a href="<?php the_permalink(); ?>" class="dbw-similar-card"
+							style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s;">
 							<style>
-								.dbw-similar-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; color: inherit !important; }
+								.dbw-similar-card:hover {
+									transform: translateY(-4px);
+									box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+									color: inherit !important;
+								}
 							</style>
 							<div style="height: 200px; overflow: hidden; position: relative;">
-								<div class="dbw-sim-img" style="width: 100%; height: 100%; background-color:#eaeaea; background-image: url('<?php echo esc_url($img_url); ?>'); background-size: cover; background-position: center; transition: transform 0.4s ease;"></div>
+								<div class="dbw-sim-img"
+									style="width: 100%; height: 100%; background-color:#eaeaea; background-image: url('<?php echo esc_url($img_url); ?>'); background-size: cover; background-position: center; transition: transform 0.4s ease;">
+								</div>
 								<?php if (class_exists('DBW\ImmoSuite\Frontend\EnergyRenderer')): ?>
 									<?php \DBW\ImmoSuite\Frontend\EnergyRenderer::render_archive_flag($sim_id); ?>
 								<?php endif; ?>
 							</div>
 							<div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-								<h4 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.4; color: #333; font-weight: 700;"><?php the_title(); ?></h4>
+								<h4
+									style="margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.4; color: #333; font-weight: 700;">
+									<?php the_title(); ?>
+								</h4>
 								<?php if ($sim_city): ?>
-								<div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px;">
-									<span class="dashicons dashicons-location" style="font-size: 16px; width: 16px; height: 16px;"></span>
-									<?php echo esc_html($sim_city); ?>
-								</div>
+									<div
+										style="color: #666; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px;">
+										<span class="dashicons dashicons-location"
+											style="font-size: 16px; width: 16px; height: 16px;"></span>
+										<?php echo esc_html($sim_city); ?>
+									</div>
 								<?php endif; ?>
-								
-								<div style="display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 1rem; margin-top: auto;">
+
+								<div
+									style="display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 1rem; margin-top: auto;">
 									<div style="display: flex; gap: 1rem; color: #555; font-size: 0.95rem;">
 										<?php if ($sim_area): ?>
-										<span title="Wohnfläche"><strong><?php echo esc_html($sim_area); ?></strong> m²</span>
+											<span title="Wohnfläche"><strong><?php echo esc_html($sim_area); ?></strong> m²</span>
 										<?php endif; ?>
 										<?php if ($sim_rooms): ?>
-										<span title="Zimmer"><strong><?php echo esc_html($sim_rooms); ?></strong> Zi.</span>
+											<span title="Zimmer"><strong><?php echo esc_html($sim_rooms); ?></strong> Zi.</span>
 										<?php endif; ?>
 									</div>
 									<?php if ($sim_price): ?>
-									<strong style="color: var(--dbw-primary); font-size: 1.1rem;"><?php echo esc_html(number_format_i18n((float)$sim_price, 0)); ?> €</strong>
+										<strong
+											style="color: var(--dbw-primary); font-size: 1.1rem;"><?php echo esc_html(number_format_i18n((float) $sim_price, 0)); ?>
+											€</strong>
 									<?php endif; ?>
 								</div>
 							</div>
@@ -698,6 +717,107 @@ get_header(); ?>
 	?>
 
 </div> <!-- End of .dbw-single-property-container -->
+
+<!-- Lightbox Overlay -->
+<div id="dbwLightboxOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
+	<!-- Close -->
+	<button onclick="dbwLightbox.close()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+	</button>
+	<!-- Prev -->
+	<button id="dbwLbPrev" onclick="dbwLightbox.prev()" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+	</button>
+	<!-- Next -->
+	<button id="dbwLbNext" onclick="dbwLightbox.next()" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+	</button>
+	<!-- Image -->
+	<img id="dbwLbImage" src="" alt="" style="max-width:90vw; max-height:85vh; object-fit:contain; border-radius:4px; user-select:none; transition: opacity 0.25s ease;">
+	<!-- Counter -->
+	<div id="dbwLbCounter" style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-size:0.9rem; font-family:inherit;"></div>
+</div>
+
+<script>
+(function() {
+	// Image datasets
+	var galleryImages = [
+		<?php if (!empty($gallery_images)): ?>
+			<?php foreach ($gallery_images as $gi): ?>
+				<?php echo json_encode($gi['full']); ?>,
+			<?php endforeach; ?>
+		<?php endif; ?>
+	];
+	var floorplanImages = [
+		<?php if (!empty($floor_plans)): ?>
+			<?php foreach ($floor_plans as $fpi): ?>
+				<?php echo json_encode($fpi['full']); ?>,
+			<?php endforeach; ?>
+		<?php endif; ?>
+	];
+
+	var overlay = document.getElementById('dbwLightboxOverlay');
+	var lbImage = document.getElementById('dbwLbImage');
+	var lbCounter = document.getElementById('dbwLbCounter');
+	var currentSet = [];
+	var currentIdx = 0;
+
+	window.dbwLightbox = {
+		open: function(type, index) {
+			currentSet = (type === 'gallery') ? galleryImages : floorplanImages;
+			currentIdx = index || 0;
+			this.show();
+			overlay.style.display = 'flex';
+			document.body.style.overflow = 'hidden';
+		},
+		close: function() {
+			overlay.style.display = 'none';
+			document.body.style.overflow = '';
+		},
+		prev: function() {
+			currentIdx = (currentIdx - 1 + currentSet.length) % currentSet.length;
+			this.show();
+		},
+		next: function() {
+			currentIdx = (currentIdx + 1) % currentSet.length;
+			this.show();
+		},
+		show: function() {
+			lbImage.style.opacity = '0';
+			setTimeout(function() {
+				lbImage.src = currentSet[currentIdx];
+				lbImage.onload = function() { lbImage.style.opacity = '1'; };
+				lbCounter.textContent = (currentIdx + 1) + ' / ' + currentSet.length;
+			}, 120);
+		}
+	};
+
+	// Keyboard
+	document.addEventListener('keydown', function(e) {
+		if (overlay.style.display !== 'flex') return;
+		if (e.key === 'Escape') dbwLightbox.close();
+		if (e.key === 'ArrowLeft') dbwLightbox.prev();
+		if (e.key === 'ArrowRight') dbwLightbox.next();
+	});
+
+	// Click on backdrop to close
+	overlay.addEventListener('click', function(e) {
+		if (e.target === overlay) dbwLightbox.close();
+	});
+
+	// Touch Swipe
+	var startX = 0;
+	overlay.addEventListener('touchstart', function(e) {
+		startX = e.changedTouches[0].screenX;
+	}, {passive: true});
+	overlay.addEventListener('touchend', function(e) {
+		var diff = e.changedTouches[0].screenX - startX;
+		if (Math.abs(diff) > 50) {
+			if (diff > 0) dbwLightbox.prev(); else dbwLightbox.next();
+		}
+	}, {passive: true});
+})();
+</script>
 
 <?php
 get_footer();

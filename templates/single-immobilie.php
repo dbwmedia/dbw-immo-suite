@@ -199,19 +199,12 @@ get_header(); ?>
 				<?php endif; ?>
 
 				<!-- Main Slider -->
-				<div class="dbw-gallery-slider" id="dbwGallerySlider"
-					style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: 500px; -ms-overflow-style: none; scrollbar-width: none;">
-					<style>
-						.dbw-gallery-slider::-webkit-scrollbar {
-							display: none;
-						}
-					</style>
+				<div class="dbw-gallery-slider" id="dbwGallerySlider">
 					<?php foreach ($gallery_images as $index => $img): ?>
 						<div class="dbw-gallery-slide" id="slide-<?php echo $index; ?>"
-							style="flex: 0 0 100%; scroll-snap-align: start; position: relative; background-color: #f0f0f0; cursor: pointer;"
 							onclick="dbwLightbox.open('gallery', <?php echo $index; ?>)">
 							<img src="<?php echo esc_url($img['full']); ?>" alt="<?php echo esc_attr($img['alt']); ?>"
-								style="width: 100%; height: 100%; object-fit: cover; display: block;">
+								<?php echo ($index > 0) ? 'loading="lazy"' : ''; ?>>
 							<?php if ($img['alt']): ?>
 								<div
 									style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; padding: 20px; font-size: 0.9rem;">
@@ -225,19 +218,14 @@ get_header(); ?>
 				</div>
 
 				<!-- Navigation Buttons -->
-				<button onclick="document.getElementById('dbwGallerySlider').scrollBy({left: -600, behavior: 'smooth'})"
-					style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1;">&#10094;</button>
-				<button onclick="document.getElementById('dbwGallerySlider').scrollBy({left: 600, behavior: 'smooth'})"
-					style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1;">&#10095;</button>
+				<button class="dbw-gallery-nav dbw-gallery-nav--prev" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: -600, behavior: 'smooth'})">&#10094;</button>
+				<button class="dbw-gallery-nav dbw-gallery-nav--next" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: 600, behavior: 'smooth'})">&#10095;</button>
 
 				<!-- Thumbnails Strip -->
-				<div class="dbw-gallery-thumbs"
-					style="display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px;">
+				<div class="dbw-gallery-thumbs">
 					<?php foreach ($gallery_images as $index => $img): ?>
-						<div onclick="document.getElementById('slide-<?php echo $index; ?>').scrollIntoView({behavior: 'smooth', block: 'nearest'})"
-							style="flex: 0 0 80px; height: 60px; cursor: pointer; border-radius: 4px; overflow: hidden; opacity: 0.7; transition: opacity 0.2s;"
-							onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-							<img src="<?php echo esc_url($img['url']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+						<div class="dbw-gallery-thumb" onclick="document.getElementById('slide-<?php echo $index; ?>').scrollIntoView({behavior: 'smooth', block: 'nearest'})">
+							<img src="<?php echo esc_url($img['url']); ?>" loading="lazy" alt="<?php echo esc_attr($img['alt']); ?>">
 						</div>
 						<?php
 					endforeach; ?>
@@ -349,8 +337,7 @@ get_header(); ?>
 						$infra_keys = array('kindergaerten', 'grundschule', 'realschule', 'gymnasium', 'einkaufsmoeglichkeiten', 'oepnv'); // Common ones
 						?>
 						<h4 style="margin-top:20px; font-size:1rem; color:#666;">Entfernungen</h4>
-						<ul class="dbw-infra-list"
-							style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:0; list-style:none;">
+						<ul class="dbw-infra-list">
 							<?php
 							// Try fetching specific keys we mapped or all meta
 							$custom_fields = get_post_custom($id);
@@ -360,7 +347,7 @@ get_header(); ?>
 									$value = $val[0];
 									if (!$value)
 										continue;
-									echo "<li style='display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;'><span>{$label}:</span> <strong>{$value} km</strong></li>";
+									echo '<li class="dbw-infra-item"><span>' . esc_html($label) . ':</span> <strong>' . esc_html($value) . ' km</strong></li>';
 								}
 							}
 							?>
@@ -407,7 +394,7 @@ get_header(); ?>
 			</div>
 
 			<!-- Sidebar -->
-			<aside class="dbw-sidebar" style="position: sticky; top: 200px;">
+			<aside class="dbw-sidebar">
 
 				<!-- Highligts Box -->
 				<?php

@@ -51,7 +51,7 @@ class Property
             'label' => __('Immobilie', 'dbw-immo-suite'),
             'description' => __('Immobilienverwaltung für DBW ImmoSuite', 'dbw-immo-suite'),
             'labels' => $labels,
-            'supports' => array('title', 'thumbnail', 'revisions'), // Removed 'editor' and 'custom-fields' (handled by PropertyDetails)
+            'supports' => array('title', 'editor', 'thumbnail', 'revisions'),
             'taxonomies' => array('objektart', 'vermarktungsart', 'ort'),
             'hierarchical' => false,
             'public' => true,

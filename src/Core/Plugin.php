@@ -126,6 +126,9 @@ class Plugin
         $plugin_contact_form = new \DBW\ImmoSuite\Frontend\ContactForm();
         $this->loader->add_action('init', $plugin_contact_form, 'init');
 
+        $plugin_seo_meta = new \DBW\ImmoSuite\Frontend\SeoMeta();
+        $this->loader->add_action('init', $plugin_seo_meta, 'init');
+
         $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
         $this->loader->add_action('init', $plugin_block_references, 'init');
 

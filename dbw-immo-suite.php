@@ -53,9 +53,32 @@ register_deactivation_hook(__FILE__, function () {
 	flush_rewrite_rules();
 });
 
+// Check required PHP extensions
+function check_requirements()
+{
+	$missing = array();
+	if (!class_exists('ZipArchive')) {
+		$missing[] = 'zip';
+	}
+	if (!function_exists('simplexml_load_file')) {
+		$missing[] = 'simplexml';
+	}
+	if (!empty($missing)) {
+		add_action('admin_notices', function () use ($missing) {
+			echo '<div class="notice notice-error"><p><strong>DBW Immo Suite:</strong> '
+				. sprintf(
+					__('Fehlende PHP-Erweiterungen: %s. Der OpenImmo-Import wird nicht funktionieren.', 'dbw-immo-suite'),
+					'<code>' . implode('</code>, <code>', $missing) . '</code>'
+				)
+				. '</p></div>';
+		});
+	}
+}
+
 // Initialize Plugin
 function run_dbw_immo_suite()
 {
+	check_requirements();
 	$plugin = new Core\Plugin();
 	$plugin->run();
 }

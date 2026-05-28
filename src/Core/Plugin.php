@@ -123,6 +123,9 @@ class Plugin
         $plugin_shortcode = new \DBW\ImmoSuite\Frontend\Shortcode();
         $this->loader->add_action('init', $plugin_shortcode, 'init');
 
+        $plugin_contact_form = new \DBW\ImmoSuite\Frontend\ContactForm();
+        $this->loader->add_action('init', $plugin_contact_form, 'init');
+
         $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
         $this->loader->add_action('init', $plugin_block_references, 'init');
 
@@ -141,7 +144,7 @@ class Plugin
     public function enqueue_public_scripts()
     {
         wp_enqueue_style('dbw-immo-frontend', DBW_IMMO_SUITE_URL . 'assets/css/frontend.css', array(), DBW_IMMO_SUITE_VERSION, 'all');
-        wp_enqueue_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', array('jquery'), DBW_IMMO_SUITE_VERSION, true);
+        wp_enqueue_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', array(), DBW_IMMO_SUITE_VERSION, true);
         wp_enqueue_script('dbw-immo-view-switch-js', DBW_IMMO_SUITE_URL . 'assets/js/view-switch.js', array(), DBW_IMMO_SUITE_VERSION, true);
     }
 

@@ -165,27 +165,9 @@ class Filter
         // Filter Sold Items (Global Setting)
         $settings = get_option('dbw_immo_suite_settings');
         if (isset($settings['filter_sold_from_main']) && $settings['filter_sold_from_main']) {
-            // Exclude 'verkauft' and 'referenz'
             $current_meta = $query->get('meta_query');
             if (!is_array($current_meta)) $current_meta = array();
-            
-            $exclude_query = array(
-                'relation' => 'OR',
-                array(
-                    'key'     => '_dbw_immo_status',
-                    'compare' => 'NOT EXISTS' 
-                ),
-                array(
-                    'key'     => '_dbw_immo_status',
-                    'value'   => array('verkauft', 'referenz'),
-                    'compare' => 'NOT IN'
-                )
-            );
-            
-            // If we already have a meta query (AND relation usually at top level), we need to be careful
-            // WP_Query handles array of arrays as AND by default.
-            $current_meta[] = $exclude_query;
-            
+            $current_meta[] = CardRenderer::get_exclude_sold_meta_query();
             $query->set('meta_query', $current_meta);
         }
     }

@@ -318,12 +318,30 @@ get_header(); ?>
 					<?php
 				endif; ?>
 
-				<?php if ($text_lage && get_theme_mod('dbw_immo_single_show_map', true)): ?>
+				<?php if (($text_lage || ($lat && $lng)) && get_theme_mod('dbw_immo_single_show_map', true)): ?>
 					<div class="dbw-section">
 						<h3 class="dbw-section-title">Lage</h3>
+						<?php if ($text_lage): ?>
 						<div class="dbw-description">
 							<?php echo wpautop(esc_html($text_lage)); ?>
 						</div>
+						<?php endif; ?>
+
+						<?php if ($lat && $lng): ?>
+						<div id="dbw-map" style="height: 350px; border-radius: var(--dbw-radius, 8px); margin: 1.5rem 0; z-index: 0;"></div>
+						<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+						<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+						<script>
+						(function() {
+							var map = L.map('dbw-map', { scrollWheelZoom: false }).setView([<?php echo esc_js($lat); ?>, <?php echo esc_js($lng); ?>], 14);
+							L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+								attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+								maxZoom: 18
+							}).addTo(map);
+							L.marker([<?php echo esc_js($lat); ?>, <?php echo esc_js($lng); ?>]).addTo(map);
+						})();
+						</script>
+						<?php endif; ?>
 
 						<!-- Infrastructure Distances -->
 						<?php
@@ -568,19 +586,15 @@ get_header(); ?>
 							</div>
 						</div>
 
-						<?php if ($contact_email): ?>
-							<a href="mailto:<?php echo esc_attr($contact_email); ?>?subject=Anfrage: <?php echo rawurlencode(get_the_title()); ?>"
-								class="button button-primary"
-								style="display:block; width: 100%; padding: 12px; height: auto; font-size: 1rem; text-transform: uppercase; font-weight: bold; background-color: var(--dbw-accent, #0073aa); border: none; color: #fff; cursor: pointer; border-radius: 4px; text-decoration:none; text-align:center;">Anfrage
-								senden</a>
-							<?php
-						else: ?>
-							<button disabled class="button" style="width: 100%;">Kontakt nur telefonisch</button>
-							<?php
-						endif; ?>
-
-						<p style="font-size: 0.8rem; margin-top: 10px; color: #888; text-align: center;">Kontaktieren Sie uns
-							für eine Besichtigung.</p>
+						<?php
+						// Render contact form
+						if (class_exists('DBW\ImmoSuite\Frontend\ContactForm')) {
+							\DBW\ImmoSuite\Frontend\ContactForm::render($id);
+						} elseif ($contact_email) {
+							// Fallback: simple mailto link
+							echo '<a href="mailto:' . esc_attr($contact_email) . '?subject=Anfrage: ' . rawurlencode(get_the_title()) . '" class="button button-primary" style="display:block; width:100%; padding:12px; height:auto; font-size:1rem; text-transform:uppercase; font-weight:bold; background-color:var(--dbw-accent,#0073aa); border:none; color:#fff; cursor:pointer; border-radius:4px; text-decoration:none; text-align:center;">Anfrage senden</a>';
+						}
+						?>
 						<?php
 					endif; ?>
 				</div>

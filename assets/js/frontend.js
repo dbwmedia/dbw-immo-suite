@@ -1,27 +1,28 @@
-jQuery(document).ready(function ($) {
-
+document.addEventListener('DOMContentLoaded', function () {
     // Filter Toggle Logic
-    const $toggleBtn = $('#dbw-filter-toggle');
-    const $content = $('.dbw-filter-content');
-    const $container = $('#dbw-filter-container');
-    const $arrow = $('.dbw-arrow');
+    var toggleBtn = document.getElementById('dbw-filter-toggle');
+    var container = document.getElementById('dbw-filter-container');
 
-    // On Load: Check if we have active search parameters. If so, keep expanded.
-    // The PHP already sets 'is-expanded' class, but we can verify in JS if needed.
-    if ($container.hasClass('is-expanded')) {
-        $content.show();
-        $arrow.addClass('is-open'); // Rotate arrow if needed
+    if (!toggleBtn || !container) return;
+
+    var content = container.querySelector('.dbw-filter-content');
+    if (!content) return;
+
+    // On Load: Show content if expanded class is set (PHP sets this when filters are active)
+    if (container.classList.contains('is-expanded')) {
+        content.style.display = 'block';
     } else {
-        $content.hide();
+        content.style.display = 'none';
     }
 
-    $toggleBtn.on('click', function (e) {
+    toggleBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        // Slide Toggle
-        $content.slideToggle(300, function () {
-            $container.toggleClass('is-expanded');
-        });
-        $arrow.toggleClass('is-open');
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+            container.classList.add('is-expanded');
+        } else {
+            content.style.display = 'none';
+            container.classList.remove('is-expanded');
+        }
     });
-
 });

@@ -37,6 +37,14 @@
         "onlyHighlights": {
             "type": "boolean",
             "default": false
+        },
+        "location": {
+            "type": "string",
+            "default": ""
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
         }
     }
 }

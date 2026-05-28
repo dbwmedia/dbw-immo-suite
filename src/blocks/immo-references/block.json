@@ -32,6 +32,14 @@
         "postsPerPage": {
             "type": "number",
             "default": 12
+        },
+        "location": {
+            "type": "string",
+            "default": ""
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
         }
     }
 }

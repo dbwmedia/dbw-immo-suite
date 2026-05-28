@@ -47,6 +47,58 @@ class Settings
 
 	<hr>
 
+	<h2><?php esc_html_e('Shortcode-Referenz', 'dbw-immo-suite'); ?></h2>
+	<p><?php esc_html_e('Diese Shortcodes koennen in Elementor, Classic Editor oder jedem Page Builder verwendet werden:', 'dbw-immo-suite'); ?></p>
+
+	<table class="wp-list-table widefat fixed striped" style="max-width: 900px;">
+		<thead>
+			<tr>
+				<th style="width: 35%;"><?php esc_html_e('Shortcode', 'dbw-immo-suite'); ?></th>
+				<th><?php esc_html_e('Beschreibung', 'dbw-immo-suite'); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>[dbw_immo_grid]</code></td>
+				<td><?php esc_html_e('Zeigt aktuelle Immobilien im Grid an.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_grid count="6" columns="3"]</code></td>
+				<td><?php esc_html_e('6 Immobilien in 3 Spalten.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_grid location="muenchen"]</code></td>
+				<td><?php esc_html_e('Nur Immobilien in Muenchen (Ort-Slug). Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_grid marketing="kauf" type="haus"]</code></td>
+				<td><?php esc_html_e('Nur Haeuser zum Kauf.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_grid highlights="yes"]</code></td>
+				<td><?php esc_html_e('Nur als Highlight markierte Immobilien.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_references]</code></td>
+				<td><?php esc_html_e('Zeigt verkaufte/Referenz-Objekte an.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_references location="muenchen"]</code></td>
+				<td><?php esc_html_e('Referenzen nur aus Muenchen. Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
+			</tr>
+			<tr>
+				<td><code>[dbw_immo_references count="6" columns="2" status="verkauft"]</code></td>
+				<td><?php esc_html_e('6 verkaufte Objekte in 2 Spalten (ohne Referenzen).', 'dbw-immo-suite'); ?></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p class="description" style="margin-top: 10px;">
+		<?php esc_html_e('Tipp: Im Gutenberg-Editor stehen diese Funktionen auch als native Bloecke unter "dbw Immo Suite" zur Verfuegung.', 'dbw-immo-suite'); ?>
+	</p>
+
+	<hr>
+
 	<h2>
 		<?php esc_html_e('Manueller Import', 'dbw-immo-suite'); ?>
 	</h2>

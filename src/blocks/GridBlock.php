@@ -38,9 +38,11 @@ class GridBlock
         $property_type = isset($attributes['propertyType']) ? $attributes['propertyType'] : '';
         $hide_price = isset($attributes['hidePrice']) ? $attributes['hidePrice'] : false;
         $show_date = isset($attributes['showDate']) ? $attributes['showDate'] : false;
-        
+        $location_filter = isset($attributes['location']) ? $attributes['location'] : '';
+        $columns = isset($attributes['columns']) ? intval($attributes['columns']) : 3;
+
         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        
+
         $args = array(
             'post_type'      => 'immobilie',
             'post_status'    => 'publish',
@@ -66,6 +68,14 @@ class GridBlock
                 'taxonomy' => 'objektart',
                 'field'    => 'slug',
                 'terms'    => $property_type,
+            );
+        }
+
+        if (!empty($location_filter)) {
+            $tax_query[] = array(
+                'taxonomy' => 'ort',
+                'field'    => 'slug',
+                'terms'    => $location_filter,
             );
         }
 
@@ -118,9 +128,11 @@ class GridBlock
             // Required for rendering tags properly using our filter
             $has_filter = class_exists('\DBW\ImmoSuite\Frontend\Filter');
 
+            $grid_style = ($columns !== 3) ? ' style="grid-template-columns: repeat(' . $columns . ', 1fr);"' : '';
+
             echo '<div id="dbw-immo-suite">';
-            echo '<div class="dbw-immo-suite-block dbw-immo-grid-block">'; // Generic wrapper
-            echo '<div class="dbw-property-grid">';
+            echo '<div class="dbw-immo-suite-block dbw-immo-grid-block">';
+            echo '<div class="dbw-property-grid"' . $grid_style . '>';
             
             while ($query->have_posts()) {
                 $query->the_post();

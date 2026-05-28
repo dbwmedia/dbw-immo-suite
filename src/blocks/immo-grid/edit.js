@@ -5,16 +5,20 @@ import { useSelect } from '@wordpress/data';
 import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { postsPerPage, marketing, propertyType, hidePrice, showDate, onlyHighlights } = attributes;
+    const { postsPerPage, marketing, propertyType, hidePrice, showDate, onlyHighlights, location, columns } = attributes;
     const blockProps = useBlockProps();
 
-    // Fetch tax terms for the editor dynamically
+    // Fetch taxonomy terms dynamically
     const marketingTerms = useSelect((select) => {
         return select('core').getEntityRecords('taxonomy', 'vermarktungsart', { per_page: -1 });
     }, []);
 
     const propertyTypeTerms = useSelect((select) => {
         return select('core').getEntityRecords('taxonomy', 'objektart', { per_page: -1 });
+    }, []);
+
+    const locationTerms = useSelect((select) => {
+        return select('core').getEntityRecords('taxonomy', 'ort', { per_page: -1 });
     }, []);
 
     const marketingOptions = [
@@ -35,10 +39,19 @@ export default function Edit({ attributes, setAttributes }) {
         });
     }
 
+    const locationOptions = [
+        { label: __('Alle Orte', 'dbw-immo-suite'), value: '' }
+    ];
+    if (locationTerms) {
+        locationTerms.forEach((term) => {
+            locationOptions.push({ label: term.name + ' (' + term.count + ')', value: term.slug });
+        });
+    }
+
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title={__('Allgemeine Einstellungen', 'dbw-immo-suite')}>
+                <PanelBody title={__('Darstellung', 'dbw-immo-suite')}>
                     <RangeControl
                         label={__('Anzahl Immobilien', 'dbw-immo-suite')}
                         value={postsPerPage}
@@ -46,8 +59,15 @@ export default function Edit({ attributes, setAttributes }) {
                         min={1}
                         max={24}
                     />
+                    <RangeControl
+                        label={__('Spalten', 'dbw-immo-suite')}
+                        value={columns}
+                        onChange={(value) => setAttributes({ columns: value })}
+                        min={1}
+                        max={4}
+                    />
                     <ToggleControl
-                        label={__('Kaufpreis/Miete ausblenden', 'dbw-immo-suite')}
+                        label={__('Preis ausblenden', 'dbw-immo-suite')}
                         checked={hidePrice}
                         onChange={(value) => setAttributes({ hidePrice: value })}
                     />
@@ -58,12 +78,19 @@ export default function Edit({ attributes, setAttributes }) {
                     />
                 </PanelBody>
                 <PanelBody title={__('Filter', 'dbw-immo-suite')} initialOpen={true}>
-                    <p className="components-base-control__help">{__('Nur Immobilien anzeigen, die folgende Kriterien erfüllen:', 'dbw-immo-suite')}</p>
+                    <p className="components-base-control__help">{__('Nur Immobilien anzeigen, die folgende Kriterien erfuellen:', 'dbw-immo-suite')}</p>
                     <ToggleControl
-                        label={__('🌟 Nur Highlights anzeigen', 'dbw-immo-suite')}
+                        label={__('Nur Highlights anzeigen', 'dbw-immo-suite')}
                         help={__('Zeigt nur Immobilien an, bei denen "Als Highlight markieren" gesetzt ist.', 'dbw-immo-suite')}
                         checked={onlyHighlights}
                         onChange={(value) => setAttributes({ onlyHighlights: value })}
+                    />
+                    <SelectControl
+                        label={__('Ort / Stadt', 'dbw-immo-suite')}
+                        help={__('Ideal fuer Geo-Landing-Pages: Zeige nur Immobilien in einer bestimmten Stadt.', 'dbw-immo-suite')}
+                        value={location}
+                        options={locationOptions}
+                        onChange={(value) => setAttributes({ location: value })}
                     />
                     <SelectControl
                         label={__('Vermarktungsart', 'dbw-immo-suite')}

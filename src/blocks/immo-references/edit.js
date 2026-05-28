@@ -1,12 +1,27 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, RangeControl, CheckboxControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, RangeControl, CheckboxControl, SelectControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { status, hidePrice, showDate, postsPerPage } = attributes;
+    const { status, hidePrice, showDate, postsPerPage, location, columns } = attributes;
 
     const blockProps = useBlockProps();
+
+    // Fetch location terms dynamically
+    const locationTerms = useSelect((select) => {
+        return select('core').getEntityRecords('taxonomy', 'ort', { per_page: -1 });
+    }, []);
+
+    const locationOptions = [
+        { label: __('Alle Orte', 'dbw-immo-suite'), value: '' }
+    ];
+    if (locationTerms) {
+        locationTerms.forEach((term) => {
+            locationOptions.push({ label: term.name + ' (' + term.count + ')', value: term.slug });
+        });
+    }
 
     const updateStatus = (value, isChecked) => {
         let newStatus = [...status];
@@ -21,16 +36,23 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title={__('Einstellungen', 'dbw-immo-suite')}>
+                <PanelBody title={__('Darstellung', 'dbw-immo-suite')}>
                     <RangeControl
                         label={__('Anzahl Immobilien', 'dbw-immo-suite')}
                         value={postsPerPage}
                         onChange={(value) => setAttributes({ postsPerPage: value })}
-                        min={3}
+                        min={1}
                         max={24}
                     />
+                    <RangeControl
+                        label={__('Spalten', 'dbw-immo-suite')}
+                        value={columns}
+                        onChange={(value) => setAttributes({ columns: value })}
+                        min={1}
+                        max={4}
+                    />
                     <ToggleControl
-                        label={__('Preis ausblenden (bei Verkauft)', 'dbw-immo-suite')}
+                        label={__('Preis ausblenden', 'dbw-immo-suite')}
                         checked={hidePrice}
                         onChange={(value) => setAttributes({ hidePrice: value })}
                     />
@@ -40,8 +62,17 @@ export default function Edit({ attributes, setAttributes }) {
                         onChange={(value) => setAttributes({ showDate: value })}
                     />
                 </PanelBody>
+                <PanelBody title={__('Filter', 'dbw-immo-suite')} initialOpen={true}>
+                    <SelectControl
+                        label={__('Ort / Stadt', 'dbw-immo-suite')}
+                        help={__('Ideal fuer Geo-Landing-Pages: Zeige nur Referenzen aus einer bestimmten Stadt.', 'dbw-immo-suite')}
+                        value={location}
+                        options={locationOptions}
+                        onChange={(value) => setAttributes({ location: value })}
+                    />
+                </PanelBody>
                 <PanelBody title={__('Status Filter', 'dbw-immo-suite')} initialOpen={false}>
-                    <p className="components-base-control__help">{__('Wähle aus, welche Status angezeigt werden sollen.', 'dbw-immo-suite')}</p>
+                    <p className="components-base-control__help">{__('Welche Status sollen angezeigt werden?', 'dbw-immo-suite')}</p>
                     <CheckboxControl
                         label="Verkauft"
                         checked={status.includes('verkauft')}

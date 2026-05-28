@@ -37,9 +37,11 @@ class ReferencesBlock
         $posts_per_page = isset($attributes['postsPerPage']) ? intval($attributes['postsPerPage']) : 12;
         $hide_price = isset($attributes['hidePrice']) ? $attributes['hidePrice'] : true;
         $show_date = isset($attributes['showDate']) ? $attributes['showDate'] : true;
-        
+        $location_filter = isset($attributes['location']) ? $attributes['location'] : '';
+        $columns = isset($attributes['columns']) ? intval($attributes['columns']) : 3;
+
         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        
+
         $args = array(
             'post_type'      => 'immobilie',
             'post_status'    => 'publish',
@@ -54,6 +56,17 @@ class ReferencesBlock
             )
         );
 
+        // Location filter (Geo-Landing-Pages)
+        if (!empty($location_filter)) {
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'ort',
+                    'field'    => 'slug',
+                    'terms'    => $location_filter,
+                )
+            );
+        }
+
         // Sorting (Newest sales first)
         $args['orderby'] = 'meta_value';
         $args['meta_key'] = '_dbw_immo_sales_date';
@@ -64,9 +77,11 @@ class ReferencesBlock
         ob_start();
         
         if ($query->have_posts()) {
+            $grid_style = ($columns !== 3) ? ' style="grid-template-columns: repeat(' . $columns . ', 1fr);"' : '';
+
             echo '<div id="dbw-immo-suite">';
             echo '<div class="dbw-immo-references-block">';
-            echo '<div class="dbw-property-grid">';
+            echo '<div class="dbw-property-grid"' . $grid_style . '>';
             
             while ($query->have_posts()) {
                 $query->the_post();

@@ -82,6 +82,7 @@ class PropertyDetails
                 <a class="dbw-tab-link active" data-tab="tab-basis"><?php _e('Basisdaten', 'dbw-immo-suite'); ?></a>
                 <a class="dbw-tab-link" data-tab="tab-prices"><?php _e('Preise', 'dbw-immo-suite'); ?></a>
                 <a class="dbw-tab-link" data-tab="tab-areas"><?php _e('Flächen & Zimmer', 'dbw-immo-suite'); ?></a>
+                <a class="dbw-tab-link" data-tab="tab-features"><?php _e('Ausstattung', 'dbw-immo-suite'); ?></a>
                 <a class="dbw-tab-link" data-tab="tab-tech"><?php _e('Technik & Zustand', 'dbw-immo-suite'); ?></a>
                 <a class="dbw-tab-link" data-tab="tab-contact"><?php _e('Kontakt / Anbieter', 'dbw-immo-suite'); ?></a>
                 <a class="dbw-tab-link" data-tab="tab-import"><?php _e('Import Info', 'dbw-immo-suite'); ?></a>
@@ -192,6 +193,29 @@ class PropertyDetails
                     <label><?php _e('Anzahl Badezimmer', 'dbw-immo-suite'); ?></label>
                     <input type="number" step="1" name="anzahl_badezimmer" value="<?php echo $val('anzahl_badezimmer'); ?>">
                 </div>
+            </div>
+
+            <!-- TAB: Ausstattung -->
+            <div id="tab-features" class="dbw-tab-content">
+                <?php
+                $features = get_post_meta($post->ID, '_dbw_immo_features', true);
+                if (!is_array($features)) $features = array();
+                ?>
+                <div class="dbw-field-row">
+                    <label><?php _e('Ausstattungsmerkmale', 'dbw-immo-suite'); ?></label>
+                    <p class="description"><?php _e('Kommagetrennte Liste. Wird automatisch vom OpenImmo-Import befuellt.', 'dbw-immo-suite'); ?></p>
+                    <textarea name="_dbw_immo_features_text" rows="4" style="width:100%; max-width:600px;"><?php echo esc_textarea(implode(', ', $features)); ?></textarea>
+                </div>
+                <?php if (!empty($features)): ?>
+                <div class="dbw-field-row">
+                    <label><?php _e('Vorschau', 'dbw-immo-suite'); ?></label>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        <?php foreach ($features as $f): ?>
+                            <span style="background:#f0f2f5; padding:4px 12px; border-radius:20px; font-size:0.85rem;"><?php echo esc_html($f); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
 
             <!-- TAB: Tech -->
@@ -310,6 +334,13 @@ class PropertyDetails
             update_post_meta($post_id, '_dbw_immo_manual_status_override', '1');
         } else {
             delete_post_meta($post_id, '_dbw_immo_manual_status_override');
+        }
+
+        // Ausstattung features (from textarea)
+        if (isset($_POST['_dbw_immo_features_text'])) {
+            $raw = sanitize_textarea_field($_POST['_dbw_immo_features_text']);
+            $features = array_filter(array_map('trim', explode(',', $raw)));
+            update_post_meta($post_id, '_dbw_immo_features', $features);
         }
 
         // Highlight checkbox

@@ -522,6 +522,104 @@ class Importer
             update_post_meta($post_id, 'energiepass_baujahr', (string)$ep->baujahr);
         }
 
+        // Ausstattung (structured features)
+        if (isset($xml->ausstattung)) {
+            $features = array();
+            $ausstattung = $xml->ausstattung;
+
+            // Boolean features from OpenImmo spec
+            $feature_map = array(
+                'fahrstuhl'       => 'Aufzug',
+                'gartennutzung'   => 'Garten',
+                'kamin'           => 'Kamin',
+                'klimatisiert'    => 'Klimaanlage',
+                'rollstuhlgerecht' => 'Barrierefrei',
+                'seniorengerecht' => 'Seniorengerecht',
+                'swimmingpool'    => 'Pool',
+                'wasch_trockenraum' => 'Wasch-/Trockenraum',
+                'wintergarten'    => 'Wintergarten',
+                'dv_verkabelung'  => 'Netzwerkverkabelung',
+                'sauna'           => 'Sauna',
+                'bibliothek'      => 'Bibliothek',
+            );
+
+            foreach ($feature_map as $xml_key => $label) {
+                if (isset($ausstattung->$xml_key)) {
+                    $val = $ausstattung->$xml_key;
+                    $attrs = $val->attributes();
+                    // Check if element exists and is not explicitly false
+                    if ($val !== null && (string)$val !== 'false' && (string)$val !== '0') {
+                        $features[] = $label;
+                    }
+                    // Also check for WAHR attribute
+                    if (isset($attrs['WAHR']) && (string)$attrs['WAHR'] === 'true') {
+                        if (!in_array($label, $features)) {
+                            $features[] = $label;
+                        }
+                    }
+                }
+            }
+
+            // Balkon/Terrasse
+            if (isset($ausstattung->balkon_terrassen)) {
+                $bt = $ausstattung->balkon_terrassen->attributes();
+                if (isset($bt['BALKON']) && ((string)$bt['BALKON'] === 'true' || (string)$bt['BALKON'] === '1')) {
+                    $features[] = 'Balkon';
+                }
+                if (isset($bt['TERRASSE']) && ((string)$bt['TERRASSE'] === 'true' || (string)$bt['TERRASSE'] === '1')) {
+                    $features[] = 'Terrasse';
+                }
+            }
+
+            // Keller
+            if (isset($ausstattung->unterkellert)) {
+                $keller_attr = (string)$ausstattung->unterkellert['kpiuell']; // JA, NEIN, TEIL
+                if (empty($keller_attr)) {
+                    $keller_attr = (string)$ausstattung->unterkellert;
+                }
+                if (strtoupper($keller_attr) === 'JA' || strtoupper($keller_attr) === 'VOLL') {
+                    $features[] = 'Keller';
+                } elseif (strtoupper($keller_attr) === 'TEIL') {
+                    $features[] = 'Teilkeller';
+                }
+            }
+
+            // Heizung
+            if (isset($ausstattung->heizungsart)) {
+                $hz_attrs = $ausstattung->heizungsart->attributes();
+                foreach ($hz_attrs as $name => $val) {
+                    if ((string)$val === 'true' || (string)$val === '1') {
+                        $features[] = ucfirst(strtolower(str_replace('_', ' ', $name)));
+                    }
+                }
+            }
+
+            // Boden
+            if (isset($ausstattung->boden)) {
+                $boden_attrs = $ausstattung->boden->attributes();
+                foreach ($boden_attrs as $name => $val) {
+                    if ((string)$val === 'true' || (string)$val === '1') {
+                        $features[] = ucfirst(strtolower(str_replace('_', ' ', $name)));
+                    }
+                }
+            }
+
+            // Stellplatz
+            if (isset($ausstattung->stellplatzart)) {
+                $sp_attrs = $ausstattung->stellplatzart->attributes();
+                foreach ($sp_attrs as $name => $val) {
+                    if ((string)$val === 'true' || (string)$val === '1') {
+                        $sp_label = str_replace(array('TIEFGARAGE', 'GARAGE', 'CARPORT', 'FREIPLATZ', 'PARKHAUS'),
+                            array('Tiefgarage', 'Garage', 'Carport', 'Stellplatz', 'Parkhaus'), strtoupper($name));
+                        $features[] = $sp_label;
+                    }
+                }
+            }
+
+            $features = array_unique($features);
+            update_post_meta($post_id, '_dbw_immo_features', $features);
+        }
+
         // Detailed Texts
         if (isset($xml->freitexte)) {
             update_post_meta($post_id, 'text_lage', (string)$xml->freitexte->lage);

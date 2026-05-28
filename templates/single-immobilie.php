@@ -218,8 +218,8 @@ get_header(); ?>
 				</div>
 
 				<!-- Navigation Buttons -->
-				<button class="dbw-gallery-nav dbw-gallery-nav--prev" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: -600, behavior: 'smooth'})">&#10094;</button>
-				<button class="dbw-gallery-nav dbw-gallery-nav--next" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: 600, behavior: 'smooth'})">&#10095;</button>
+				<button class="dbw-gallery-nav dbw-gallery-nav--prev" aria-label="<?php esc_attr_e('Vorheriges Bild', 'dbw-immo-suite'); ?>" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: -600, behavior: 'smooth'})">&#10094;</button>
+				<button class="dbw-gallery-nav dbw-gallery-nav--next" aria-label="<?php esc_attr_e('Nächstes Bild', 'dbw-immo-suite'); ?>" onclick="document.getElementById('dbwGallerySlider').scrollBy({left: 600, behavior: 'smooth'})">&#10095;</button>
 
 				<!-- Thumbnails Strip -->
 				<div class="dbw-gallery-thumbs">
@@ -290,21 +290,34 @@ get_header(); ?>
 					</div>
 				</div>
 
-				<?php if ($text_ausstattung || $parking > 0): ?>
+				<?php
+				$features = get_post_meta($id, '_dbw_immo_features', true);
+				if (!is_array($features)) $features = array();
+				if ($text_ausstattung || $parking > 0 || !empty($features)):
+			?>
 					<div class="dbw-section">
 						<h3 class="dbw-section-title">Ausstattung</h3>
+
+						<?php if (!empty($features)): ?>
+						<div class="dbw-features-badges" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:1.5rem;">
+							<?php foreach ($features as $feature): ?>
+								<span class="dbw-feature-badge"><?php echo esc_html($feature); ?></span>
+							<?php endforeach; ?>
+						</div>
+						<?php endif; ?>
+
 						<div class="dbw-description">
 							<?php if ($parking > 0): ?>
-								<p><strong>Stellplätze:</strong>
+								<p><strong><?php _e('Stellplätze:', 'dbw-immo-suite'); ?></strong>
 									<?php echo esc_html($parking); ?>
 								</p>
-								<?php
-							endif; ?>
-							<?php echo wpautop(esc_html($text_ausstattung)); ?>
+							<?php endif; ?>
+							<?php if ($text_ausstattung): ?>
+								<?php echo wpautop(esc_html($text_ausstattung)); ?>
+							<?php endif; ?>
 						</div>
 					</div>
-					<?php
-				endif; ?>
+			<?php endif; ?>
 
 				<?php if (($text_lage || ($lat && $lng)) && get_theme_mod('dbw_immo_single_show_map', true)): ?>
 					<div class="dbw-section">
@@ -316,7 +329,7 @@ get_header(); ?>
 						<?php endif; ?>
 
 						<?php if ($lat && $lng): ?>
-						<div id="dbw-map" style="height: 350px; border-radius: var(--dbw-radius, 8px); margin: 1.5rem 0; z-index: 0;"></div>
+						<div id="dbw-map"></div>
 						<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 						<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 						<script>
@@ -721,10 +734,10 @@ get_header(); ?>
 </div> <!-- End of .dbw-single-property-container -->
 
 <!-- Lightbox Overlay -->
-<div id="dbwLightboxOverlay"
+<div id="dbwLightboxOverlay" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e('Bildergalerie', 'dbw-immo-suite'); ?>"
 	style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
 	<!-- Close -->
-	<button onclick="dbwLightbox.close()"
+	<button onclick="dbwLightbox.close()" aria-label="<?php esc_attr_e('Schliessen', 'dbw-immo-suite'); ?>"
 		style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;"
 		onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
 		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -734,7 +747,7 @@ get_header(); ?>
 		</svg>
 	</button>
 	<!-- Prev -->
-	<button id="dbwLbPrev" onclick="dbwLightbox.prev()"
+	<button id="dbwLbPrev" onclick="dbwLightbox.prev()" aria-label="<?php esc_attr_e('Vorheriges Bild', 'dbw-immo-suite'); ?>"
 		style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
 		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
 		onmouseout="this.style.background='rgba(255,255,255,0.1)'">
@@ -744,7 +757,7 @@ get_header(); ?>
 		</svg>
 	</button>
 	<!-- Next -->
-	<button id="dbwLbNext" onclick="dbwLightbox.next()"
+	<button id="dbwLbNext" onclick="dbwLightbox.next()" aria-label="<?php esc_attr_e('Nächstes Bild', 'dbw-immo-suite'); ?>"
 		style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
 		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
 		onmouseout="this.style.background='rgba(255,255,255,0.1)'">

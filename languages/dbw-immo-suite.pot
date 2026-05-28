@@ -1,0 +1,987 @@
+# Copyright (C) 2026 DBW Immo Suite
+# This file is distributed under the same license as the DBW Immo Suite package.
+msgid ""
+msgstr ""
+"Project-Id-Version: DBW Immo Suite\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-28 18:19+0000\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../dbw-immo-suite.php:70
+msgid "Fehlende PHP-Erweiterungen: %s. Der OpenImmo-Import wird nicht funktionieren."
+msgstr ""
+
+#: ../src/Admin/Customizer.php:29
+msgid "Immobilien Suite"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:30
+msgid "Einstellungen für das Immobilien Plugin"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:36
+msgid "Design System"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:39
+msgid "Globale Design-Einstellungen für alle Immobilien-Elemente."
+msgstr ""
+
+#: ../src/Admin/Customizer.php:42
+msgid "Hauptfarbe (Primary)"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:43
+msgid "Sekundärfarbe"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:44
+msgid "Akzentfarbe (Buttons/Links)"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:45
+msgid "Hintergrund Hell"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:53
+msgid "Eckenradius (px)"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:61
+msgid "Archiv & Suche"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:72
+msgid "Objekte pro Seite"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:83
+msgid "Spalten (Desktop Grid)"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:94
+msgid "Baujahr anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:95
+msgid "Wohnfläche anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:96
+msgid "Zimmer anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:97
+msgid "Preis anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:98
+msgid "Energieklasse (Flag) anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:103
+msgid "Detailansicht"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:108
+msgid "Lage / Karte anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:109
+msgid "Energieausweis anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:110
+msgid "Galerie-Modul anzeigen (Beta)"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:111
+msgid "Kontaktbox anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:113
+msgid "Teilen-Button im Slider anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:114
+msgid "Drucken-Button im Slider anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:115
+msgid "Ähnliche Objekte anzeigen"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:123
+msgid "Highlights-Box Hintergrund"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:127
+msgid "Primärfarbe"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:128
+msgid "Akzentfarbe"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:137
+msgid "Highlights-Box Textfarbe"
+msgstr ""
+
+#: ../src/Admin/Customizer.php:147
+msgid "Button Text \"Zum Exposé\""
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:20
+msgid "Import Zentrale"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:21
+msgid "Import Dashboard"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:37
+msgid "OpenImmo Import Zentrale"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:42
+msgid "System Status"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:51
+msgid "System bereit. Kein Import aktiv."
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:56
+msgid "Import jetzt manuell starten"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:59
+msgid "Verarbeitet alle XML-Dateien im konfigurierten Verzeichnis."
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:46
+msgid "Import läuft gerade!"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:47
+msgid "Gestartet: %s"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:68
+msgid "Import Historie (Letzte 20)"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:72
+msgid "Datum"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:73
+msgid "Datei(en)"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:74
+msgid "Erstellt"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:75
+msgid "Aktualisiert"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:76
+msgid "Fehler"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:77
+msgid "Status"
+msgstr ""
+
+#: ../src/Admin/ImportDashboard.php:83
+msgid "Keine Import-Historie gefunden."
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:54
+msgid "Immobiliendaten"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:82
+msgid "Basisdaten"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:83
+msgid "Preise"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:84
+msgid "Flächen & Zimmer"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:85
+msgid "Ausstattung"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:86
+msgid "Technik & Zustand"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:87
+msgid "Kontakt / Anbieter"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:88
+msgid "Import Info"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:95
+msgid "Objektstatus"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:98
+msgid "Aktiv"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:99
+msgid "Reserviert"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:100
+msgid "Verkauft"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:101
+msgid "Referenz"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:106
+msgid "Status sperren (nicht vom Import ueberschreiben)"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:108
+msgid "Wenn aktiviert, wird der Status bei einem OpenImmo-Import nicht mehr automatisch aktualisiert."
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:115
+msgid "Als Highlight markieren"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:117
+msgid "Diese Immobilie im \"Immobilien Grid\" Block als Highlight priorisiert hervorheben."
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:121
+msgid "OpenImmo ID (Objekt-Nr.)"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:123
+msgid "Eindeutige ID aus der Maklersoftware. Nicht änderbar."
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:126
+msgid "Straße & Hausnummer"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:131
+msgid "PLZ & Ort"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:136
+msgid "Geokoordinaten"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:145, ../src/Frontend/CardRenderer.php:42
+msgid "Kaufpreis"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:149, ../src/Frontend/CardRenderer.php:42
+msgid "Kaltmiete"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:153
+msgid "Warmmiete"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:157
+msgid "Hausgeld"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:161
+msgid "Nebenkosten"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:165
+msgid "Käuferprovision (inkl. Text)"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:173, ../src/Frontend/CardRenderer.php:128
+msgid "Wohnfläche"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:177
+msgid "Nutzfläche"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:181
+msgid "Grundstücksfläche"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:185
+msgid "Anzahl Zimmer"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:189
+msgid "Anzahl Schlafzimmer"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:193
+msgid "Anzahl Badezimmer"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:205
+msgid "Ausstattungsmerkmale"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:206
+msgid "Kommagetrennte Liste. Wird automatisch vom OpenImmo-Import befuellt."
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:211
+msgid "Vorschau"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:224, ../src/Frontend/CardRenderer.php:170, ../src/Frontend/EnergyRenderer.php:65
+msgid "Baujahr"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:228
+msgid "Zustand"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:232
+msgid "Energieausweis Art"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:236
+msgid "Endenergiebedarf"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:240, ../src/Frontend/EnergyRenderer.php:100
+msgid "Energieeffizienzklasse"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:248
+msgid "Ansprechpartner"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:253
+msgid "Firma"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:257
+msgid "E-Mail"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:261
+msgid "Telefon"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:269
+msgid "Importiert am"
+msgstr ""
+
+#: ../src/Admin/PropertyDetails.php:273
+msgid "Debug: Alle Metadaten"
+msgstr ""
+
+#: ../src/Admin/Settings.php:25
+msgid "ImmoSuite Einstellungen"
+msgstr ""
+
+#: ../src/Admin/Settings.php:26
+msgid "Einstellungen"
+msgstr ""
+
+#: ../src/Admin/Settings.php:50
+msgid "Shortcode-Referenz"
+msgstr ""
+
+#: ../src/Admin/Settings.php:51
+msgid "Diese Shortcodes koennen in Elementor, Classic Editor oder jedem Page Builder verwendet werden:"
+msgstr ""
+
+#: ../src/Admin/Settings.php:56
+msgid "Shortcode"
+msgstr ""
+
+#: ../src/Admin/Settings.php:57
+msgid "Beschreibung"
+msgstr ""
+
+#: ../src/Admin/Settings.php:63
+msgid "Zeigt aktuelle Immobilien im Grid an."
+msgstr ""
+
+#: ../src/Admin/Settings.php:67
+msgid "6 Immobilien in 3 Spalten."
+msgstr ""
+
+#: ../src/Admin/Settings.php:71
+msgid "Nur Immobilien in Muenchen (Ort-Slug). Ideal fuer Geo-Landing-Pages."
+msgstr ""
+
+#: ../src/Admin/Settings.php:75
+msgid "Nur Haeuser zum Kauf."
+msgstr ""
+
+#: ../src/Admin/Settings.php:79
+msgid "Nur als Highlight markierte Immobilien."
+msgstr ""
+
+#: ../src/Admin/Settings.php:83
+msgid "Zeigt verkaufte/Referenz-Objekte an."
+msgstr ""
+
+#: ../src/Admin/Settings.php:87
+msgid "Referenzen nur aus Muenchen. Ideal fuer Geo-Landing-Pages."
+msgstr ""
+
+#: ../src/Admin/Settings.php:91
+msgid "6 verkaufte Objekte in 2 Spalten (ohne Referenzen)."
+msgstr ""
+
+#: ../src/Admin/Settings.php:97
+msgid "Tipp: Im Gutenberg-Editor stehen diese Funktionen auch als native Bloecke unter \"dbw Immo Suite\" zur Verfuegung."
+msgstr ""
+
+#: ../src/Admin/Settings.php:103
+msgid "Manueller Import"
+msgstr ""
+
+#: ../src/Admin/Settings.php:106
+msgid "Starten Sie den Import manuell. Dies verarbeitet alle XML-Dateien im konfigurierten Verzeichnis."
+msgstr ""
+
+#: ../src/Admin/Settings.php:109
+msgid "Import jetzt starten"
+msgstr ""
+
+#: ../src/Admin/Settings.php:126
+msgid "OpenImmo Import Einstellungen"
+msgstr ""
+
+#: ../src/Admin/Settings.php:133
+msgid "Pfad zu XML-Dateien"
+msgstr ""
+
+#: ../src/Admin/Settings.php:141
+msgid "URL Slug (Permalink)"
+msgstr ""
+
+#: ../src/Admin/Settings.php:149
+msgid "Garbage Collection (Full Sync)"
+msgstr ""
+
+#: ../src/Admin/Settings.php:158
+msgid "Referenzen & Verkaufte Objekte"
+msgstr ""
+
+#: ../src/Admin/Settings.php:165
+msgid "Aktivieren"
+msgstr ""
+
+#: ../src/Admin/Settings.php:173
+msgid "Seiten-Slug (URL)"
+msgstr ""
+
+#: ../src/Admin/Settings.php:181
+msgid "Archiv bereinigen"
+msgstr ""
+
+#: ../src/Admin/Settings.php:189
+msgid "Badge: Referenz"
+msgstr ""
+
+#: ../src/Admin/Settings.php:197
+msgid "Badge: Verkauft"
+msgstr ""
+
+#: ../src/Admin/Settings.php:205
+msgid "Preise ausblenden"
+msgstr ""
+
+#: ../src/Admin/Settings.php:213
+msgid "Verkaufsdatum"
+msgstr ""
+
+#: ../src/Admin/Settings.php:278
+msgid "Standard: immobilien. Nach Änderung bitte Permalinks neu speichern!"
+msgstr ""
+
+#: ../src/Admin/Settings.php:283
+msgid "Bitte geben Sie den absoluten Pfad zum Ordner an, in dem die OpenImmo-Dateien liegen. Standardmäßig sucht das Plugin im Uploads-Verzeichnis under /openimmo/."
+msgstr ""
+
+#: ../src/Admin/Settings.php:288
+msgid "Konfiguration für das Referenz-System und verkaufte Immobilien."
+msgstr ""
+
+#: ../src/Admin/Settings.php:315
+msgid "-- Bitte wählen --"
+msgstr ""
+
+#: ../src/Admin/Settings.php:318
+msgid "Eigener Pfad..."
+msgstr ""
+
+#: ../src/Admin/Settings.php:409
+msgid "Slug der automatisch erstellten Seite."
+msgstr ""
+
+#: ../src/blocks/GridBlock.php:151
+msgid "Keine Immobilien für diesen Filter gefunden (Vorschau)."
+msgstr ""
+
+#: ../src/blocks/ReferencesBlock.php:115
+msgid "Keine Referenzen gefunden (Vorschau)."
+msgstr ""
+
+#: ../src/Core/Plugin.php:173
+msgid "dbw Immo Suite"
+msgstr ""
+
+#: ../src/Frontend/CardRenderer.php:142, ../src/Frontend/Filter.php:274
+msgid "Zimmer"
+msgstr ""
+
+#: ../src/Frontend/CardRenderer.php:156
+msgid "Schlafzimmer"
+msgstr ""
+
+#: ../src/Frontend/CardRenderer.php:188
+msgid "Zum Exposé"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:32
+msgid "Bitte alle Pflichtfelder ausfuellen."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:36
+msgid "Bitte eine gueltige E-Mail-Adresse eingeben."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:47
+msgid "Anfrage: %s"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:77
+msgid "Beim Versand ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:75
+msgid "Ihre Anfrage wurde erfolgreich versendet. Wir melden uns bei Ihnen."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:92
+msgid "Anfrage senden"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:98
+msgid "Ihr Name *"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:101
+msgid "Ihre E-Mail *"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:104
+msgid "Telefon (optional)"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:108
+msgid "Ich interessiere mich fuer \"%s\" und bitte um weitere Informationen."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:113, ../src/Frontend/ContactForm.php:153, ../src/Frontend/ContactForm.php:161
+msgid "Anfrage absenden"
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:129
+msgid "Wird gesendet..."
+msgstr ""
+
+#: ../src/Frontend/ContactForm.php:159
+msgid "Netzwerkfehler. Bitte versuchen Sie es erneut."
+msgstr ""
+
+#: ../src/Frontend/EnergyRenderer.php:60
+msgid "Energie & Heizung"
+msgstr ""
+
+#: ../src/Frontend/EnergyRenderer.php:72
+msgid "Ausweistyp"
+msgstr ""
+
+#: ../src/Frontend/EnergyRenderer.php:79
+msgid "Endenergieverbrauch"
+msgstr ""
+
+#: ../src/Frontend/EnergyRenderer.php:86
+msgid "Energieträger"
+msgstr ""
+
+#: ../src/Frontend/EnergyRenderer.php:93
+msgid "Gültig bis"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:204
+msgid "Objekttyp"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:206, ../src/Frontend/Filter.php:248
+msgid "Alle"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:219
+msgid "Standort"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:223
+msgid "Ort, PLZ..."
+msgstr ""
+
+#: ../src/Frontend/Filter.php:230
+msgid "Erweiterte Filter"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:235
+msgid "Suchen"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:246
+msgid "Vermarktung"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:259
+msgid "Preis (€)"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:268
+msgid "Fläche (m²)"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:283
+msgid "Filter zurücksetzen"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:308
+msgid "Immobilien gefunden"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:314
+msgid "Kachelansicht"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:317
+msgid "Listenansicht"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:333
+msgid "Neueste zuerst"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:334
+msgid "Älteste zuerst"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:335
+msgid "Preis aufsteigend"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:336
+msgid "Preis absteigend"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:337
+msgid "Größte zuerst"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:381, ../src/PostTypes/Property.php:25, ../src/PostTypes/Property.php:51
+msgid "Immobilie"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:410, ../src/Frontend/Filter.php:395
+msgid "zur Miete"
+msgstr ""
+
+#: ../src/Frontend/Filter.php:407, ../src/Frontend/Filter.php:392
+msgid "zum Kauf"
+msgstr ""
+
+#: ../src/Frontend/Shortcode.php:157, ../templates/archive-immobilie.php:39
+msgid "Keine Immobilien gefunden."
+msgstr ""
+
+#: ../src/Frontend/Shortcode.php:247
+msgid "Keine Referenzen gefunden."
+msgstr ""
+
+#: ../src/PostTypes/Property.php:22
+msgctxt "Post Type General Name"
+msgid "Immobilien"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:23
+msgctxt "Post Type Singular Name"
+msgid "Immobilie"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:24
+msgid "ImmoSuite"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:26, ../templates/archive-immobilie.php:3
+msgid "Immobilien Archiv"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:27
+msgid "Immobilien Attribute"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:28
+msgid "Eltern-Immobilie:"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:29
+msgid "Alle Immobilien"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:30
+msgid "Neue Immobilie hinzufügen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:31
+msgid "Neu hinzufügen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:32
+msgid "Neue Immobilie"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:33
+msgid "Immobilie bearbeiten"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:34
+msgid "Immobilie aktualisieren"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:35
+msgid "Immobilie ansehen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:36
+msgid "Immobilien ansehen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:37
+msgid "Immobilie suchen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:38
+msgid "Nicht gefunden"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:39
+msgid "Nicht im Papierkorb gefunden"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:40
+msgid "Titelbild"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:41
+msgid "Titelbild festlegen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:42
+msgid "Titelbild entfernen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:43
+msgid "Als Titelbild verwenden"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:44
+msgid "In Immobilie einfügen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:45
+msgid "Zu dieser Immobilie hochgeladen"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:46
+msgid "Immobilien Liste"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:47
+msgid "Immobilien Liste Navigation"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:48
+msgid "Immobilien Liste filtern"
+msgstr ""
+
+#: ../src/PostTypes/Property.php:52
+msgid "Immobilienverwaltung für DBW ImmoSuite"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:16
+msgctxt "taxonomy general name"
+msgid "Orte"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:17
+msgctxt "taxonomy singular name"
+msgid "Ort"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:18
+msgid "Orte suchen"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:19
+msgid "Alle Orte"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:20
+msgid "Übergeordneter Ort"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:21
+msgid "Übergeordneter Ort:"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:22
+msgid "Ort bearbeiten"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:23
+msgid "Ort aktualisieren"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:24
+msgid "Neuen Ort hinzufügen"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:25
+msgid "Neuer Ort Name"
+msgstr ""
+
+#: ../src/Taxonomies/Location.php:26
+msgid "Ort"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:16
+msgctxt "taxonomy general name"
+msgid "Vermarktungsarten"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:17
+msgctxt "taxonomy singular name"
+msgid "Vermarktungsart"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:18
+msgid "Vermarktungsarten suchen"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:19
+msgid "Alle Vermarktungsarten"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:20
+msgid "Übergeordnete Vermarktungsart"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:21
+msgid "Übergeordnete Vermarktungsart:"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:22
+msgid "Vermarktungsart bearbeiten"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:23
+msgid "Vermarktungsart aktualisieren"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:24
+msgid "Neue Vermarktungsart hinzufügen"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:25
+msgid "Neuer Vermarktungsart Name"
+msgstr ""
+
+#: ../src/Taxonomies/MarketingType.php:26
+msgid "Vermarktungsart"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:16
+msgctxt "taxonomy general name"
+msgid "Objektarten"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:17
+msgctxt "taxonomy singular name"
+msgid "Objektart"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:18
+msgid "Objektarten suchen"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:19
+msgid "Alle Objektarten"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:20
+msgid "Übergeordnete Objektart"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:21
+msgid "Übergeordnete Objektart:"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:22
+msgid "Objektart bearbeiten"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:23
+msgid "Objektart aktualisieren"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:24
+msgid "Neue Objektart hinzufügen"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:25
+msgid "Neuer Objektart Name"
+msgstr ""
+
+#: ../src/Taxonomies/PropertyType.php:26
+msgid "Objektart"
+msgstr ""
+
+#: ../templates/single-immobilie.php:3
+msgid "Single Immobilie"
+msgstr ""
+
+#: ../templates/single-immobilie.php:311
+msgid "Stellplätze:"
+msgstr ""

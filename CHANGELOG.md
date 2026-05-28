@@ -7,6 +7,29 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.7.0] — 2026-05-28
+
+Kontaktformular komplett neu: Single-Step-Modal mit Intent-basierter Lead-Qualifizierung ersetzt das alte Inline-Formular.
+
+### Hinzugefuegt
+- **Neue Datei `ContactModal.php`** — natives `<dialog>`-Modal mit CTA-Buttons in der Sidebar, Quick-Facts im Header, Intent-Radio-Pills, kontextuelle Zusatzfelder je nach Intent, Datenschutz-Checkbox, Honeypot-Spamschutz, animierter Erfolgs-Screen mit Makler-Kontaktkarte und "Was passiert jetzt?"-Block
+- **Neue Datei `contact-modal.js`** — Modal-Steuerung (Open/Close/Backdrop), Intent-basierte Feld-Enthuellung, AJAX-Submit mit personalisierter Erfolgsanzeige, Mobile-Sticky-CTA-Bar mit IntersectionObserver
+- **Mobile Sticky-CTA-Bar** — zeigt Preis + "Anfragen"-Button wenn Sidebar aus dem Viewport scrollt
+- **Datenschutz-Checkbox** mit automatischem Link zur WordPress-Datenschutzseite (required)
+- **Privacy-Check** im AJAX-Handler (`ContactForm.php`)
+
+### Geaendert
+- **ContactForm.php** — AJAX-Handler erweitert um Intent-Felder (Besichtigung/Info/Preis/Rueckruf), strukturierte E-Mails mit Intent-Prefix im Betreff, Honeypot-Erkennung
+- **single-immobilie.php** — Inline-Kontaktformular ersetzt durch `ContactModal::render_cta_buttons()`
+- **Plugin.php** — `ContactModal` registriert, `contact-modal.js` mit `wp_localize_script` eingebunden
+- **frontend.css** — ~500 Zeilen neue Modal-Styles (Dialog, Intent-Pills mit `:has()`, Context-Fields, Privacy, Success-Animation, Bottom-Sheet, Sticky-Bar)
+
+### Entfernt
+- Altes Inline-Kontaktformular (4-Feld-Form mit Inline-Script in der Sidebar)
+- Multi-Step-Logik (Progress-Bar, Step-Navigation, localStorage-Persist, Property-Hook-Karte) — zugunsten des einfacheren Single-Step-Ansatzes
+
+---
+
 ## [1.6.0] — 2026-05-28
 
 Globale Du/Sie-Anrede: Plugin-Betreiber koennen zwischen foermlicher ("Sie") und persoenlicher ("Du") Ansprache umschalten.

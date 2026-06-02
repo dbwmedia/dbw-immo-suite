@@ -7,6 +7,44 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.10.0] — 2026-06-02
+
+Professionelle Expose-Ansicht ersetzt den bisherigen Drucken-Button. Standalone-Seite ohne Theme-Header/Footer, optimiert fuer A4-Druck und PDF-Export.
+
+### Hinzugefuegt
+- **Expose-Seite** (`?expose=1`) — standalone HTML-Seite ohne Theme, optimiert fuer A4-Druck/PDF-Export via Browser-Dialog "Als PDF speichern"
+- **Neue Datei `PdfExpose.php`** (`src/Frontend/`) — Controller-Klasse mit `template_redirect`-Hook, Nonce-Schutz, Datensammlung aus allen Meta-Feldern
+- **Neue Datei `expose.php`** (`templates/`) — 5-seitiges Expose-Template:
+  - Seite 1 (Cover): Hero-Bild volle Breite, Objektart-Badge, Titel, Adresse, Key Facts Strip (Wohnflaeche, Zimmer, Grundstueck, Baujahr, Preis), Makler-Branding Footer
+  - Seite 2 (Details): Zweispaltiges Layout mit Beschreibung + Ausstattung (Features als Badges) links, Eckdaten-Tabelle (alle Flaechen + Preise) rechts
+  - Seite 3 (Lage & Energie): Lagebeschreibung, Entfernungen-Tabelle, Energiedaten mit farbiger A+–H Skala
+  - Seite 4 (Bilder): 2-spaltiges Bildergrid (bis zu 6 Bilder) + Grundrisse
+  - Letzte Seite (Kontakt): Ansprechpartner-Card mit Foto, Firmendaten aus Makler-SEO-Einstellungen, rechtlicher Disclaimer
+- **Auto-Print-Dialog** — Print-Dialog oeffnet sich automatisch nach Seitenladen (600ms Delay fuer Bildladen)
+- **Screen-Vorschau** — Info-Bar mit manuellem "PDF speichern / Drucken"-Button
+- **Nonce-geschuetzte URLs** — Bot-Schutz fuer Expose-Links via `wp_nonce_url()`
+- **`noindex, nofollow`** auf Expose-Seiten gegen Duplicate Content
+- **Du/Sie System** — Ansprechpartner-Ueberschrift und Info-Bar nutzen `dbw_anrede()`
+- **Customizer-Farben** — Accent und Primary aus Customizer-Settings uebernommen
+- **`print-color-adjust: exact`** fuer korrekte Energieskala-Farben im Druck
+- **`@page :first`** mit randlosen Margins fuer Cover-Hero-Bild
+
+### Geaendert
+- **single-immobilie.php** — Drucken-Button (`<button onclick="window.print()">`) ersetzt durch Expose-Link (`<a target="_blank">`), neues Download-SVG-Icon statt Drucker-Icon
+- **Customizer.php** — Toggle-Label von "Drucken-Button im Slider anzeigen" auf "Expose/PDF-Button im Slider anzeigen"
+- **Plugin.php** — `PdfExpose` im Loader registriert
+- **Version** auf 1.10.0 aktualisiert
+
+### Technische Details
+- Null externe Abhaengigkeiten (kein mPDF, kein Composer, kein JavaScript-Build)
+- Standalone-HTML mit eingebettetem CSS, `@page`-Regeln fuer A4-Seitenumbrueche
+- Wiederverwendet bestehende Helper-Funktionen (`dbw_format_number()`, `dbw_format_phone()`, `dbw_anrede()`)
+- Org-Daten aus `dbw_immo_suite_settings` (Makler-SEO Tab)
+- Bilder via `wp_get_attachment_image_url($id, 'large')` fuer Druckqualitaet
+- `update_meta_cache()` vor Gallery-Loop gegen N+1
+
+---
+
 ## [1.9.0] — 2026-06-02
 
 Neuer interaktiver Kaufnebenkosten- & Finanzierungsrechner auf der Detailseite fuer Kaufobjekte.

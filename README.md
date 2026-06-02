@@ -40,8 +40,8 @@ Entwickelt fuer den professionellen Einsatz und nahtlose Integration in jede Wor
 - **Kaufnebenkosten- & Finanzierungsrechner** — automatische Nebenkosten-Aufschluesselung (Grunderwerbsteuer per PLZ, Notar, Grundbuch, Provision) + interaktive Finanzierung mit 3 Slidern (Eigenkapital, Zinssatz, Tilgung), Live-Berechnung, alle Raten im Backend anpassbar
 - **Highlights-Sidebar** — Sticky-Box mit Eckdaten, Preis, Provision, Energieklasse
 - **Aehnliche Objekte** — "Das koennte Sie auch interessieren" mit 3-stufigem Fallback
-- **Floating Action Buttons** — Zurueck, Teilen (Web Share API), Drucken, Grundrisse-Anker
-- **Print-Expose** — sauberes A4-Layout beim Drucken (automatisch, ohne Extra-Klick)
+- **Floating Action Buttons** — Zurueck, Teilen (Web Share API), Expose/PDF-Download, Grundrisse-Anker
+- **Professionelles Expose** — standalone A4-Seite ohne Theme (Cover mit Hero-Bild, Eckdaten, Beschreibung, Ausstattung, Lage, Energie, Bildergalerie, Grundrisse, Kontakt + Disclaimer), automatischer Print-Dialog, "Als PDF speichern" im Browser, Nonce-geschuetzt, null Abhaengigkeiten
 
 #### SEO & Performance
 - **Schema.org JSON-LD** — RealEstateListing auf Detailseiten (Preis, Flaeche, Zimmer, Geo, Energieklasse, Availability), BreadcrumbList auf Archiv+Detail, RealEstateAgent sitewide
@@ -109,7 +109,7 @@ Zeigt verkaufte und Referenz-Objekte an.
 ### WordPress Customizer
 - **Design System** — Primary, Secondary, Accent, Hintergrundfarbe, Eckenradius
 - **Archiv-Steuerung** — Objekte/Seite, Spalten, Sichtbarkeit (Preis, Flaeche, Zimmer, Baujahr, Energie)
-- **Detailseite** — Toggles fuer Karte, Energie, Galerie, Kontakt, Teilen, Drucken, Aehnliche Objekte, Finanzierungsrechner
+- **Detailseite** — Toggles fuer Karte, Energie, Galerie, Kontakt, Teilen, Expose/PDF, Aehnliche Objekte, Finanzierungsrechner
 - **Highlights-Box** — Hintergrundfarbe und Textfarbe
 
 ### Admin-Backend
@@ -177,6 +177,7 @@ src/
     EnergyRenderer.php      # Energieausweis-Skala + Archiv-Flag
     ContactForm.php         # AJAX-Kontaktformular
     FinanceCalculator.php   # Kaufnebenkosten- & Finanzierungsrechner
+    PdfExpose.php           # Standalone Expose-Seite (Print/PDF)
     SeoMeta.php             # Open Graph + Twitter Card Tags + Canonical
     SchemaOutput.php        # Schema.org JSON-LD (RealEstateListing, BreadcrumbList, RealEstateAgent)
   Import/
@@ -189,6 +190,7 @@ src/
 templates/
   archive-immobilie.php     # Archiv-Template
   single-immobilie.php      # Detailseiten-Template
+  expose.php                # Standalone Expose (A4 Print/PDF)
 assets/
   css/frontend.css          # Alle Frontend-Styles inkl. Print
   js/frontend.js            # Filter-Toggle + Entrance Animations (Vanilla JS)

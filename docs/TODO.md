@@ -1,6 +1,6 @@
 # dbw Immo Suite — Offene Punkte & Roadmap
 
-Stand: 2026-06-02 (nach v1.8.0 Audit-Runde)
+Stand: 2026-06-02 (nach v1.10.0)
 
 ---
 
@@ -36,7 +36,7 @@ Stand: 2026-06-02 (nach v1.8.0 Audit-Runde)
 ## Feature-Ideen (v2.0+)
 
 - [x] ~~Kaufnebenkosten- & Finanzierungsrechner~~ (v1.9.0)
-- [ ] PDF-Expose-Download (siehe Prompt)
+- [x] ~~PDF-Expose-Download~~ (v1.10.0 — standalone Expose-Seite mit Print/PDF)
 - [ ] Energiekosten-Rechner (basierend auf Energiepass-Daten)
 - [ ] Infrastruktur-Score (basierend auf Distanz-Feldern)
 - [ ] REST API Endpoints

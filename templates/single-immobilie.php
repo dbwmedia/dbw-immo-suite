@@ -181,16 +181,19 @@ get_header(); ?>
 					<?php endif; ?>
 
 					<?php if (get_theme_mod('dbw_immo_single_show_print', true)): ?>
-						<button onclick="window.print()" class="dbw-gallery-btn"
-							aria-label="<?php esc_attr_e('Drucken', 'dbw-immo-suite'); ?>"
-							style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor:pointer; padding:0;">
+						<a href="<?php echo esc_url(\DBW\ImmoSuite\Frontend\PdfExpose::get_expose_url($id)); ?>"
+							target="_blank" rel="noopener"
+							class="dbw-gallery-btn"
+							aria-label="<?php esc_attr_e('Expose als PDF herunterladen', 'dbw-immo-suite'); ?>"
+							title="<?php esc_attr_e('Expose als PDF', 'dbw-immo-suite'); ?>"
+							style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor:pointer; padding:0; text-decoration:none;">
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 								stroke-linecap="round" stroke-linejoin="round">
-								<polyline points="6 9 6 2 18 2 18 9"></polyline>
-								<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-								<rect x="6" y="14" width="12" height="8"></rect>
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+								<polyline points="7 10 12 15 17 10"></polyline>
+								<line x1="12" y1="15" x2="12" y2="3"></line>
 							</svg>
-						</button>
+						</a>
 					<?php endif; ?>
 				</div>
 

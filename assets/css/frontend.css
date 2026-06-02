@@ -387,12 +387,13 @@
 
 /* Single Property */
 /* Single Property */
-#dbw-immo-suite .dbw-single-property-container {
+#dbw-immo-suite.dbw-single-property-container {
 	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 2rem 1rem;
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 #dbw-immo-suite .dbw-single-header {
@@ -442,6 +443,27 @@
 	grid-template-columns: 2fr 1fr;
 	gap: 3rem;
 	align-items: start;
+}
+
+#dbw-immo-suite .dbw-main-col,
+#dbw-immo-suite .dbw-sidebar {
+	min-width: 0;
+}
+
+#dbw-immo-suite .dbw-description {
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+#dbw-immo-suite .dbw-description img {
+	max-width: 100%;
+	height: auto;
+}
+
+#dbw-immo-suite .dbw-description table {
+	max-width: 100%;
+	overflow-x: auto;
+	display: block;
 }
 
 #dbw-immo-suite .dbw-section {
@@ -1042,6 +1064,11 @@
 /* =========================================
    SINGLE: Gallery Slider
    ========================================= */
+#dbw-immo-suite .dbw-gallery-wrapper {
+	max-width: 100%;
+	overflow: hidden;
+}
+
 #dbw-immo-suite .dbw-gallery-slider {
 	display: flex;
 	overflow-x: auto;

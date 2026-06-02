@@ -468,26 +468,14 @@ get_header(); ?>
 						$energy_class_hl = get_post_meta(get_the_ID(), 'energiepass_wertklasse', true);
 						if (!empty($energy_class_hl)):
 							?>
-							<li
+							<li class="dbw-highlights-energy"
 								style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.15); padding: 10px 0; margin-bottom: 4px;">
 								<span>Energieklasse</span>
-								<div style="position: relative; right: auto; top: auto; display: inline-block;">
-									<?php
-									// Reuse the logic from render_archive_flag but modify the absolute positioning style.
-									// We remove the position:absolute styles by replacing them
-									if (class_exists('DBW\ImmoSuite\Frontend\EnergyRenderer')) {
-										ob_start();
-										\DBW\ImmoSuite\Frontend\EnergyRenderer::render_archive_flag(get_the_ID());
-										$raw_flag = ob_get_clean();
-										$inline_flag = str_replace(
-											array('position: absolute; top: 20px; right: 20px;', 'position: absolute; top: 10px; right: 10px;', 'position: absolute; top: 10px; right: 0;'),
-											'position: relative;',
-											$raw_flag
-										);
-										echo $inline_flag;
-									}
-									?>
-								</div>
+								<?php
+								if (class_exists('DBW\ImmoSuite\Frontend\EnergyRenderer')) {
+									\DBW\ImmoSuite\Frontend\EnergyRenderer::render_archive_flag(get_the_ID());
+								}
+								?>
 							</li>
 						<?php endif; ?>
 

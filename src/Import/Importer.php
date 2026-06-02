@@ -844,7 +844,7 @@ class Importer
         }
 
         // Validate file type before uploading
-        $allowed_types = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'svg');
+        $allowed_types = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf');
         $ext = strtolower(pathinfo($real_full, PATHINFO_EXTENSION));
         if (!in_array($ext, $allowed_types, true)) {
             $this->log_debug(sprintf('Blocked upload of disallowed file type: %s', $file_name));
@@ -1295,7 +1295,7 @@ class Importer
             $previous_entities = libxml_disable_entity_loader(true);
         }
 
-        $xml = simplexml_load_file($file, 'SimpleXMLElement', LIBXML_NONET | LIBXML_NOENT);
+        $xml = simplexml_load_file($file, 'SimpleXMLElement', LIBXML_NONET);
 
         if ($disable_entities) {
             libxml_disable_entity_loader($previous_entities);
@@ -1315,7 +1315,15 @@ class Importer
 
     private function log_debug($msg)
     {
-        $log_file = WP_CONTENT_DIR . '/openimmo_import.log';
+        // Store log in plugin directory (not publicly accessible via URL)
+        $log_dir = DBW_IMMO_SUITE_PATH . 'logs';
+        if (!is_dir($log_dir)) {
+            wp_mkdir_p($log_dir);
+            // Protect log directory from web access
+            @file_put_contents($log_dir . '/.htaccess', "Deny from all\n");
+            @file_put_contents($log_dir . '/index.php', "<?php // Silence is golden.\n");
+        }
+        $log_file = $log_dir . '/import.log';
         $entry = date('Y-m-d H:i:s') . ' - ' . wp_strip_all_tags($msg) . PHP_EOL;
         @file_put_contents($log_file, $entry, FILE_APPEND);
     }

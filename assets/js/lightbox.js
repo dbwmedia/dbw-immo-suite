@@ -8,20 +8,38 @@
 
 	var lbImage = document.getElementById('dbwLbImage');
 	var lbCounter = document.getElementById('dbwLbCounter');
+	var closeBtn = overlay.querySelector('[aria-label]');
 	var currentSet = [];
 	var currentIdx = 0;
+	var previousFocus = null;
+
+	// Focus trap: keep Tab within lightbox
+	var focusableEls = overlay.querySelectorAll('button');
+	overlay.addEventListener('keydown', function (e) {
+		if (e.key !== 'Tab' || overlay.style.display !== 'flex') return;
+		var first = focusableEls[0];
+		var last = focusableEls[focusableEls.length - 1];
+		if (e.shiftKey) {
+			if (document.activeElement === first) { last.focus(); e.preventDefault(); }
+		} else {
+			if (document.activeElement === last) { first.focus(); e.preventDefault(); }
+		}
+	});
 
 	window.dbwLightbox = {
 		open: function (type, index) {
+			previousFocus = document.activeElement;
 			currentSet = (type === 'gallery') ? galleryImages : floorplanImages;
 			currentIdx = index || 0;
 			this.show();
 			overlay.style.display = 'flex';
 			document.body.style.overflow = 'hidden';
+			if (closeBtn) closeBtn.focus();
 		},
 		close: function () {
 			overlay.style.display = 'none';
 			document.body.style.overflow = '';
+			if (previousFocus) previousFocus.focus();
 		},
 		prev: function () {
 			currentIdx = (currentIdx - 1 + currentSet.length) % currentSet.length;

@@ -208,8 +208,9 @@ get_header(); ?>
 				<!-- Main Slider -->
 				<div class="dbw-gallery-slider" id="dbwGallerySlider">
 					<?php foreach ($gallery_images as $index => $img): ?>
-						<div class="dbw-gallery-slide" id="slide-<?php echo $index; ?>"
-							onclick="dbwLightbox.open('gallery', <?php echo $index; ?>)">
+						<button type="button" class="dbw-gallery-slide" id="slide-<?php echo $index; ?>"
+							onclick="dbwLightbox.open('gallery', <?php echo $index; ?>)"
+							aria-label="<?php echo esc_attr(sprintf(__('Bild %d in Lightbox oeffnen', 'dbw-immo-suite'), $index + 1)); ?>">
 							<img src="<?php echo esc_url($img['url']); ?>"
 								alt="<?php echo esc_attr($img['alt'] ?: get_the_title() . ' — Bild ' . ($index + 1)); ?>"
 								<?php if ($img['srcset']): ?>srcset="<?php echo esc_attr($img['srcset']); ?>"<?php endif; ?>
@@ -223,7 +224,7 @@ get_header(); ?>
 								</div>
 								<?php
 							endif; ?>
-						</div>
+						</button>
 						<?php
 					endforeach; ?>
 				</div>
@@ -345,18 +346,14 @@ get_header(); ?>
 
 						<?php if ($lat && $lng): ?>
 						<div id="dbw-map"></div>
-						<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-						<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-						<script>
-						(function() {
-							var map = L.map('dbw-map', { scrollWheelZoom: false }).setView([<?php echo esc_js($lat); ?>, <?php echo esc_js($lng); ?>], 14);
-							L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-								attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-								maxZoom: 18
-							}).addTo(map);
-							L.marker([<?php echo esc_js($lat); ?>, <?php echo esc_js($lng); ?>]).addTo(map);
-						})();
-						</script>
+						<?php
+						wp_enqueue_style('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), '1.9.4');
+						wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), '1.9.4', true);
+						wp_add_inline_script('leaflet', sprintf(
+							'(function(){var m=L.map("dbw-map",{scrollWheelZoom:false}).setView([%s,%s],14);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; <a href=\'https://www.openstreetmap.org/copyright\'>OpenStreetMap</a>",maxZoom:18}).addTo(m);L.marker([%s,%s]).addTo(m);})();',
+							esc_js($lat), esc_js($lng), esc_js($lat), esc_js($lng)
+						));
+						?>
 						<?php endif; ?>
 
 						<!-- Infrastructure Distances -->
@@ -399,9 +396,10 @@ get_header(); ?>
 						<div class="dbw-gallery-grid"
 							style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); height:auto; gap:1rem;">
 							<?php foreach ($floor_plans as $fp_index => $fp): ?>
-								<div class="dbw-gallery-item" onclick="dbwLightbox.open('floorplan', <?php echo $fp_index; ?>)"
-									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd; cursor: pointer; border-radius: var(--dbw-radius, 8px); transition: box-shadow 0.2s;">
-								</div>
+								<button type="button" class="dbw-gallery-item" onclick="dbwLightbox.open('floorplan', <?php echo $fp_index; ?>)"
+									aria-label="<?php echo esc_attr(sprintf(__('Grundriss %d oeffnen', 'dbw-immo-suite'), $fp_index + 1)); ?>"
+									style="height:200px; display:block; background-image: url(<?php echo esc_url($fp['url']); ?>); background-size: contain; background-repeat:no-repeat; background-position: center; border:1px solid #ddd; cursor: pointer; border-radius: var(--dbw-radius, 8px); transition: box-shadow 0.2s; width:100%; padding:0;">
+								</button>
 								<?php
 							endforeach; ?>
 						</div>

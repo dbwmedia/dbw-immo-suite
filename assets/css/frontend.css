@@ -1263,6 +1263,10 @@
 	position: relative;
 	background-color: #f0f0f0;
 	cursor: pointer;
+	border: none;
+	padding: 0;
+	font: inherit;
+	text-align: left;
 }
 
 #dbw-immo-suite .dbw-gallery-slide img {

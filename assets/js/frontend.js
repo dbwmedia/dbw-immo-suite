@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Entrance Animations (IntersectionObserver) ──
     if (!('IntersectionObserver' in window)) {
         // Fallback: show everything immediately
-        document.querySelectorAll('.dbw-property-card, .dbw-section').forEach(function (el) {
+        document.querySelectorAll('.dbw-property-card, .dbw-main-col .dbw-section').forEach(function (el) {
             el.classList.add('is-visible');
         });
         return;
@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         cards.forEach(function (card) { cardObserver.observe(card); });
     }
 
-    // Sections on single page: fade-up on scroll
-    var sections = document.querySelectorAll('#dbw-immo-suite .dbw-section');
+    // Sections on single page: fade-up on scroll (main column only, not sidebar)
+    var sections = document.querySelectorAll('#dbw-immo-suite .dbw-main-col .dbw-section');
     if (sections.length) {
         var sectionObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {

@@ -570,7 +570,7 @@
 	display: block;
 }
 
-/* Section Entrance Animation (Single Property Page) */
+/* Section Entrance Animation (Single Property — main column only, not sidebar) */
 @keyframes dbw-fade-up {
 	from {
 		opacity: 0;
@@ -582,20 +582,23 @@
 	}
 }
 
-#dbw-immo-suite .dbw-section {
-	margin-bottom: 3rem;
+#dbw-immo-suite .dbw-main-col .dbw-section {
 	opacity: 0;
 }
 
-#dbw-immo-suite .dbw-section.is-visible {
+#dbw-immo-suite .dbw-main-col .dbw-section.is-visible {
 	animation: dbw-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+#dbw-immo-suite .dbw-section {
+	margin-bottom: 3rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
-	#dbw-immo-suite .dbw-section {
+	#dbw-immo-suite .dbw-main-col .dbw-section {
 		opacity: 1;
 	}
-	#dbw-immo-suite .dbw-section.is-visible {
+	#dbw-immo-suite .dbw-main-col .dbw-section.is-visible {
 		animation: none;
 	}
 }

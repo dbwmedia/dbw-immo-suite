@@ -34,23 +34,29 @@ class CardRenderer
         $post_id = get_the_ID();
         $settings = get_option('dbw_immo_suite_settings');
 
+        // Fetch all meta in a single query
+        $all_meta = get_post_custom($post_id);
+        $m = function($key) use ($all_meta) {
+            return isset($all_meta[$key][0]) ? $all_meta[$key][0] : '';
+        };
+
         // Price data
-        $kaufpreis = get_post_meta($post_id, 'kaufpreis', true);
-        $kaltmiete = get_post_meta($post_id, 'kaltmiete', true);
+        $kaufpreis = $m('kaufpreis');
+        $kaltmiete = $m('kaltmiete');
         $price = $kaufpreis ?: $kaltmiete;
         $is_rent = !$kaufpreis && $kaltmiete;
         $price_label = $is_rent ? __('Kaltmiete', 'dbw-immo-suite') : __('Kaufpreis', 'dbw-immo-suite');
 
         // Property data
-        $area = get_post_meta($post_id, 'wohnflaeche', true);
-        $rooms = get_post_meta($post_id, 'anzahl_zimmer', true);
-        $bedrooms = get_post_meta($post_id, 'anzahl_schlafzimmer', true);
-        $year = get_post_meta($post_id, 'energiepass_baujahr', true);
-        $location = get_post_meta($post_id, 'ort', true);
+        $area = $m('wohnflaeche');
+        $rooms = $m('anzahl_zimmer');
+        $bedrooms = $m('anzahl_schlafzimmer');
+        $year = $m('energiepass_baujahr');
+        $location = $m('ort');
 
         // Status / Badge
-        $immo_status = get_post_meta($post_id, '_dbw_immo_status', true);
-        $sales_date = get_post_meta($post_id, '_dbw_immo_sales_date', true);
+        $immo_status = $m('_dbw_immo_status');
+        $sales_date = $m('_dbw_immo_sales_date');
 
         // Determine tag & grayscale
         $tag_data = null;
@@ -72,7 +78,7 @@ class CardRenderer
         }
 
         // Image — exclude contact person portrait
-        $contact_img_id = get_post_meta($post_id, 'kontaktperson_bild_id', true);
+        $contact_img_id = $m('kontaktperson_bild_id');
         $has_image = false;
         $image_style = '';
         $thumb_id = get_post_thumbnail_id($post_id);
@@ -94,7 +100,7 @@ class CardRenderer
                 }
                 $has_image = true;
                 $image_style = 'background-image: url(' . wp_get_attachment_image_url($att->ID, 'medium-large') . ');';
-                if ($is_inactive) {
+                if ($use_grayscale) {
                     $image_style .= ' filter: grayscale(100%);';
                 }
                 break;

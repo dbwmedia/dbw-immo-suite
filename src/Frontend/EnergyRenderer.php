@@ -45,6 +45,7 @@ class EnergyRenderer
      */
     public static function render_single_scale($post_id)
     {
+        // Use cached meta (already primed by single-immobilie.php's get_post_custom)
         $energy_pass_art = get_post_meta($post_id, 'energiepass_art', true);
         $energy_end = get_post_meta($post_id, 'energiepass_endenergie', true);
         $energy_class = get_post_meta($post_id, 'energiepass_wertklasse', true);

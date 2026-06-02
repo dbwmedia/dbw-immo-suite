@@ -12,83 +12,94 @@ get_header(); ?>
 		the_post();
 		$id = get_the_ID();
 
-		// 1. Fetch Data
-		// Meta (Pricing, Areas)
-		$price_kauf = get_post_meta($id, 'kaufpreis', true);
-		$price_miete = get_post_meta($id, 'kaltmiete', true);
-		$price_warm = get_post_meta($id, 'warmmiete', true);
-		$hausgeld = get_post_meta($id, 'hausgeld', true);
-		$nebenkosten = get_post_meta($id, 'nebenkosten', true);
-		$provision = get_post_meta($id, 'provision_kaeufer', true);
+		// 1. Fetch ALL meta in a single query (instead of 42 individual calls)
+		$all_meta = get_post_custom($id);
+		$m = function($key) use ($all_meta) {
+			return isset($all_meta[$key][0]) ? $all_meta[$key][0] : '';
+		};
 
-		$area = get_post_meta($id, 'wohnflaeche', true);
-		$use_area = get_post_meta($id, 'nutzflaeche', true);
-		$land_area = get_post_meta($id, 'grundstuecksflaeche', true);
-		$rooms = get_post_meta($id, 'anzahl_zimmer', true);
-		$bedrooms = get_post_meta($id, 'anzahl_schlafzimmer', true);
-		$bathrooms = get_post_meta($id, 'anzahl_badezimmer', true);
-		$parking = get_post_meta($id, 'anzahl_stellplaetze', true);
+		// Pricing
+		$price_kauf = $m('kaufpreis');
+		$price_miete = $m('kaltmiete');
+		$price_warm = $m('warmmiete');
+		$hausgeld = $m('hausgeld');
+		$nebenkosten = $m('nebenkosten');
+		$provision = $m('provision_kaeufer');
+
+		// Areas
+		$area = $m('wohnflaeche');
+		$use_area = $m('nutzflaeche');
+		$land_area = $m('grundstuecksflaeche');
+		$rooms = $m('anzahl_zimmer');
+		$bedrooms = $m('anzahl_schlafzimmer');
+		$bathrooms = $m('anzahl_badezimmer');
+		$parking = $m('anzahl_stellplaetze');
 
 		// Geo
-		$plz = get_post_meta($id, 'plz', true);
-		$city = get_post_meta($id, 'ort', true);
-		$street = get_post_meta($id, 'strasse', true);
-		$house_num = get_post_meta($id, 'hausnummer', true);
-		$lat = get_post_meta($id, 'geo_breite', true);
-		$lng = get_post_meta($id, 'geo_laenge', true);
+		$plz = $m('plz');
+		$city = $m('ort');
+		$street = $m('strasse');
+		$house_num = $m('hausnummer');
+		$lat = $m('geo_breite');
+		$lng = $m('geo_laenge');
 
 		// Texts
-		$text_lage = get_post_meta($id, 'text_lage', true);
-		$text_ausstattung = get_post_meta($id, 'text_ausstattung', true);
-		$text_sonstiges = get_post_meta($id, 'text_sonstiges', true);
+		$text_lage = $m('text_lage');
+		$text_ausstattung = $m('text_ausstattung');
+		$text_sonstiges = $m('text_sonstiges');
 
 		// Energy
-		$energy_pass_art = get_post_meta($id, 'energiepass_art', true);
-		$energy_end = get_post_meta($id, 'energiepass_endenergie', true);
-		$energy_class = get_post_meta($id, 'energiepass_wertklasse', true);
-		$energy_source = get_post_meta($id, 'energiepass_traeger', true);
-		$energy_valid = get_post_meta($id, 'energiepass_gueltig_bis', true);
-		$energy_year = get_post_meta($id, 'energiepass_baujahr', true);
+		$energy_pass_art = $m('energiepass_art');
+		$energy_end = $m('energiepass_endenergie');
+		$energy_class = $m('energiepass_wertklasse');
+		$energy_source = $m('energiepass_traeger');
+		$energy_valid = $m('energiepass_gueltig_bis');
+		$energy_year = $m('energiepass_baujahr');
 
 		// Contact Person
-		$contact_name = get_post_meta($id, 'kontaktperson_name', true);
-		$contact_firstname = get_post_meta($id, 'kontaktperson_vorname', true);
-		$contact_email = get_post_meta($id, 'kontaktperson_email', true);
-		$contact_tel = get_post_meta($id, 'kontaktperson_tel', true);
-		$contact_img_url = get_post_meta($id, 'kontaktperson_bild_url', true);
+		$contact_name = $m('kontaktperson_name');
+		$contact_firstname = $m('kontaktperson_vorname');
+		$contact_email = $m('kontaktperson_email');
+		$contact_tel = $m('kontaktperson_tel');
+		$contact_img_url = $m('kontaktperson_bild_url');
 
 		// Gallery & Attachments Processing
 		$raw_attachments = get_attached_media('image', $id);
-		$contact_img_id = get_post_meta($id, 'kontaktperson_bild_id', true);
+		$contact_img_id = $m('kontaktperson_bild_id');
 
 		$gallery_images = array();
 		$floor_plans = array();
 
-		$seen_urls = array();
+		$seen_urls = array(); // associative for O(1) lookups
+
+		// Pre-cache attachment meta to avoid N+1 queries
+		$att_ids = array_keys($raw_attachments);
+		update_meta_cache('post', $att_ids);
 
 		foreach ($raw_attachments as $att_id => $att_post) {
-			$img_url = wp_get_attachment_image_url($att_id, 'large');
-
-			// 1. Skip if no URL
-			if (!$img_url)
-				continue;
-
-			// 2. Skip Contact Image (ID check match OR URL match)
+			// 1. Skip Contact Image (ID check match)
 			if ($contact_img_id && (int) $att_id === (int) $contact_img_id) {
 				continue;
 			}
+
+			$img_url = wp_get_attachment_image_url($att_id, 'large');
+
+			// 2. Skip if no URL
+			if (!$img_url)
+				continue;
+
+			// 3. Skip Contact Image (URL match fallback)
 			if ($contact_img_url && $img_url === $contact_img_url) {
 				continue;
 			}
 
-			// 3. Dedup by URL (prevent same image appearing multiple times due to bad imports)
-			if (in_array($img_url, $seen_urls)) {
+			// 4. Dedup by URL (prevent same image appearing multiple times due to bad imports)
+			if (isset($seen_urls[$img_url])) {
 				continue;
 			}
-			$seen_urls[] = $img_url;
+			$seen_urls[$img_url] = true;
 
 			$group = get_post_meta($att_id, '_openimmo_gruppe', true);
-			$img_url = wp_get_attachment_image_url($att_id, 'large');
 			$full_url = wp_get_attachment_image_url($att_id, 'full');
 			$alt = get_post_meta($att_id, '_wp_attachment_image_alt', true);
 
@@ -602,143 +613,62 @@ get_header(); ?>
 		$terms = wp_get_post_terms($id, 'objektart', array('fields' => 'ids'));
 		$vermarktung = wp_get_post_terms($id, 'vermarktungsart', array('fields' => 'ids'));
 
-		$args = array(
+		// Try progressively broader queries: full match → objektart only → any recent
+		$similar_query = null;
+		$attempts = array();
+
+		// Attempt 1: Match both objektart + vermarktungsart
+		if (!empty($terms) && !is_wp_error($terms) && !empty($vermarktung) && !is_wp_error($vermarktung)) {
+			$attempts[] = array(
+				'tax_query' => array(
+					'relation' => 'AND',
+					array('taxonomy' => 'objektart', 'field' => 'term_id', 'terms' => $terms),
+					array('taxonomy' => 'vermarktungsart', 'field' => 'term_id', 'terms' => $vermarktung),
+				),
+			);
+		}
+		// Attempt 2: Only objektart
+		if (!empty($terms) && !is_wp_error($terms)) {
+			$attempts[] = array(
+				'tax_query' => array(
+					array('taxonomy' => 'objektart', 'field' => 'term_id', 'terms' => $terms),
+				),
+			);
+		}
+		// Attempt 3: Any recent
+		$attempts[] = array('orderby' => 'date', 'order' => 'DESC');
+
+		$base_args = array(
 			'post_type'      => 'immobilie',
 			'posts_per_page' => 3,
 			'post__not_in'   => array($id),
 			'post_status'    => 'publish',
 			'orderby'        => 'rand',
+			'fields'         => 'ids',
+			'update_post_meta_cache' => true,
+			'update_post_term_cache' => true,
 		);
 
-		// Build tax_query from available terms
-		$tax_query = array();
-		if (!empty($terms) && !is_wp_error($terms)) {
-			$tax_query[] = array(
-				'taxonomy' => 'objektart',
-				'field'    => 'term_id',
-				'terms'    => $terms,
-			);
-		}
-		if (!empty($vermarktung) && !is_wp_error($vermarktung)) {
-			$tax_query[] = array(
-				'taxonomy' => 'vermarktungsart',
-				'field'    => 'term_id',
-				'terms'    => $vermarktung,
-			);
-		}
-		if (count($tax_query) > 1) {
-			$tax_query['relation'] = 'AND';
-		}
-		if (!empty($tax_query)) {
-			$args['tax_query'] = $tax_query;
-		}
-
-		$similar_query = new \WP_Query($args);
-
-		// Fallback: only objektart (drop vermarktungsart)
-		if (!$similar_query->have_posts() && count($tax_query) > 1) {
-			$fallback_args = $args;
-			unset($fallback_args['tax_query']);
-			if (!empty($terms) && !is_wp_error($terms)) {
-				$fallback_args['tax_query'] = array(
-					array('taxonomy' => 'objektart', 'field' => 'term_id', 'terms' => $terms),
-				);
+		foreach ($attempts as $attempt_args) {
+			$similar_query = new \WP_Query(array_merge($base_args, $attempt_args));
+			if ($similar_query->have_posts()) {
+				break;
 			}
-			$similar_query = new \WP_Query($fallback_args);
 		}
 
-		// Last fallback: any 3 recent properties
-		if (!$similar_query->have_posts()) {
-			$similar_query = new \WP_Query(array(
-				'post_type'      => 'immobilie',
-				'posts_per_page' => 3,
-				'post__not_in'   => array($id),
-				'post_status'    => 'publish',
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-			));
-		}
-
-		if ($similar_query->have_posts()) {
+		if ($similar_query && $similar_query->have_posts()) {
 			?>
-			<div class="dbw-similar-properties" style="margin: 4rem auto 2rem auto; font-family: inherit; padding-top: 3rem;">
-				<h3 class="dbw-section-title" style="margin-bottom: 2rem; font-size: 1.5rem;"><?php echo esc_html(\DBW\ImmoSuite\dbw_anrede(
+			<div class="dbw-similar-properties">
+				<h3 class="dbw-section-title"><?php echo esc_html(\DBW\ImmoSuite\dbw_anrede(
 					__('Das koennte Sie auch interessieren', 'dbw-immo-suite'),
 					__('Das koennte dich auch interessieren', 'dbw-immo-suite')
 				)); ?>
 				</h3>
-				<div class="dbw-property-grid"
-					style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+				<div class="dbw-property-grid">
 					<?php
 					while ($similar_query->have_posts()) {
 						$similar_query->the_post();
-						$sim_id = get_the_ID();
-						$sim_price = get_post_meta($sim_id, 'kaufpreis', true);
-						if (!$sim_price)
-							$sim_price = get_post_meta($sim_id, 'kaltmiete', true);
-						$sim_area = get_post_meta($sim_id, 'wohnflaeche', true);
-						$sim_rooms = get_post_meta($sim_id, 'anzahl_zimmer', true);
-						$sim_city = get_post_meta($sim_id, 'ort', true);
-
-						$img_url = get_the_post_thumbnail_url($sim_id, 'large');
-						if (!$img_url) {
-							$images = get_attached_media('image', $sim_id);
-							if (!empty($images)) {
-								$first = reset($images);
-								$img_url = wp_get_attachment_image_url($first->ID, 'large');
-							}
-						}
-						?>
-						<a href="<?php the_permalink(); ?>" class="dbw-similar-card"
-							style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s;">
-							<style>
-								.dbw-similar-card:hover {
-									transform: translateY(-4px);
-									box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-									color: inherit !important;
-								}
-							</style>
-							<div style="height: 200px; overflow: hidden; position: relative;">
-								<div class="dbw-sim-img"
-									style="width: 100%; height: 100%; background-color:#eaeaea; background-image: url('<?php echo esc_url($img_url); ?>'); background-size: cover; background-position: center; transition: transform 0.4s ease;">
-								</div>
-								<?php if (class_exists('DBW\ImmoSuite\Frontend\EnergyRenderer')): ?>
-									<?php \DBW\ImmoSuite\Frontend\EnergyRenderer::render_archive_flag($sim_id); ?>
-								<?php endif; ?>
-							</div>
-							<div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-								<h4
-									style="margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.4; color: #333; font-weight: 700;">
-									<?php the_title(); ?>
-								</h4>
-								<?php if ($sim_city): ?>
-									<div
-										style="color: #666; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px;">
-										<span class="dashicons dashicons-location"
-											style="font-size: 16px; width: 16px; height: 16px;"></span>
-										<?php echo esc_html($sim_city); ?>
-									</div>
-								<?php endif; ?>
-
-								<div
-									style="display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 1rem; margin-top: auto;">
-									<div style="display: flex; gap: 1rem; color: #555; font-size: 0.95rem;">
-										<?php if ($sim_area): ?>
-											<span title="Wohnfläche"><strong><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($sim_area, 'flaeche')); ?></strong> m²</span>
-										<?php endif; ?>
-										<?php if ($sim_rooms): ?>
-											<span title="Zimmer"><strong><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($sim_rooms, 'zimmer')); ?></strong> Zi.</span>
-										<?php endif; ?>
-									</div>
-									<?php if ($sim_price): ?>
-										<strong
-											style="color: var(--dbw-primary); font-size: 1.1rem;"><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($sim_price, 'preis')); ?>
-											€</strong>
-									<?php endif; ?>
-								</div>
-							</div>
-						</a>
-						<?php
+						\DBW\ImmoSuite\Frontend\CardRenderer::render(array('show_meta_labels' => false));
 					}
 					?>
 				</div>

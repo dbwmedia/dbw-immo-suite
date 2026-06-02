@@ -68,12 +68,25 @@ class CardRenderer
             $tag_data = Filter::get_status_label($post_id);
         }
 
-        // Image style
+        // Image
+        $has_image = false;
         $image_style = '';
         if (has_post_thumbnail()) {
+            $has_image = true;
             $image_style = 'background-image: url(' . get_the_post_thumbnail_url($post_id, 'medium-large') . ');';
             if ($is_inactive) {
                 $image_style .= ' filter: grayscale(100%);';
+            }
+        } else {
+            // Try first attached image as fallback
+            $attached = get_attached_media('image', $post_id);
+            if (!empty($attached)) {
+                $first = reset($attached);
+                $has_image = true;
+                $image_style = 'background-image: url(' . wp_get_attachment_image_url($first->ID, 'medium-large') . ');';
+                if ($is_inactive) {
+                    $image_style .= ' filter: grayscale(100%);';
+                }
             }
         }
 
@@ -85,7 +98,13 @@ class CardRenderer
 
         ?>
         <article id="post-<?php the_ID(); ?>" <?php post_class($card_classes); ?>>
-            <a href="<?php the_permalink(); ?>" class="dbw-property-image" style="<?php echo $image_style; ?>">
+            <a href="<?php the_permalink(); ?>" class="dbw-property-image<?php echo $has_image ? '' : ' dbw-property-image--placeholder'; ?>" style="<?php echo $image_style; ?>">
+                <?php if (!$has_image) : ?>
+                    <div class="dbw-placeholder-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span><?php _e('Bilder folgen demnächst', 'dbw-immo-suite'); ?></span>
+                    </div>
+                <?php endif; ?>
                 <?php if ($tag_data) : ?>
                     <span class="dbw-property-tag <?php echo esc_attr($tag_data['class']); ?>"><?php echo esc_html($tag_data['label']); ?></span>
                 <?php endif; ?>
@@ -99,7 +118,7 @@ class CardRenderer
             <div class="dbw-property-content">
                 <div class="dbw-card-body">
                     <h2 class="dbw-property-title">
-                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        <a href="<?php the_permalink(); ?>"><?php echo esc_html(self::get_display_title($post_id)); ?></a>
                     </h2>
 
                     <?php if ($location) : ?>
@@ -194,6 +213,40 @@ class CardRenderer
             </div>
         </article>
         <?php
+    }
+
+    /**
+     * Get display title with fallbacks for untitled properties.
+     */
+    public static function get_display_title($post_id)
+    {
+        $title = get_the_title($post_id);
+        if (!empty($title)) {
+            return $title;
+        }
+
+        // Fallback 1: Objektart + Ort
+        $objektart_terms = wp_get_post_terms($post_id, 'objektart', array('fields' => 'names'));
+        $objektart = (!is_wp_error($objektart_terms) && !empty($objektart_terms)) ? $objektart_terms[0] : '';
+        $ort = get_post_meta($post_id, 'ort', true);
+
+        if ($objektart && $ort) {
+            return sprintf('%s in %s', $objektart, $ort);
+        }
+        if ($objektart) {
+            return $objektart;
+        }
+        if ($ort) {
+            return sprintf(__('Immobilie in %s', 'dbw-immo-suite'), $ort);
+        }
+
+        // Fallback 2: Immobilie Nr. [immonr]
+        $immonr = get_post_meta($post_id, 'objektnr_extern', true);
+        if (!empty($immonr)) {
+            return sprintf(__('Immobilie Nr. %s', 'dbw-immo-suite'), $immonr);
+        }
+
+        return __('Immobilie', 'dbw-immo-suite');
     }
 
     /**

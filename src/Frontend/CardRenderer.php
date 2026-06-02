@@ -182,7 +182,7 @@ class CardRenderer
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg>
                                 </div>
                                 <div class="dbw-meta-data">
-                                    <span class="dbw-meta-value"><?php echo esc_html($bedrooms); ?></span>
+                                    <span class="dbw-meta-value"><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($bedrooms, 'zimmer')); ?></span>
                                     <?php if ($opts['show_meta_labels']) : ?>
                                         <span class="dbw-meta-label"><?php _e('Schlafzimmer', 'dbw-immo-suite'); ?></span>
                                     <?php endif; ?>

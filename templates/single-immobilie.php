@@ -309,7 +309,7 @@ get_header(); ?>
 						<div class="dbw-description">
 							<?php if ($parking > 0): ?>
 								<p><strong><?php _e('Stellplätze:', 'dbw-immo-suite'); ?></strong>
-									<?php echo esc_html($parking); ?>
+									<?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($parking, 'zimmer')); ?>
 								</p>
 							<?php endif; ?>
 							<?php if ($text_ausstattung): ?>
@@ -452,7 +452,7 @@ get_header(); ?>
 							<li
 								style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 8px 0; margin-bottom: 4px;">
 								<span>Anzahl Schlafzimmer</span>
-								<strong><?php echo esc_html($bedrooms); ?></strong>
+								<strong><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($bedrooms, 'zimmer')); ?></strong>
 							</li>
 						<?php endif; ?>
 
@@ -460,7 +460,7 @@ get_header(); ?>
 							<li
 								style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 8px 0; margin-bottom: 4px;">
 								<span>Anzahl Badezimmer</span>
-								<strong><?php echo esc_html($bathrooms); ?></strong>
+								<strong><?php echo esc_html(\DBW\ImmoSuite\dbw_format_number($bathrooms, 'zimmer')); ?></strong>
 							</li>
 						<?php endif; ?>
 

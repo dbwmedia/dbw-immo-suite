@@ -4,24 +4,82 @@
     var modal = document.getElementById('dbw-contact-modal');
     if (!modal) return;
 
-    var form      = modal.querySelector('#dbw-contact-form');
-    var viewForm  = modal.querySelector('[data-view="form"]');
-    var viewOk    = modal.querySelector('[data-view="success"]');
-    var btnClose  = modal.querySelector('.dbw-modal__close');
-    var submitBtn = form.querySelector('button[type="submit"]');
-    var stickyBar = document.querySelector('.dbw-sticky-cta-bar');
+    var form       = modal.querySelector('#dbw-contact-form');
+    var steps      = modal.querySelectorAll('.dbw-modal__step');
+    var progressBar = modal.querySelector('.dbw-modal__progress-bar');
+    var btnClose   = modal.querySelector('.dbw-modal__close');
+    var submitBtn  = form.querySelector('button[type="submit"]');
+    var stickyBar  = document.querySelector('.dbw-sticky-cta-bar');
     var originalText = submitBtn.textContent.trim();
+    var currentStep = 1;
+
+    // --- Step Navigation ---
+    function goToStep(step) {
+        currentStep = step;
+        steps.forEach(function (s) {
+            var sStep = s.dataset.step;
+            s.classList.remove('is-active', 'is-exit-left', 'is-enter-right');
+
+            if (sStep === String(step) || sStep === step) {
+                s.classList.add('is-active');
+                // Focus first input on step 2
+                if (step === 2) {
+                    var firstInput = s.querySelector('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"])');
+                    if (firstInput) setTimeout(function() { firstInput.focus(); }, 350);
+                }
+            }
+        });
+
+        // Update progress bar
+        if (progressBar) {
+            if (step === 1) progressBar.dataset.step = '1';
+            else if (step === 2) progressBar.dataset.step = '2';
+            else progressBar.dataset.step = '3';
+        }
+    }
+
+    // --- Intent Selection (auto-advance to step 2) ---
+    var intents = modal.querySelectorAll('.dbw-intent');
+    intents.forEach(function (intent) {
+        intent.addEventListener('click', function () {
+            var radio = this.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
+            // Visual feedback
+            intents.forEach(function (i) { i.classList.remove('is-selected'); });
+            this.classList.add('is-selected');
+
+            // Show context fields for this intent
+            var val = radio.value;
+            modal.querySelectorAll('[data-context]').forEach(function (el) {
+                el.hidden = el.dataset.context !== val;
+            });
+
+            // Auto-advance after brief delay
+            setTimeout(function () { goToStep(2); }, 300);
+        });
+    });
+
+    // --- Back Button ---
+    modal.querySelectorAll('[data-goto-step]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            goToStep(parseInt(this.dataset.gotoStep));
+        });
+    });
 
     // --- Open ---
     document.querySelectorAll('[data-dbw-open-modal]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            viewForm.hidden = false;
-            viewOk.hidden = true;
+            // Reset to step 1
+            form.reset();
+            intents.forEach(function (i) { i.classList.remove('is-selected'); });
+            modal.querySelectorAll('[data-context]').forEach(function (el) { el.hidden = true; });
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
-            // Clear any previous error
             var err = form.querySelector('.dbw-modal__error');
             if (err) err.remove();
+
+            goToStep(1);
             modal.showModal();
         });
     });
@@ -33,15 +91,6 @@
     });
     modal.addEventListener('click', function (e) {
         if (e.target === modal) modal.close();
-    });
-
-    // --- Intent change → reveal context fieldset ---
-    form.addEventListener('change', function (e) {
-        if (e.target.name !== 'intent') return;
-        var val = e.target.value;
-        modal.querySelectorAll('[data-context]').forEach(function (el) {
-            el.hidden = el.dataset.context !== val;
-        });
     });
 
     // --- Submit (AJAX) ---
@@ -71,9 +120,7 @@
                 nameEl.textContent = firstName ? ', ' + firstName + '!' : '!';
             }
 
-            // Switch views
-            viewForm.hidden = true;
-            viewOk.hidden = false;
+            goToStep('success');
         })
         .catch(function (err) {
             submitBtn.disabled = false;

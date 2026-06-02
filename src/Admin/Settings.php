@@ -34,85 +34,146 @@ class Settings
 
 	public function create_admin_page()
 	{
-?>
-<div class="wrap">
-	<h1>
-		<?php echo esc_html(get_admin_page_title()); ?>
-	</h1>
-	<form method="post" action="options.php">
+		$tabs = array(
+			'import'     => __('Import', 'dbw-immo-suite'),
+			'display'    => __('Darstellung', 'dbw-immo-suite'),
+			'references' => __('Referenzen & Verkauf', 'dbw-immo-suite'),
+			'seo'        => __('Maklerfirma (SEO)', 'dbw-immo-suite'),
+			'shortcodes' => __('Shortcodes', 'dbw-immo-suite'),
+		);
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+
+			<nav class="nav-tab-wrapper dbw-settings-tabs">
+				<?php foreach ($tabs as $slug => $label) : ?>
+					<a href="#tab-<?php echo esc_attr($slug); ?>"
+					   class="nav-tab<?php echo ($slug === 'import') ? ' nav-tab-active' : ''; ?>"
+					   data-tab="<?php echo esc_attr($slug); ?>">
+						<?php echo esc_html($label); ?>
+					</a>
+				<?php endforeach; ?>
+			</nav>
+
+			<form method="post" action="options.php">
+				<?php settings_fields($this->option_group); ?>
+
+				<div class="dbw-tab-panel" id="tab-import">
+					<?php do_settings_sections('dbw-settings-import'); ?>
+				</div>
+
+				<div class="dbw-tab-panel" id="tab-display" style="display:none;">
+					<?php do_settings_sections('dbw-settings-display'); ?>
+				</div>
+
+				<div class="dbw-tab-panel" id="tab-references" style="display:none;">
+					<?php do_settings_sections('dbw-settings-references'); ?>
+				</div>
+
+				<div class="dbw-tab-panel" id="tab-seo" style="display:none;">
+					<?php do_settings_sections('dbw-settings-seo'); ?>
+				</div>
+
+				<?php submit_button(); ?>
+			</form>
+
+			<div class="dbw-tab-panel" id="tab-shortcodes" style="display:none;">
+				<?php $this->render_shortcode_reference(); ?>
+			</div>
+		</div>
+
+		<script>
+		(function() {
+			var tabs = document.querySelectorAll('.dbw-settings-tabs .nav-tab');
+			var panels = document.querySelectorAll('.dbw-tab-panel');
+
+			function activate(slug) {
+				tabs.forEach(function(t) {
+					t.classList.toggle('nav-tab-active', t.dataset.tab === slug);
+				});
+				panels.forEach(function(p) {
+					p.style.display = (p.id === 'tab-' + slug) ? '' : 'none';
+				});
+				// Hide submit button on shortcodes tab
+				var submit = document.querySelector('.wrap .submit');
+				if (submit) submit.style.display = (slug === 'shortcodes') ? 'none' : '';
+			}
+
+			tabs.forEach(function(tab) {
+				tab.addEventListener('click', function(e) {
+					e.preventDefault();
+					var slug = this.dataset.tab;
+					activate(slug);
+					history.replaceState(null, '', '#tab-' + slug);
+				});
+			});
+
+			// Restore tab from hash
+			var hash = window.location.hash.replace('#tab-', '');
+			if (hash && document.getElementById('tab-' + hash)) {
+				activate(hash);
+			}
+		})();
+		</script>
 		<?php
-		settings_fields($this->option_group);
-		do_settings_sections('dbw-immo-suite-settings');
-		submit_button();
-?>
-	</form>
+	}
 
-	<hr>
+	/**
+	 * Render the shortcode reference table (read-only, no form).
+	 */
+	private function render_shortcode_reference()
+	{
+		?>
+		<h2><?php esc_html_e('Shortcode-Referenz', 'dbw-immo-suite'); ?></h2>
+		<p><?php esc_html_e('Diese Shortcodes koennen in Elementor, Classic Editor oder jedem Page Builder verwendet werden:', 'dbw-immo-suite'); ?></p>
 
-	<h2><?php esc_html_e('Shortcode-Referenz', 'dbw-immo-suite'); ?></h2>
-	<p><?php esc_html_e('Diese Shortcodes koennen in Elementor, Classic Editor oder jedem Page Builder verwendet werden:', 'dbw-immo-suite'); ?></p>
+		<table class="wp-list-table widefat fixed striped" style="max-width: 900px;">
+			<thead>
+				<tr>
+					<th style="width: 35%;"><?php esc_html_e('Shortcode', 'dbw-immo-suite'); ?></th>
+					<th><?php esc_html_e('Beschreibung', 'dbw-immo-suite'); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>[dbw_immo_grid]</code></td>
+					<td><?php esc_html_e('Zeigt aktuelle Immobilien im Grid an.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_grid count="6" columns="3"]</code></td>
+					<td><?php esc_html_e('6 Immobilien in 3 Spalten.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_grid location="muenchen"]</code></td>
+					<td><?php esc_html_e('Nur Immobilien in Muenchen (Ort-Slug). Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_grid marketing="kauf" type="haus"]</code></td>
+					<td><?php esc_html_e('Nur Haeuser zum Kauf.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_grid highlights="yes"]</code></td>
+					<td><?php esc_html_e('Nur als Highlight markierte Immobilien.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_references]</code></td>
+					<td><?php esc_html_e('Zeigt verkaufte/Referenz-Objekte an.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_references location="muenchen"]</code></td>
+					<td><?php esc_html_e('Referenzen nur aus Muenchen. Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
+				</tr>
+				<tr>
+					<td><code>[dbw_immo_references count="6" columns="2" status="verkauft"]</code></td>
+					<td><?php esc_html_e('6 verkaufte Objekte in 2 Spalten (ohne Referenzen).', 'dbw-immo-suite'); ?></td>
+				</tr>
+			</tbody>
+		</table>
 
-	<table class="wp-list-table widefat fixed striped" style="max-width: 900px;">
-		<thead>
-			<tr>
-				<th style="width: 35%;"><?php esc_html_e('Shortcode', 'dbw-immo-suite'); ?></th>
-				<th><?php esc_html_e('Beschreibung', 'dbw-immo-suite'); ?></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td><code>[dbw_immo_grid]</code></td>
-				<td><?php esc_html_e('Zeigt aktuelle Immobilien im Grid an.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_grid count="6" columns="3"]</code></td>
-				<td><?php esc_html_e('6 Immobilien in 3 Spalten.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_grid location="muenchen"]</code></td>
-				<td><?php esc_html_e('Nur Immobilien in Muenchen (Ort-Slug). Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_grid marketing="kauf" type="haus"]</code></td>
-				<td><?php esc_html_e('Nur Haeuser zum Kauf.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_grid highlights="yes"]</code></td>
-				<td><?php esc_html_e('Nur als Highlight markierte Immobilien.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_references]</code></td>
-				<td><?php esc_html_e('Zeigt verkaufte/Referenz-Objekte an.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_references location="muenchen"]</code></td>
-				<td><?php esc_html_e('Referenzen nur aus Muenchen. Ideal fuer Geo-Landing-Pages.', 'dbw-immo-suite'); ?></td>
-			</tr>
-			<tr>
-				<td><code>[dbw_immo_references count="6" columns="2" status="verkauft"]</code></td>
-				<td><?php esc_html_e('6 verkaufte Objekte in 2 Spalten (ohne Referenzen).', 'dbw-immo-suite'); ?></td>
-			</tr>
-		</tbody>
-	</table>
-
-	<p class="description" style="margin-top: 10px;">
-		<?php esc_html_e('Tipp: Im Gutenberg-Editor stehen diese Funktionen auch als native Bloecke unter "dbw Immo Suite" zur Verfuegung.', 'dbw-immo-suite'); ?>
-	</p>
-
-	<hr>
-
-	<h2>
-		<?php esc_html_e('Manueller Import', 'dbw-immo-suite'); ?>
-	</h2>
-	<p>
-		<?php esc_html_e('Starten Sie den Import manuell. Dies verarbeitet alle XML-Dateien im konfigurierten Verzeichnis.', 'dbw-immo-suite'); ?>
-	</p>
-	<button id="dbw-immo-trigger-import" type="button" class="button button-large button-primary">
-		<?php esc_html_e('Import jetzt starten', 'dbw-immo-suite'); ?>
-	</button>
-	<div id="dbw-immo-import-status" style="margin-top: 10px;"></div>
-</div>
-<?php
+		<p class="description" style="margin-top: 10px;">
+			<?php esc_html_e('Tipp: Im Gutenberg-Editor stehen diese Funktionen auch als native Bloecke unter "dbw Immo Suite" zur Verfuegung.', 'dbw-immo-suite'); ?>
+		</p>
+		<?php
 	}
 
 	public function page_init()
@@ -123,124 +184,30 @@ class Settings
 			array($this, 'sanitize')
 		);
 
-		add_settings_section(
-			'setting_section_id',
-			__('OpenImmo Import Einstellungen', 'dbw-immo-suite'),
-			array($this, 'print_section_info'),
-			'dbw-immo-suite-settings'
-		);
+		// ── Tab 1: Import ──
+		add_settings_section('section_import', __('OpenImmo Import Einstellungen', 'dbw-immo-suite'), array($this, 'print_section_info'), 'dbw-settings-import');
+		add_settings_field('xml_path', __('Pfad zu XML-Dateien', 'dbw-immo-suite'), array($this, 'xml_path_callback'), 'dbw-settings-import', 'section_import');
+		add_settings_field('cpt_slug', __('URL Slug (Permalink)', 'dbw-immo-suite'), array($this, 'cpt_slug_callback'), 'dbw-settings-import', 'section_import');
+		add_settings_field('enable_garbage_collection', __('Garbage Collection (Full Sync)', 'dbw-immo-suite'), array($this, 'enable_garbage_collection_callback'), 'dbw-settings-import', 'section_import');
 
-		add_settings_field(
-			'xml_path',
-			__('Pfad zu XML-Dateien', 'dbw-immo-suite'),
-			array($this, 'xml_path_callback'),
-			'dbw-immo-suite-settings',
-			'setting_section_id'
-		);
+		// ── Tab 2: Darstellung ──
+		add_settings_section('section_display', __('Darstellung', 'dbw-immo-suite'), array($this, 'print_display_section_info'), 'dbw-settings-display');
+		add_settings_field('anrede', __('Anrede', 'dbw-immo-suite'), array($this, 'anrede_callback'), 'dbw-settings-display', 'section_display');
+		add_settings_field('grayscale_sold', __('Grayscale bei Verkauft', 'dbw-immo-suite'), array($this, 'grayscale_sold_callback'), 'dbw-settings-display', 'section_display');
+		add_settings_field('grayscale_reserved', __('Grayscale bei Reserviert', 'dbw-immo-suite'), array($this, 'grayscale_reserved_callback'), 'dbw-settings-display', 'section_display');
 
-		add_settings_field(
-			'cpt_slug',
-			__('URL Slug (Permalink)', 'dbw-immo-suite'),
-			array($this, 'cpt_slug_callback'),
-			'dbw-immo-suite-settings',
-			'setting_section_id'
-		);
+		// ── Tab 3: Referenzen & Verkauf ──
+		add_settings_section('section_references', __('Referenzen & Verkaufte Objekte', 'dbw-immo-suite'), array($this, 'print_reference_section_info'), 'dbw-settings-references');
+		add_settings_field('enable_references', __('Aktivieren', 'dbw-immo-suite'), array($this, 'enable_references_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('reference_slug', __('Seiten-Slug (URL)', 'dbw-immo-suite'), array($this, 'reference_slug_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('filter_sold_from_main', __('Archiv bereinigen', 'dbw-immo-suite'), array($this, 'filter_sold_from_main_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('reference_badge_text', __('Badge: Referenz', 'dbw-immo-suite'), array($this, 'reference_badge_text_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('sold_badge_text', __('Badge: Verkauft', 'dbw-immo-suite'), array($this, 'sold_badge_text_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('hide_price_sold', __('Preise ausblenden', 'dbw-immo-suite'), array($this, 'hide_price_sold_callback'), 'dbw-settings-references', 'section_references');
+		add_settings_field('show_sold_date', __('Verkaufsdatum', 'dbw-immo-suite'), array($this, 'show_sold_date_callback'), 'dbw-settings-references', 'section_references');
 
-		add_settings_field(
-			'enable_garbage_collection',
-			__('Garbage Collection (Full Sync)', 'dbw-immo-suite'),
-			array($this, 'enable_garbage_collection_callback'),
-			'dbw-immo-suite-settings',
-			'setting_section_id'
-		);
-
-		// -- Reference Section --
-		add_settings_section(
-			'reference_section_id',
-			__('Referenzen & Verkaufte Objekte', 'dbw-immo-suite'),
-			array($this, 'print_reference_section_info'),
-			'dbw-immo-suite-settings'
-		);
-
-		add_settings_field(
-			'enable_references',
-			__('Aktivieren', 'dbw-immo-suite'),
-			array($this, 'enable_references_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'reference_slug',
-			__('Seiten-Slug (URL)', 'dbw-immo-suite'),
-			array($this, 'reference_slug_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'filter_sold_from_main',
-			__('Archiv bereinigen', 'dbw-immo-suite'),
-			array($this, 'filter_sold_from_main_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'reference_badge_text',
-			__('Badge: Referenz', 'dbw-immo-suite'),
-			array($this, 'reference_badge_text_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'sold_badge_text',
-			__('Badge: Verkauft', 'dbw-immo-suite'),
-			array($this, 'sold_badge_text_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'hide_price_sold',
-			__('Preise ausblenden', 'dbw-immo-suite'),
-			array($this, 'hide_price_sold_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		add_settings_field(
-			'show_sold_date',
-			__('Verkaufsdatum', 'dbw-immo-suite'),
-			array($this, 'show_sold_date_callback'),
-			'dbw-immo-suite-settings',
-			'reference_section_id'
-		);
-
-		// -- Darstellung Section --
-		add_settings_section(
-			'display_section_id',
-			__('Darstellung', 'dbw-immo-suite'),
-			array($this, 'print_display_section_info'),
-			'dbw-immo-suite-settings'
-		);
-
-		add_settings_field(
-			'anrede',
-			__('Anrede', 'dbw-immo-suite'),
-			array($this, 'anrede_callback'),
-			'dbw-immo-suite-settings',
-			'display_section_id'
-		);
-
-		// -- SEO / Maklerfirma Section --
-		add_settings_section(
-			'seo_section_id',
-			__('Maklerfirma (SEO)', 'dbw-immo-suite'),
-			array($this, 'print_seo_section_info'),
-			'dbw-immo-suite-settings'
-		);
+		// ── Tab 4: Maklerfirma (SEO) ──
+		add_settings_section('section_seo', __('Maklerfirma (SEO)', 'dbw-immo-suite'), array($this, 'print_seo_section_info'), 'dbw-settings-seo');
 
 		$seo_fields = array(
 			'org_name'     => __('Firmenname', 'dbw-immo-suite'),
@@ -254,14 +221,7 @@ class Settings
 		);
 
 		foreach ($seo_fields as $field_id => $label) {
-			add_settings_field(
-				$field_id,
-				$label,
-				array($this, 'seo_field_callback'),
-				'dbw-immo-suite-settings',
-				'seo_section_id',
-				array('id' => $field_id)
-			);
+			add_settings_field($field_id, $label, array($this, 'seo_field_callback'), 'dbw-settings-seo', 'section_seo', array('id' => $field_id));
 		}
 	}
 
@@ -288,6 +248,10 @@ class Settings
 
 		// Anrede
 		$new_input['anrede'] = in_array($input['anrede'] ?? 'sie', ['sie', 'du'], true) ? $input['anrede'] : 'sie';
+
+		// Grayscale
+		$new_input['grayscale_sold'] = isset($input['grayscale_sold']) ? 1 : 0;
+		$new_input['grayscale_reserved'] = isset($input['grayscale_reserved']) ? 1 : 0;
 
 		// Reference Settings
 		$new_input['enable_references'] = isset($input['enable_references']) ? 1 : 0;
@@ -527,6 +491,16 @@ class Settings
 	public function print_display_section_info()
 	{
 		print __('Einstellungen fuer die Darstellung im Frontend.', 'dbw-immo-suite');
+	}
+
+	public function grayscale_sold_callback()
+	{
+		$this->checkbox_callback('grayscale_sold', __('Karten-Bilder verkaufter Objekte grau darstellen', 'dbw-immo-suite'));
+	}
+
+	public function grayscale_reserved_callback()
+	{
+		$this->checkbox_callback('grayscale_reserved', __('Karten-Bilder reservierter Objekte grau darstellen', 'dbw-immo-suite'));
 	}
 
 	public function anrede_callback()

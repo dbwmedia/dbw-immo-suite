@@ -52,9 +52,12 @@ class CardRenderer
         $immo_status = get_post_meta($post_id, '_dbw_immo_status', true);
         $sales_date = get_post_meta($post_id, '_dbw_immo_sales_date', true);
 
-        // Determine tag
+        // Determine tag & grayscale
         $tag_data = null;
-        $is_inactive = $opts['is_reference'] || in_array($immo_status, array('verkauft', 'referenz', 'reserviert'));
+        $is_sold = $opts['is_reference'] || in_array($immo_status, array('verkauft', 'referenz'));
+        $is_reserved = ($immo_status === 'reserviert');
+        $use_grayscale = ($is_sold && !empty($settings['grayscale_sold']))
+                      || ($is_reserved && !empty($settings['grayscale_reserved']));
 
         if ($opts['is_reference']) {
             $badge_text = ($immo_status === 'referenz')
@@ -77,7 +80,7 @@ class CardRenderer
         if ($thumb_id && (int) $thumb_id !== (int) $contact_img_id) {
             $has_image = true;
             $image_style = 'background-image: url(' . wp_get_attachment_image_url($thumb_id, 'medium-large') . ');';
-            if ($is_inactive) {
+            if ($use_grayscale) {
                 $image_style .= ' filter: grayscale(100%);';
             }
         }

@@ -7,6 +7,95 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.8.0] — 2026-06-02
+
+Umfassendes Security-Hardening, Performance-Optimierung, Accessibility-Verbesserungen und UI/UX-Modernisierung. Ergebnis eines 3-Runden-Audits.
+
+### Sicherheit
+- **XXE-Schutz** — Neue `safe_load_xml()` Methode mit `LIBXML_NONET` und `libxml_disable_entity_loader()` fuer alle XML-Parsing-Stellen
+- **Path Traversal** — `realpath()` Validierung in `upload_image()`, `ajax_process_batch()` und `ajax_validate_path()`
+- **Upload-Whitelist** — Nur jpg/jpeg/png/gif/webp/pdf erlaubt (kein SVG wegen Stored XSS)
+- **Email Header Injection** — Newlines werden aus `$name` im Reply-To Header entfernt
+- **XSS im Admin** — Debug-Tab in PropertyDetails nutzt `esc_html()` statt `print_r()`
+- **Admin XSS** — `showError()` in admin.js nutzt `.text()` statt `.html()` fuer Fehlermeldungen
+- **Nonce-Fix** — JS und PHP verwenden konsistent `dbw_immo_validate_path` als Nonce-Action
+- **SQL Injection** — `$wpdb->prepare()` in uninstall.php LIKE-Query und Filter.php meta_key Joins
+- **Rate Limiting** — 2-Minuten-Cooldown pro Email+IP auf Kontaktformular
+- **Post-Validierung** — ContactForm prueft ob Property existiert und korrekten Post-Type hat
+- **ABSPATH Guards** — Alle 25 PHP-Dateien in src/ (nach namespace-Deklaration)
+- **Log-Schutz** — Import-Log in `plugin/logs/` mit `.htaccess` Deny-All statt oeffentlichem wp-content
+- **Sichere Temp-Files** — `wp_tempnam()` mit Cleanup bei Fehler statt `sys_get_temp_dir()`
+- **Error Leaking** — Exception-Messages gehen ins Log statt an den User
+- **Path Traversal Settings** — Custom Import-Pfad wird per `realpath()` gegen ABSPATH geprueft
+- **Pfad-Konsolidierung** — Duplizierte Pfad-Aufloesung in `resolve_import_path()` zusammengefuehrt
+
+### Performance
+- **DB-Queries** — `get_post_custom()` statt 42 einzelner `get_post_meta()` Calls auf Single-Page (~100 → ~20 Queries)
+- **CardRenderer** — `get_post_custom()` statt 8 einzelner Calls (×12 Karten = ~84 Queries gespart pro Archiv)
+- **Attachment Meta Cache** — `update_meta_cache()` vor Gallery-Loop verhindert N+1
+- **Importer Queries** — Direkte `$wpdb->prepare()` statt `WP_Query` fuer openimmo_id und Attachment-Lookups
+- **Garbage Collection** — `array_flip()` statt `in_array()` fuer O(1) statt O(N) Lookups
+- **Responsive Images** — `srcset`, `sizes`, `width`/`height` Attribute auf allen Bildern
+- **Lazy Loading** — `loading="lazy"` + `decoding="async"` auf Galerie- und Kartenbildern
+- **Fetch Priority** — Erstes Galerie-Bild mit `fetchpriority="high"` fuer LCP
+- **Thumbnails** — `wp_get_attachment_image()` mit `thumbnail` Size statt `large` fuer 80px Thumbs
+- **Similar Properties** — `orderby date DESC` statt `orderby rand` (kein Full Table Scan mehr)
+- **Leaflet** — `wp_enqueue_style/script` statt inline `<link>`/`<script>` Tags
+- **Memory** — `wp_raise_memory_limit('admin')` statt `@ini_set('memory_limit', '2048M')`
+
+### Accessibility
+- **Keyboard Navigation** — Gallery-Slides und Grundrisse sind jetzt `<button>` statt `<div onclick>`
+- **Focus Trap** — Lightbox haelt Tab-Focus innerhalb des Overlays
+- **Focus Return** — Lightbox gibt Focus zurueck an Trigger-Element beim Schliessen
+- **Focus Visible** — Globale `:focus-visible` Styles fuer alle interaktiven Elemente
+- **aria-labels** — Zurueck-Link, Teilen-Button, Drucken-Button, Gallery-Thumbs, Lightbox-Buttons
+- **Farbkontraste** — `--dbw-accent` auf #2573a7 (4.6:1), `--dbw-gray` auf #5f6b6d (5.0:1) fuer WCAG AA
+- **prefers-reduced-motion** — Alle Animationen deaktiviert (Cards, Sections, Modal, Filter, Lightbox, Intents)
+
+### UI/UX
+- **Multi-Step Contact Modal** — Typeform-Style mit 2 Steps: Intent-Auswahl (4 animierte SVG-Cards) → Kontaktdaten
+- **Progress Bar** — Visueller Fortschritt (50%/100%) im Modal-Header
+- **SVG Icons** — Emoji-Icons durch konsistente SVG Line-Icons ersetzt (Modal + CTA-Button)
+- **Entrance Animations** — Staggered Card-Reveal beim Scrollen (80ms Versatz, IntersectionObserver)
+- **Section Fade-Up** — Sektionen auf Single-Page faden beim Scrollen ein
+- **Shimmer Loading** — Skeleton-Effekt auf Kartenbildern waehrend Laden
+- **Smooth Filter Toggle** — CSS max-height Transition statt hartes display:none
+- **Card Image Zoom** — Hover-Zoom-Effekt auf Kartenbildern (CSS transform)
+- **Grayscale Fix** — `$use_grayscale` statt undefiniertem `$is_inactive` im CardRenderer
+- **CSS Variables** — `--dbw-border`, `--dbw-border-light`, `--dbw-bg-muted`, `--dbw-shadow-hover` eingefuehrt
+- **Hardcoded Farben** — 15+ Stellen durch CSS Custom Properties ersetzt
+
+### SEO
+- **Schema Agent** — `agent` Property auf RealEstateListing (Kontaktperson oder Org-Fallback)
+- **Schema dateModified** — Aenderungsdatum im JSON-LD
+- **Schema priceSpecification** — `UnitPriceSpecification` mit `MONTH` fuer Mietobjekte
+- **robots noindex** — Verkaufte/Referenz-Objekte werden nicht indexiert
+- **Sitemap-Filter** — Verkaufte/Referenz-Objekte aus WordPress-Sitemap ausgeschlossen
+- **SEO Title** — `document_title_parts` Filter mit Objektart + Stadt
+- **Archive Meta** — description, OG und Twitter Cards auf Archiv-/Taxonomieseiten
+- **og:image Dimensionen** — width/height auf Single-Seiten
+- **og:locale** — `de_DE` auf allen Seiten
+- **twitter:card Fallback** — `summary` wenn kein Bild vorhanden
+
+### Code Quality
+- **Lightbox extrahiert** — 79 Zeilen Inline-JS in `assets/js/lightbox.js` (cachebar, CSP-kompatibel)
+- **Inline CSS extrahiert** — Gallery-Button und Similar-Properties Styles in frontend.css
+- **Similar Properties** — Nutzt CardRenderer::render() statt 150 Zeilen Inline-HTML
+- **Template reduziert** — single-immobilie.php um ~200 Zeilen gekuerzt
+- **Beschreibungstexte** — `wp_kses_post()` statt `esc_html()` (erhalt HTML-Formatierung aus OpenImmo)
+- **Version** — Synchronisiert auf 1.8.0 (Plugin-Header, Konstante, package.json)
+- **@-Operator** — `set_time_limit()` mit `function_exists()` Guard statt `@set_time_limit()`
+- **require_once** — Guard mit `function_exists('media_handle_sideload')` statt Mehrfach-Include
+- **Sticky Sidebar** — `overflow: hidden` → `overflow: visible` auf Container (war der Grund warum Sticky nie funktionierte)
+
+### Dokumentation
+- **docs/AUDIT-PROMPT.md** — Wiederverwendbarer Audit-Prompt
+- **docs/TODO.md** — Bekannte Altlasten und Feature-Roadmap
+- **docs/PROMPT-KAUFNEBENKOSTEN.md** — Feature-Prompt fuer Finanzierungsrechner
+- **docs/PROMPT-PDF-EXPOSE.md** — Feature-Prompt fuer PDF-Expose-Generator
+
+---
+
 ## [1.7.0] — 2026-05-28
 
 Kontaktformular komplett neu: Single-Step-Modal mit Intent-basierter Lead-Qualifizierung ersetzt das alte Inline-Formular.

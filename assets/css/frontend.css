@@ -2294,6 +2294,218 @@
 	gap: 2rem;
 }
 
+/* =========================================
+   SINGLE: Finance Calculator
+   ========================================= */
+.dbw-finance-calculator {
+	scroll-margin-top: 100px;
+}
+
+/* Nebenkosten Table */
+.dbw-calc-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 2rem;
+}
+
+.dbw-calc-table td {
+	padding: 10px 0;
+	border-bottom: 1px solid var(--dbw-border-light, #f0f2f5);
+	font-size: 0.95rem;
+	color: var(--dbw-text, #333);
+}
+
+.dbw-calc-table .dbw-calc-value {
+	text-align: right;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.dbw-calc-detail {
+	display: inline;
+	font-size: 0.82rem;
+	color: var(--dbw-gray, #666);
+	margin-left: 4px;
+}
+
+.dbw-calc-table tfoot td {
+	border-top: 2px solid var(--dbw-text, #333);
+	border-bottom: none;
+	font-weight: 700;
+	font-size: 1.05rem;
+	padding-top: 12px;
+}
+
+/* Finanzierung */
+.dbw-calc-subtitle {
+	font-size: 1.1rem;
+	margin: 0 0 1.5rem;
+	color: var(--dbw-primary, #2c3e50);
+}
+
+.dbw-calc-sliders {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	margin-bottom: 1.5rem;
+}
+
+.dbw-calc-slider-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.dbw-calc-slider-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.dbw-calc-slider-header label {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--dbw-text, #333);
+}
+
+.dbw-calc-output {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--dbw-accent, #2573a7);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Range slider styling */
+.dbw-calc-range {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 6px;
+	border-radius: 3px;
+	outline: none;
+	cursor: pointer;
+	background: linear-gradient(
+		to right,
+		var(--dbw-accent, #2573a7) 0%,
+		var(--dbw-accent, #2573a7) var(--fill, 20%),
+		var(--dbw-border, #e0e0e0) var(--fill, 20%),
+		var(--dbw-border, #e0e0e0) 100%
+	);
+}
+
+.dbw-calc-range::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--dbw-accent, #2573a7);
+	border: 3px solid #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+}
+
+.dbw-calc-range::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--dbw-accent, #2573a7);
+	border: 3px solid #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+}
+
+.dbw-calc-range:focus-visible {
+	outline: 2px solid var(--dbw-accent);
+	outline-offset: 4px;
+}
+
+/* Result box */
+.dbw-calc-result {
+	background: var(--dbw-bg-muted, #f0f2f5);
+	border-radius: var(--dbw-radius, 8px);
+	padding: 1.25rem;
+	margin-bottom: 1rem;
+}
+
+.dbw-calc-result-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 8px 0;
+	font-size: 0.95rem;
+}
+
+.dbw-calc-result-row + .dbw-calc-result-row {
+	border-top: 1px solid var(--dbw-border-light, #e0e0e0);
+}
+
+.dbw-calc-result-row strong {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.dbw-calc-result-highlight {
+	font-size: 1.1rem;
+}
+
+.dbw-calc-result-highlight strong {
+	color: var(--dbw-accent, #2573a7);
+	font-size: 1.15rem;
+}
+
+.dbw-calc-hinweis {
+	font-size: 0.82rem;
+	color: var(--dbw-gray, #666);
+	line-height: 1.5;
+	margin: 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.dbw-calc-range {
+		transition: none;
+	}
+
+	.dbw-calc-range::-webkit-slider-thumb {
+		transition: none;
+	}
+
+	.dbw-calc-range::-moz-range-thumb {
+		transition: none;
+	}
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+	.dbw-calc-table td {
+		font-size: 0.88rem;
+		padding: 8px 0;
+	}
+
+	.dbw-calc-detail {
+		display: block;
+		margin-left: 0;
+		margin-top: 2px;
+	}
+
+	.dbw-calc-result-row {
+		font-size: 0.88rem;
+	}
+
+	.dbw-calc-result-highlight {
+		font-size: 1rem;
+	}
+}
+
+/* Print: hide calculator */
+@media print {
+	.dbw-finance-calculator {
+		display: none !important;
+	}
+}
+
 /* ==========================================================================
    Print Styles (Exposé Layout)
    ========================================================================== */

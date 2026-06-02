@@ -36,7 +36,7 @@ Entwickelt fuer den professionellen Einsatz und nahtlose Integration in jede Wor
 - **Ausstattungs-Badges** — strukturierte Merkmale als Pill-Tags (Balkon, Garage, Kamin etc.)
 - **OpenStreetMap-Karte** via Leaflet.js (kein API-Key noetig) mit Marker
 - **Energieausweis-Skala** — grafische Darstellung mit Pfeil-Indikator
-- **Kontakt-Modal** — Single-Step-Dialog mit Intent-Auswahl (Besichtigung, Mehr Infos, Preis/Finanzierung, Rueckruf), kontextuellen Zusatzfeldern, Datenschutz-Checkbox, AJAX-Submit, animiertem Erfolgs-Screen mit Makler-Kontaktkarte, Honeypot-Spamschutz, Mobile-Bottom-Sheet + Sticky-CTA-Bar
+- **Multi-Step Kontakt-Modal** — Typeform-Style 2-Step-Flow: Intent-Auswahl (4 animierte SVG-Cards) → Kontaktdaten mit intent-spezifischen Feldern, Progress-Bar, Datenschutz-Checkbox, AJAX-Submit, animiertem Erfolgs-Screen mit Makler-Kontaktkarte, Honeypot + Rate Limiting, Mobile-Bottom-Sheet + Sticky-CTA-Bar
 - **Highlights-Sidebar** — Sticky-Box mit Eckdaten, Preis, Provision, Energieklasse
 - **Aehnliche Objekte** — "Das koennte Sie auch interessieren" mit 3-stufigem Fallback
 - **Floating Action Buttons** — Zurueck, Teilen (Web Share API), Drucken, Grundrisse-Anker
@@ -47,7 +47,9 @@ Entwickelt fuer den professionellen Einsatz und nahtlose Integration in jede Wor
 - **Open Graph + Twitter Card Meta-Tags** — automatisch generiert aus Objektdaten
 - **Canonical-Tag** auf gefilterten Archiv-Seiten gegen Duplicate Content
 - **Conditional Asset Loading** — CSS/JS nur auf Immobilien-Seiten oder bei Shortcode/Block-Nutzung
+- **Responsive Images** — `srcset`, `sizes`, `width`/`height` auf allen Bildern, `fetchpriority="high"` fuer LCP
 - **Lazy Loading** fuer Galerie-Bilder (erstes Bild eager fuer LCP)
+- **Entrance Animations** — Staggered Card-Reveal, Section Fade-Up, Shimmer Loading
 - **Alt-Text Fallback** — "Objekttitel — Bild N" wenn kein Alt gesetzt
 - **Saubere URLs** mit konfigurierbarem CPT-Slug
 - **Kompatibel mit Yoast / RankMath** — SEO-Tags werden nur ausgegeben wenn kein SEO-Plugin aktiv ist
@@ -187,9 +189,16 @@ templates/
   single-immobilie.php      # Detailseiten-Template
 assets/
   css/frontend.css          # Alle Frontend-Styles inkl. Print
-  js/frontend.js            # Filter-Toggle (Vanilla JS)
+  js/frontend.js            # Filter-Toggle + Entrance Animations (Vanilla JS)
   js/view-switch.js         # Grid/List-Switcher
+  js/lightbox.js            # Gallery Lightbox mit Focus-Trap
+  js/contact-modal.js       # Multi-Step Contact Modal
   js/admin.js               # Import-AJAX mit Nonce
+docs/
+  AUDIT-PROMPT.md           # Wiederverwendbarer Audit-Prompt
+  TODO.md                   # Bekannte Altlasten + Feature-Roadmap
+  PROMPT-KAUFNEBENKOSTEN.md # Prompt fuer Finanzierungsrechner
+  PROMPT-PDF-EXPOSE.md      # Prompt fuer PDF-Expose-Generator
 languages/
   dbw-immo-suite.pot        # Uebersetzungsvorlage
 ```

@@ -138,6 +138,9 @@ class Plugin
         $plugin_schema_output = new \DBW\ImmoSuite\Frontend\SchemaOutput();
         $this->loader->add_action('init', $plugin_schema_output, 'init');
 
+        $plugin_finance_calc = new \DBW\ImmoSuite\Frontend\FinanceCalculator();
+        $this->loader->add_action('init', $plugin_finance_calc, 'init');
+
         $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
         $this->loader->add_action('init', $plugin_block_references, 'init');
 

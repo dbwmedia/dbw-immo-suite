@@ -37,6 +37,7 @@ Entwickelt fuer den professionellen Einsatz und nahtlose Integration in jede Wor
 - **OpenStreetMap-Karte** via Leaflet.js (kein API-Key noetig) mit Marker
 - **Energieausweis-Skala** — grafische Darstellung mit Pfeil-Indikator
 - **Multi-Step Kontakt-Modal** — Typeform-Style 2-Step-Flow: Intent-Auswahl (4 animierte SVG-Cards) → Kontaktdaten mit intent-spezifischen Feldern, Progress-Bar, Datenschutz-Checkbox, AJAX-Submit, animiertem Erfolgs-Screen mit Makler-Kontaktkarte, Honeypot + Rate Limiting, Mobile-Bottom-Sheet + Sticky-CTA-Bar
+- **Kaufnebenkosten- & Finanzierungsrechner** — automatische Nebenkosten-Aufschluesselung (Grunderwerbsteuer per PLZ, Notar, Grundbuch, Provision) + interaktive Finanzierung mit 3 Slidern (Eigenkapital, Zinssatz, Tilgung), Live-Berechnung, alle Raten im Backend anpassbar
 - **Highlights-Sidebar** — Sticky-Box mit Eckdaten, Preis, Provision, Energieklasse
 - **Aehnliche Objekte** — "Das koennte Sie auch interessieren" mit 3-stufigem Fallback
 - **Floating Action Buttons** — Zurueck, Teilen (Web Share API), Drucken, Grundrisse-Anker
@@ -108,13 +109,13 @@ Zeigt verkaufte und Referenz-Objekte an.
 ### WordPress Customizer
 - **Design System** — Primary, Secondary, Accent, Hintergrundfarbe, Eckenradius
 - **Archiv-Steuerung** — Objekte/Seite, Spalten, Sichtbarkeit (Preis, Flaeche, Zimmer, Baujahr, Energie)
-- **Detailseite** — Toggles fuer Karte, Energie, Galerie, Kontakt, Teilen, Drucken, Aehnliche Objekte
+- **Detailseite** — Toggles fuer Karte, Energie, Galerie, Kontakt, Teilen, Drucken, Aehnliche Objekte, Finanzierungsrechner
 - **Highlights-Box** — Hintergrundfarbe und Textfarbe
 
 ### Admin-Backend
 - **7 Tabs im Property-Editor** — Basisdaten, Preise, Flaechen, Ausstattung, Technik, Kontakt, Import Info
 - **Import-Dashboard** — System-Status, manueller Import-Trigger, Historie (letzte 20 Laeufe)
-- **Einstellungen** — Import-Pfad (Dropdown + Validierung), CPT-Slug, Referenz-System, Darstellung (Du/Sie-Anrede), Maklerfirma (SEO), Shortcode-Doku
+- **Einstellungen** — Import-Pfad (Dropdown + Validierung), CPT-Slug, Referenz-System, Darstellung (Du/Sie-Anrede, Finanzierungsrechner-Defaults), Maklerfirma (SEO), Shortcode-Doku
 - **Automatischer WP-Cron Import** — stuendlich, mit Lock-Mechanismus
 
 ---
@@ -175,6 +176,7 @@ src/
     Shortcode.php           # [dbw_immo_grid] + [dbw_immo_references]
     EnergyRenderer.php      # Energieausweis-Skala + Archiv-Flag
     ContactForm.php         # AJAX-Kontaktformular
+    FinanceCalculator.php   # Kaufnebenkosten- & Finanzierungsrechner
     SeoMeta.php             # Open Graph + Twitter Card Tags + Canonical
     SchemaOutput.php        # Schema.org JSON-LD (RealEstateListing, BreadcrumbList, RealEstateAgent)
   Import/
@@ -193,6 +195,7 @@ assets/
   js/view-switch.js         # Grid/List-Switcher
   js/lightbox.js            # Gallery Lightbox mit Focus-Trap
   js/contact-modal.js       # Multi-Step Contact Modal
+  js/finance-calculator.js  # Kaufnebenkosten- & Finanzierungsrechner
   js/admin.js               # Import-AJAX mit Nonce
 docs/
   AUDIT-PROMPT.md           # Wiederverwendbarer Audit-Prompt

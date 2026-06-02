@@ -7,6 +7,35 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.9.0] — 2026-06-02
+
+Neuer interaktiver Kaufnebenkosten- & Finanzierungsrechner auf der Detailseite fuer Kaufobjekte.
+
+### Hinzugefuegt
+- **Kaufnebenkosten-Rechner** — automatische Aufschluesselung: Kaufpreis, Grunderwerbsteuer (PLZ-basiert nach Bundesland), Notarkosten, Grundbuchamt, Maklerprovision, Gesamtkosten
+- **Finanzierungsrechner** — 3 interaktive Slider (Eigenkapital, Zinssatz, Tilgung) mit Live-Berechnung von Darlehenssumme, monatlicher Rate und Zinskosten nach 10 Jahren (monatsgenaue Amortisation)
+- **PLZ-zu-Bundesland-Mapping** — alle 16 Bundeslaender mit korrekten Grunderwerbsteuersaetzen (3,5%–6,5%)
+- **Backend-Settings** — 5 neue Felder im Tab "Darstellung" unter "Finanzierungsrechner": Notarkosten %, Grundbuchamt %, Default-Zinssatz, Default-Tilgung, Grunderwerbsteuer Override
+- **Customizer-Toggle** — `dbw_immo_single_show_calculator` (Standard: an)
+- **Neue Datei `FinanceCalculator.php`** (`src/Frontend/`) — PHP-Klasse mit `init()` und statischem `render()`
+- **Neue Datei `finance-calculator.js`** (`assets/js/`) — Vanilla JS, kein jQuery
+- **Zwei-Spalten Card-Layout** — Kaufnebenkosten-Card links, Finanzierung-Card rechts mit Icon-Headern und Accent-Unterstreichung
+- **Provision-Anzeige** — exakter Prozentwert aus Meta-Feld (z.B. "3,57 %") statt gerundeter Wert
+- **Du/Sie System** — alle User-facing Strings nutzen `dbw_anrede()` via `wp_localize_script()`
+- **Print** — Rechner wird beim Drucken ausgeblendet
+- **Reduced Motion** — Slider-Animationen deaktiviert bei `prefers-reduced-motion`
+- **Responsive** — Cards stapeln ab 900px, optimiertes Mobile-Layout ab 600px
+
+### Geaendert
+- **Plugin.php** — `FinanceCalculator` im Loader registriert
+- **Customizer.php** — Toggle fuer Finanzierungsrechner hinzugefuegt
+- **Settings.php** — Sektion "Finanzierungsrechner" mit 5 Number-Feldern, Sanitization mit min/max Clamp
+- **single-immobilie.php** — Render-Aufruf zwischen Lage und Energie eingefuegt
+- **frontend.css** — ~180 Zeilen neue Styles (Cards, Rows, Sliders, Result-Box, Print-Hide)
+- **Version** auf 1.9.0 aktualisiert
+
+---
+
 ## [1.8.0] — 2026-06-02
 
 Umfassendes Security-Hardening, Performance-Optimierung, Accessibility-Verbesserungen und UI/UX-Modernisierung. Ergebnis eines 3-Runden-Audits.

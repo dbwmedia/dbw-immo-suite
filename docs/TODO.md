@@ -35,7 +35,7 @@ Stand: 2026-06-02 (nach v1.8.0 Audit-Runde)
 
 ## Feature-Ideen (v2.0+)
 
-- [ ] Kaufnebenkosten- & Finanzierungsrechner (siehe Prompt)
+- [x] ~~Kaufnebenkosten- & Finanzierungsrechner~~ (v1.9.0)
 - [ ] PDF-Expose-Download (siehe Prompt)
 - [ ] Energiekosten-Rechner (basierend auf Energiepass-Daten)
 - [ ] Infrastruktur-Score (basierend auf Distanz-Feldern)

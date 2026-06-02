@@ -2301,49 +2301,93 @@
 	scroll-margin-top: 100px;
 }
 
-/* Nebenkosten Table */
-.dbw-calc-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 2rem;
+/* Two-column card grid */
+.dbw-calc-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-top: 0.5rem;
 }
 
-.dbw-calc-table td {
-	padding: 10px 0;
-	border-bottom: 1px solid var(--dbw-border-light, #f0f2f5);
-	font-size: 0.95rem;
+/* Cards */
+.dbw-calc-card {
+	background: #fff;
+	border: 1px solid var(--dbw-border, #e0e0e0);
+	border-radius: var(--dbw-radius, 8px);
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.dbw-calc-card-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 700;
+	font-size: 1rem;
+	color: var(--dbw-primary, #2c3e50);
+	margin-bottom: 1.25rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 2px solid var(--dbw-accent, #2573a7);
+}
+
+.dbw-calc-card-header svg {
+	color: var(--dbw-accent, #2573a7);
+	flex-shrink: 0;
+}
+
+/* Nebenkosten rows */
+.dbw-calc-rows {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.dbw-calc-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 9px 0;
+	font-size: 0.92rem;
 	color: var(--dbw-text, #333);
+	border-bottom: 1px solid var(--dbw-border-light, #f0f2f5);
 }
 
-.dbw-calc-table .dbw-calc-value {
-	text-align: right;
+.dbw-calc-row:last-child {
+	border-bottom: none;
+}
+
+.dbw-calc-val {
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
+	text-align: right;
 }
 
-.dbw-calc-detail {
-	display: inline;
-	font-size: 0.82rem;
+.dbw-calc-pct {
+	font-size: 0.78rem;
 	color: var(--dbw-gray, #666);
 	margin-left: 4px;
 }
 
-.dbw-calc-table tfoot td {
-	border-top: 2px solid var(--dbw-text, #333);
-	border-bottom: none;
+/* Total row */
+.dbw-calc-total-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-top: auto;
+	padding-top: 12px;
+	border-top: 2px solid var(--dbw-primary, #2c3e50);
 	font-weight: 700;
 	font-size: 1.05rem;
-	padding-top: 12px;
-}
-
-/* Finanzierung */
-.dbw-calc-subtitle {
-	font-size: 1.1rem;
-	margin: 0 0 1.5rem;
 	color: var(--dbw-primary, #2c3e50);
 }
 
+.dbw-calc-total-row span:last-child {
+	font-variant-numeric: tabular-nums;
+}
+
+/* Sliders */
 .dbw-calc-sliders {
 	display: flex;
 	flex-direction: column;
@@ -2376,7 +2420,7 @@
 	font-variant-numeric: tabular-nums;
 }
 
-/* Range slider styling */
+/* Range slider */
 .dbw-calc-range {
 	-webkit-appearance: none;
 	appearance: none;
@@ -2397,22 +2441,22 @@
 .dbw-calc-range::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 20px;
-	height: 20px;
+	width: 22px;
+	height: 22px;
 	border-radius: 50%;
 	background: var(--dbw-accent, #2573a7);
 	border: 3px solid #fff;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 	cursor: pointer;
 }
 
 .dbw-calc-range::-moz-range-thumb {
-	width: 20px;
-	height: 20px;
+	width: 22px;
+	height: 22px;
 	border-radius: 50%;
 	background: var(--dbw-accent, #2573a7);
 	border: 3px solid #fff;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 	cursor: pointer;
 }
 
@@ -2426,7 +2470,7 @@
 	background: var(--dbw-bg-muted, #f0f2f5);
 	border-radius: var(--dbw-radius, 8px);
 	padding: 1.25rem;
-	margin-bottom: 1rem;
+	margin-top: auto;
 }
 
 .dbw-calc-result-row {
@@ -2434,7 +2478,7 @@
 	justify-content: space-between;
 	align-items: baseline;
 	padding: 8px 0;
-	font-size: 0.95rem;
+	font-size: 0.92rem;
 }
 
 .dbw-calc-result-row + .dbw-calc-result-row {
@@ -2447,55 +2491,61 @@
 }
 
 .dbw-calc-result-highlight {
-	font-size: 1.1rem;
+	font-size: 1.05rem;
 }
 
 .dbw-calc-result-highlight strong {
 	color: var(--dbw-accent, #2573a7);
-	font-size: 1.15rem;
+	font-size: 1.1rem;
 }
 
+/* Disclaimer */
 .dbw-calc-hinweis {
-	font-size: 0.82rem;
+	font-size: 0.8rem;
 	color: var(--dbw-gray, #666);
 	line-height: 1.5;
-	margin: 0;
+	margin: 1rem 0 0;
+	text-align: center;
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-	.dbw-calc-range {
-		transition: none;
-	}
-
-	.dbw-calc-range::-webkit-slider-thumb {
-		transition: none;
-	}
-
+	.dbw-calc-range,
+	.dbw-calc-range::-webkit-slider-thumb,
 	.dbw-calc-range::-moz-range-thumb {
 		transition: none;
 	}
 }
 
+/* Tablet: stack cards */
+@media (max-width: 900px) {
+	.dbw-calc-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
 /* Mobile */
 @media (max-width: 600px) {
-	.dbw-calc-table td {
-		font-size: 0.88rem;
-		padding: 8px 0;
+	.dbw-calc-card {
+		padding: 1.25rem 1rem;
 	}
 
-	.dbw-calc-detail {
+	.dbw-calc-row {
+		font-size: 0.85rem;
+	}
+
+	.dbw-calc-pct {
 		display: block;
 		margin-left: 0;
-		margin-top: 2px;
+		margin-top: 1px;
 	}
 
 	.dbw-calc-result-row {
-		font-size: 0.88rem;
+		font-size: 0.85rem;
 	}
 
 	.dbw-calc-result-highlight {
-		font-size: 1rem;
+		font-size: 0.95rem;
 	}
 }
 

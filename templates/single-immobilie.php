@@ -384,7 +384,14 @@ get_header(); ?>
 					<?php
 				endif; ?>
 
-				<?php if (($energy_class || $energy_end) && get_theme_mod('dbw_immo_single_show_energy', true)): ?>
+				<?php
+			// Finance Calculator (only for Kaufobjekte)
+			if (class_exists('DBW\ImmoSuite\Frontend\FinanceCalculator')) {
+				\DBW\ImmoSuite\Frontend\FinanceCalculator::render($id);
+			}
+			?>
+
+			<?php if (($energy_class || $energy_end) && get_theme_mod('dbw_immo_single_show_energy', true)): ?>
 					<?php
 					if (class_exists('DBW\ImmoSuite\Frontend\EnergyRenderer')) {
 						echo \DBW\ImmoSuite\Frontend\EnergyRenderer::render_single_scale($id);

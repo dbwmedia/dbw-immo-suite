@@ -196,6 +196,14 @@ class Settings
 		add_settings_field('grayscale_sold', __('Grayscale bei Verkauft', 'dbw-immo-suite'), array($this, 'grayscale_sold_callback'), 'dbw-settings-display', 'section_display');
 		add_settings_field('grayscale_reserved', __('Grayscale bei Reserviert', 'dbw-immo-suite'), array($this, 'grayscale_reserved_callback'), 'dbw-settings-display', 'section_display');
 
+		// ── Finanzierungsrechner ──
+		add_settings_section('section_calculator', __('Finanzierungsrechner', 'dbw-immo-suite'), array($this, 'print_calculator_section_info'), 'dbw-settings-display');
+		add_settings_field('calc_notar_percent', __('Notarkosten (%)', 'dbw-immo-suite'), array($this, 'calc_notar_callback'), 'dbw-settings-display', 'section_calculator');
+		add_settings_field('calc_grundbuch_percent', __('Grundbuchamt (%)', 'dbw-immo-suite'), array($this, 'calc_grundbuch_callback'), 'dbw-settings-display', 'section_calculator');
+		add_settings_field('calc_default_zinssatz', __('Zinssatz Standard (%)', 'dbw-immo-suite'), array($this, 'calc_zinssatz_callback'), 'dbw-settings-display', 'section_calculator');
+		add_settings_field('calc_default_tilgung', __('Tilgung Standard (%)', 'dbw-immo-suite'), array($this, 'calc_tilgung_callback'), 'dbw-settings-display', 'section_calculator');
+		add_settings_field('calc_gest_override', __('Grunderwerbsteuer Override (%)', 'dbw-immo-suite'), array($this, 'calc_gest_override_callback'), 'dbw-settings-display', 'section_calculator');
+
 		// ── Tab 3: Referenzen & Verkauf ──
 		add_settings_section('section_references', __('Referenzen & Verkaufte Objekte', 'dbw-immo-suite'), array($this, 'print_reference_section_info'), 'dbw-settings-references');
 		add_settings_field('enable_references', __('Aktivieren', 'dbw-immo-suite'), array($this, 'enable_references_callback'), 'dbw-settings-references', 'section_references');
@@ -252,6 +260,22 @@ class Settings
 		// Grayscale
 		$new_input['grayscale_sold'] = isset($input['grayscale_sold']) ? 1 : 0;
 		$new_input['grayscale_reserved'] = isset($input['grayscale_reserved']) ? 1 : 0;
+
+		// Finance Calculator
+		$calc_floats = array(
+			'calc_notar_percent'    => 1.5,
+			'calc_grundbuch_percent'=> 0.5,
+			'calc_default_zinssatz' => 3.5,
+			'calc_default_tilgung'  => 2.0,
+		);
+		foreach ($calc_floats as $key => $default) {
+			if (isset($input[$key]) && $input[$key] !== '') {
+				$new_input[$key] = max(0, min(20, (float) str_replace(',', '.', $input[$key])));
+			}
+		}
+		if (isset($input['calc_gest_override']) && $input['calc_gest_override'] !== '') {
+			$new_input['calc_gest_override'] = max(0, min(20, (float) str_replace(',', '.', $input['calc_gest_override'])));
+		}
 
 		// Reference Settings
 		$new_input['enable_references'] = isset($input['enable_references']) ? 1 : 0;
@@ -533,6 +557,51 @@ class Settings
 		}
 		</script>
 		<?php
+	}
+
+	public function print_calculator_section_info()
+	{
+		print __('Standardwerte fuer den Kaufnebenkosten- und Finanzierungsrechner auf der Detailseite. Die Grunderwerbsteuer wird automatisch per PLZ ermittelt, kann aber hier global ueberschrieben werden.', 'dbw-immo-suite');
+	}
+
+	public function calc_notar_callback()
+	{
+		$this->number_field_callback('calc_notar_percent', 1.5, 0.1, 0, 10, __('Standard: 1,5 %', 'dbw-immo-suite'));
+	}
+
+	public function calc_grundbuch_callback()
+	{
+		$this->number_field_callback('calc_grundbuch_percent', 0.5, 0.1, 0, 10, __('Standard: 0,5 %', 'dbw-immo-suite'));
+	}
+
+	public function calc_zinssatz_callback()
+	{
+		$this->number_field_callback('calc_default_zinssatz', 3.5, 0.1, 0.5, 10, __('Standard: 3,5 % — Anfangswert des Sliders', 'dbw-immo-suite'));
+	}
+
+	public function calc_tilgung_callback()
+	{
+		$this->number_field_callback('calc_default_tilgung', 2.0, 0.1, 0.5, 10, __('Standard: 2,0 % — Anfangswert des Sliders', 'dbw-immo-suite'));
+	}
+
+	public function calc_gest_override_callback()
+	{
+		$this->number_field_callback('calc_gest_override', '', 0.1, 0, 20, __('Leer lassen fuer automatische Erkennung per PLZ. Nur setzen, um die PLZ-Erkennung global zu ueberschreiben.', 'dbw-immo-suite'));
+	}
+
+	private function number_field_callback($id, $default, $step, $min, $max, $desc = '')
+	{
+		$options = get_option($this->option_name);
+		$val = isset($options[$id]) ? $options[$id] : $default;
+		printf(
+			'<input type="number" id="%s" name="%s[%s]" value="%s" step="%s" min="%s" max="%s" class="small-text" />',
+			esc_attr($id), esc_attr($this->option_name), esc_attr($id),
+			esc_attr($val !== '' ? (string) $val : ''),
+			esc_attr($step), esc_attr($min), esc_attr($max)
+		);
+		if ($desc) {
+			echo '<p class="description">' . esc_html($desc) . '</p>';
+		}
 	}
 
 	public function print_seo_section_info()

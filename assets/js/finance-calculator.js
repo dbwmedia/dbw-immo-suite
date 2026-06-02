@@ -12,7 +12,14 @@
 	var kaufpreis = parseFloat(data.kaufpreis) || 0;
 	if (kaufpreis <= 0) return;
 
-	// PLZ prefix → Bundesland mapping (first 1-2 digits)
+	// Configurable rates from backend settings
+	var NOTAR_RATE = parseFloat(data.notarPercent) || 1.5;
+	var GRUNDBUCH_RATE = parseFloat(data.grundbuchPercent) || 0.5;
+	var DEFAULT_ZINSSATZ = parseFloat(data.defaultZinssatz) || 3.5;
+	var DEFAULT_TILGUNG = parseFloat(data.defaultTilgung) || 2.0;
+	var GEST_OVERRIDE = parseFloat(data.gestOverride) || 0;
+
+	// PLZ prefix -> Bundesland mapping (first 2 digits)
 	var PLZ_MAP = {
 		'01': 'Sachsen', '02': 'Sachsen', '03': 'Brandenburg', '04': 'Sachsen',
 		'06': 'Sachsen-Anhalt', '07': 'Thueringen', '08': 'Sachsen', '09': 'Sachsen',
@@ -47,61 +54,52 @@
 		'98': 'Thueringen', '99': 'Thueringen'
 	};
 
-	// Grunderwerbsteuer rates by Bundesland
 	var GEST_RATES = {
-		'Baden-Wuerttemberg': 5.0,
-		'Bayern': 3.5,
-		'Berlin': 6.0,
-		'Brandenburg': 6.5,
-		'Bremen': 5.0,
-		'Hamburg': 5.5,
-		'Hessen': 6.0,
-		'Mecklenburg-Vorpommern': 6.0,
-		'Niedersachsen': 5.0,
-		'Nordrhein-Westfalen': 6.5,
-		'Rheinland-Pfalz': 5.0,
-		'Saarland': 6.5,
-		'Sachsen': 5.5,
-		'Sachsen-Anhalt': 5.0,
-		'Schleswig-Holstein': 6.5,
+		'Baden-Wuerttemberg': 5.0, 'Bayern': 3.5, 'Berlin': 6.0,
+		'Brandenburg': 6.5, 'Bremen': 5.0, 'Hamburg': 5.5, 'Hessen': 6.0,
+		'Mecklenburg-Vorpommern': 6.0, 'Niedersachsen': 5.0,
+		'Nordrhein-Westfalen': 6.5, 'Rheinland-Pfalz': 5.0, 'Saarland': 6.5,
+		'Sachsen': 5.5, 'Sachsen-Anhalt': 5.0, 'Schleswig-Holstein': 6.5,
 		'Thueringen': 5.0
 	};
 
-	// Display names with proper Umlaute
 	var BUNDESLAND_DISPLAY = {
-		'Baden-Wuerttemberg': 'Baden-Württemberg',
-		'Mecklenburg-Vorpommern': 'Mecklenburg-Vorpommern',
-		'Thueringen': 'Thüringen'
+		'Baden-Wuerttemberg': 'Baden-W\u00FCrttemberg',
+		'Thueringen': 'Th\u00FCringen'
 	};
 
 	function getBundesland(plz) {
-		var prefix = String(plz).substring(0, 2);
-		return PLZ_MAP[prefix] || null;
+		return PLZ_MAP[String(plz).substring(0, 2)] || null;
 	}
 
 	function getGestRate(bundesland) {
+		if (GEST_OVERRIDE > 0) return GEST_OVERRIDE;
 		return bundesland ? (GEST_RATES[bundesland] || 5.0) : 5.0;
 	}
 
-	function getBundeslandDisplay(bundesland) {
-		return BUNDESLAND_DISPLAY[bundesland] || bundesland;
+	function getBundeslandDisplay(bl) {
+		return BUNDESLAND_DISPLAY[bl] || bl;
 	}
 
 	function parseProvisionPercent(raw) {
-		if (!raw) return 0;
-		var match = String(raw).replace(',', '.').match(/([\d.]+)\s*%/);
-		return match ? parseFloat(match[1]) : 0;
+		if (!raw) return { value: 0, display: '' };
+		var str = String(raw);
+		var match = str.replace(',', '.').match(/([\d.]+)\s*%/);
+		if (!match) return { value: 0, display: '' };
+		// Keep original display string (e.g. "3,57 %") from the raw input
+		var displayMatch = str.match(/([\d,.]+)\s*%/);
+		var display = displayMatch ? displayMatch[1].replace('.', ',') + '\u00A0%' : fmtPct(parseFloat(match[1]));
+		return { value: parseFloat(match[1]), display: display };
 	}
 
-	function formatCurrency(value) {
-		return value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
+	function fmtCur(v) {
+		return v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
 	}
 
-	function formatPercent(value) {
-		return value.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %';
+	function fmtPct(v) {
+		return v.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '\u00A0%';
 	}
 
-	// Element helper
 	function el(id) {
 		return document.getElementById(id);
 	}
@@ -110,19 +108,18 @@
 		var container = el('dbw-finance-calculator');
 		if (!container) return;
 
-		// Bundesland & rates
 		var bundesland = getBundesland(data.plz);
 		var gestRate = getGestRate(bundesland);
-		var provisionPercent = parseProvisionPercent(data.provision);
+		var provision = parseProvisionPercent(data.provision);
 
 		// Nebenkosten
 		var gestAmount = kaufpreis * gestRate / 100;
-		var notarAmount = kaufpreis * 1.5 / 100;
-		var grundbuchAmount = kaufpreis * 0.5 / 100;
-		var provisionAmount = kaufpreis * provisionPercent / 100;
+		var notarAmount = kaufpreis * NOTAR_RATE / 100;
+		var grundbuchAmount = kaufpreis * GRUNDBUCH_RATE / 100;
+		var provisionAmount = kaufpreis * provision.value / 100;
 		var gesamtkosten = kaufpreis + gestAmount + notarAmount + grundbuchAmount + provisionAmount;
 
-		// Set labels from i18n
+		// Labels
 		el('dbw-calc-headline').textContent = i18n.headline;
 		el('dbw-calc-label-kaufpreis').textContent = i18n.kaufpreis;
 		el('dbw-calc-label-gest').textContent = i18n.grunderwerbsteuer;
@@ -139,88 +136,85 @@
 		el('dbw-calc-fin-headline').textContent = i18n.finanzierung;
 		el('dbw-calc-hinweis').textContent = i18n.hinweis;
 
-		// GeSt detail
+		// Detail percentages
 		if (bundesland) {
-			el('dbw-calc-gest-detail').textContent = '(' + formatPercent(gestRate) + ' — ' + getBundeslandDisplay(bundesland) + ')';
+			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ' \u2014 ' + getBundeslandDisplay(bundesland) + ')';
+		} else if (GEST_OVERRIDE > 0) {
+			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ')';
 		} else {
-			el('dbw-calc-gest-detail').textContent = '(' + formatPercent(gestRate) + ' — ' + i18n.bundesland_unknown + ')';
+			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ' \u2014 ' + i18n.bundesland_unknown + ')';
 		}
+		el('dbw-calc-notar-detail').textContent = '(' + fmtPct(NOTAR_RATE) + ')';
+		el('dbw-calc-grundbuch-detail').textContent = '(' + fmtPct(GRUNDBUCH_RATE) + ')';
 
-		// Provision detail & row visibility
+		// Provision
 		var provisionRow = el('dbw-calc-provision-row');
-		if (provisionPercent > 0) {
-			el('dbw-calc-provision-detail').textContent = '(' + formatPercent(provisionPercent) + ')';
-			el('dbw-calc-provision').textContent = formatCurrency(provisionAmount);
+		if (provision.value > 0) {
+			el('dbw-calc-provision-detail').textContent = '(' + provision.display + ')';
+			el('dbw-calc-provision').textContent = fmtCur(provisionAmount);
 		} else {
 			provisionRow.hidden = true;
 		}
 
-		// Fill Nebenkosten table
-		el('dbw-calc-kaufpreis').textContent = formatCurrency(kaufpreis);
-		el('dbw-calc-gest').textContent = formatCurrency(gestAmount);
-		el('dbw-calc-notar').textContent = formatCurrency(notarAmount);
-		el('dbw-calc-grundbuch').textContent = formatCurrency(grundbuchAmount);
-		el('dbw-calc-gesamt').textContent = formatCurrency(gesamtkosten);
+		// Fill values
+		el('dbw-calc-kaufpreis').textContent = fmtCur(kaufpreis);
+		el('dbw-calc-gest').textContent = fmtCur(gestAmount);
+		el('dbw-calc-notar').textContent = fmtCur(notarAmount);
+		el('dbw-calc-grundbuch').textContent = fmtCur(grundbuchAmount);
+		el('dbw-calc-gesamt').textContent = fmtCur(gesamtkosten);
 
-		// Eigenkapital slider setup
+		// Slider setup with backend defaults
 		var ekSlider = el('dbw-calc-eigenkapital');
+		var zinsSlider = el('dbw-calc-zinssatz');
+		var tilgungSlider = el('dbw-calc-tilgung');
+
 		ekSlider.max = Math.round(gesamtkosten);
 		ekSlider.value = Math.round(gesamtkosten * 0.2);
+		zinsSlider.value = DEFAULT_ZINSSATZ;
+		tilgungSlider.value = DEFAULT_TILGUNG;
 
-		// Financing calculation
 		function calculate() {
 			var eigenkapital = parseFloat(ekSlider.value);
-			var zinssatz = parseFloat(el('dbw-calc-zinssatz').value);
-			var tilgung = parseFloat(el('dbw-calc-tilgung').value);
+			var zinssatz = parseFloat(zinsSlider.value);
+			var tilgung = parseFloat(tilgungSlider.value);
 
 			var darlehen = Math.max(0, gesamtkosten - eigenkapital);
 			var monatsrate = darlehen * (zinssatz + tilgung) / 100 / 12;
 
-			// Simplified 10-year interest: sum monthly interest with declining balance
+			// 10-year amortization
 			var restschuld = darlehen;
 			var totalZins = 0;
-			for (var monat = 0; monat < 120; monat++) {
-				var monatsZins = restschuld * zinssatz / 100 / 12;
-				var monatsTilgung = monatsrate - monatsZins;
-				if (monatsTilgung < 0) monatsTilgung = 0;
-				totalZins += monatsZins;
-				restschuld -= monatsTilgung;
-				if (restschuld <= 0) {
-					restschuld = 0;
-					break;
-				}
+			for (var m = 0; m < 120; m++) {
+				var mZins = restschuld * zinssatz / 100 / 12;
+				var mTilg = monatsrate - mZins;
+				if (mTilg < 0) mTilg = 0;
+				totalZins += mZins;
+				restschuld -= mTilg;
+				if (restschuld <= 0) break;
 			}
 
-			// Update outputs
-			el('dbw-calc-ek-output').textContent = formatCurrency(eigenkapital);
-			el('dbw-calc-zins-output').textContent = formatPercent(zinssatz);
-			el('dbw-calc-tilgung-output').textContent = formatPercent(tilgung);
+			el('dbw-calc-ek-output').textContent = fmtCur(eigenkapital);
+			el('dbw-calc-zins-output').textContent = fmtPct(zinssatz);
+			el('dbw-calc-tilgung-output').textContent = fmtPct(tilgung);
 
-			el('dbw-calc-darlehen').textContent = formatCurrency(darlehen);
-			el('dbw-calc-rate').textContent = formatCurrency(monatsrate);
-			el('dbw-calc-zinskosten').textContent = formatCurrency(totalZins);
+			el('dbw-calc-darlehen').textContent = fmtCur(darlehen);
+			el('dbw-calc-rate').textContent = fmtCur(monatsrate);
+			el('dbw-calc-zinskosten').textContent = fmtCur(totalZins);
 
-			// Update CSS custom property for slider fill
-			updateSliderFill(ekSlider);
-			updateSliderFill(el('dbw-calc-zinssatz'));
-			updateSliderFill(el('dbw-calc-tilgung'));
+			updateFill(ekSlider);
+			updateFill(zinsSlider);
+			updateFill(tilgungSlider);
 		}
 
-		function updateSliderFill(slider) {
-			var min = parseFloat(slider.min);
-			var max = parseFloat(slider.max);
-			var val = parseFloat(slider.value);
-			var percent = ((val - min) / (max - min)) * 100;
-			slider.style.setProperty('--fill', percent + '%');
+		function updateFill(s) {
+			var pct = ((s.value - s.min) / (s.max - s.min)) * 100;
+			s.style.setProperty('--fill', pct + '%');
 		}
 
-		// Bind events
-		var sliders = [ekSlider, el('dbw-calc-zinssatz'), el('dbw-calc-tilgung')];
-		sliders.forEach(function (slider) {
-			slider.addEventListener('input', calculate);
+		[ekSlider, zinsSlider, tilgungSlider].forEach(function (s) {
+			s.addEventListener('input', calculate);
 		});
 
-		// Initial calculation
 		calculate();
 	}
 

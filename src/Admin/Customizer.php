@@ -115,6 +115,7 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_share', true, __('Teilen-Button im Slider anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_print', true, __('Drucken-Button im Slider anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_similar', true, __('Ähnliche Objekte anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_calculator', true, __('Finanzierungsrechner anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
 
         // Highlights Box
         $wp_customize->add_setting('dbw_immo_highlights_bg_style', array(

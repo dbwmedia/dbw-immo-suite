@@ -46,26 +46,10 @@ class Importer
             wp_raise_memory_limit('admin');
 
             $options = get_option('dbw_immo_suite_settings');
-            $xml_path = isset($options['xml_path']) ? $options['xml_path'] : '';
+            $xml_path = $this->resolve_import_path($options);
 
-            // Path Logic
-            $xml_path_raw = $xml_path;
-            if (!empty($xml_path) && is_dir($xml_path)) {
-                $xml_path = trailingslashit($xml_path);
-            }
-            elseif (!empty($xml_path) && is_dir(ABSPATH . ltrim($xml_path, '/'))) {
-                $xml_path = trailingslashit(ABSPATH . ltrim($xml_path, '/'));
-            }
-            elseif (empty($xml_path)) {
-                $upload_dir = wp_upload_dir();
-                $xml_path = $upload_dir['basedir'] . '/openimmo/';
-            }
-            else {
-                throw new \Exception(sprintf('Verzeichnis "%s" nicht gefunden (konfiguriert: "%s").', $xml_path, $xml_path_raw));
-            }
-
-            if (!is_dir($xml_path)) {
-                throw new \Exception('Kein gültiges Import-Verzeichnis: ' . $xml_path);
+            if (!$xml_path || !is_dir($xml_path)) {
+                throw new \Exception(__('Kein gueltiges Import-Verzeichnis konfiguriert.', 'dbw-immo-suite'));
             }
 
             $this->log_debug('Import-Pfad aufgelöst: ' . $xml_path . ' (konfiguriert: ' . $xml_path_raw . ')');
@@ -913,26 +897,12 @@ class Importer
 
             // 1. Locate XML Path
             $options = get_option('dbw_immo_suite_settings');
-            $xml_path = isset($options['xml_path']) ? $options['xml_path'] : '';
-            $xml_path_raw = $xml_path;
-            if (!empty($xml_path) && is_dir($xml_path)) {
-                $xml_path = trailingslashit($xml_path);
-            }
-            elseif (!empty($xml_path) && is_dir(ABSPATH . ltrim($xml_path, '/'))) {
-                $xml_path = trailingslashit(ABSPATH . ltrim($xml_path, '/'));
-            }
-            elseif (empty($xml_path)) {
-                $upload_dir = wp_upload_dir();
-                $xml_path = $upload_dir['basedir'] . '/openimmo/';
-            }
-            else {
-                wp_send_json_error('Pfad nicht gefunden: ' . $xml_path);
-            }
+            $xml_path = $this->resolve_import_path($options);
 
-            if (!is_dir($xml_path))
-                wp_send_json_error('Verzeichnis existiert nicht: ' . $xml_path);
+            if (!$xml_path || !is_dir($xml_path))
+                wp_send_json_error(__('Import-Verzeichnis nicht gefunden.', 'dbw-immo-suite'));
 
-            $this->log_debug('AJAX Import-Pfad aufgelöst: ' . $xml_path . ' (konfiguriert: ' . $xml_path_raw . ')');
+            $this->log_debug('AJAX Import-Pfad aufgeloest: ' . $xml_path);
 
             // 2. Extract ZIPs & Check Hashes
             $zips = glob($xml_path . '*.zip');

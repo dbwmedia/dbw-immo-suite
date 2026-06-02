@@ -3,10 +3,10 @@
 :root {
 	--dbw-primary: #2c3e50;
 	--dbw-secondary: #34495e;
-	--dbw-accent: #3498db;
+	--dbw-accent: #2573a7;
 	--dbw-light: #ecf0f1;
 	--dbw-text: #333;
-	--dbw-gray: #7f8c8d;
+	--dbw-gray: #5f6b6d;
 	--dbw-white: #ffffff;
 	--dbw-radius: 8px;
 	--dbw-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -147,13 +147,32 @@
 	animation-delay: var(--stagger, 0ms);
 }
 
-/* Skip animation if user prefers reduced motion */
+/* Skip animations if user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
 	#dbw-immo-suite .dbw-property-card {
 		opacity: 1;
 	}
 	#dbw-immo-suite .dbw-property-card.is-visible {
 		animation: none;
+	}
+	/* Modal step transitions */
+	.dbw-modal__step {
+		animation: none !important;
+	}
+	.dbw-modal__progress-bar {
+		transition: none;
+	}
+	/* Filter toggle */
+	.dbw-filter-content {
+		transition: none !important;
+	}
+	/* Lightbox fade */
+	#dbwLightboxOverlay img {
+		transition: none !important;
+	}
+	/* Intent card hover */
+	.dbw-intent {
+		transition: none !important;
 	}
 }
 

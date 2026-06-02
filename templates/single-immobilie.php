@@ -152,6 +152,7 @@ get_header(); ?>
 
 				<!-- Floating Buttons - Top Left -->
 				<a href="<?php echo esc_url(get_post_type_archive_link('immobilie')); ?>" class="dbw-gallery-btn"
+					aria-label="<?php esc_attr_e('Zurueck zur Uebersicht', 'dbw-immo-suite'); ?>"
 					style="position: absolute; top: 20px; left: 20px; z-index: 1; display:flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-decoration: none;">
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 						stroke-linecap="round" stroke-linejoin="round">
@@ -166,6 +167,7 @@ get_header(); ?>
 						<button
 							onclick="navigator.share ? navigator.share({title: document.title, url: window.location.href}).catch(console.error) : alert('Ihr Browser unterstützt diese Funktion leider nicht direkt. Bitte kopieren Sie die URL.')"
 							class="dbw-gallery-btn"
+							aria-label="<?php esc_attr_e('Teilen', 'dbw-immo-suite'); ?>"
 							style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor:pointer; padding:0;">
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 								stroke-linecap="round" stroke-linejoin="round">
@@ -180,6 +182,7 @@ get_header(); ?>
 
 					<?php if (get_theme_mod('dbw_immo_single_show_print', true)): ?>
 						<button onclick="window.print()" class="dbw-gallery-btn"
+							aria-label="<?php esc_attr_e('Drucken', 'dbw-immo-suite'); ?>"
 							style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor:pointer; padding:0;">
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 								stroke-linecap="round" stroke-linejoin="round">
@@ -645,7 +648,8 @@ get_header(); ?>
 			'posts_per_page' => 3,
 			'post__not_in'   => array($id),
 			'post_status'    => 'publish',
-			'orderby'        => 'rand',
+			'orderby'        => 'date',
+			'order'          => 'DESC',
 			'fields'         => 'ids',
 			'update_post_meta_cache' => true,
 			'update_post_term_cache' => true,

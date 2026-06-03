@@ -7,6 +7,23 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.12.2] — 2026-06-03
+
+Customizer-Erweiterungen und Kleinigkeiten.
+
+### Hinzugefuegt
+- **Customizer: Abstand nach oben** — separater Regler fuer Archiv (Default: 6rem) und Detailseite (Default: 2rem) unter "Archiv & Suche" bzw. "Detailansicht". Erlaubt individuelle Anpassung an Theme-Header-Hoehe.
+
+### Geaendert
+- **Archiv-Template** — Hardcodiertes `padding: 6rem 0rem` entfernt, wird jetzt vom Customizer gesteuert.
+- **frontend.css** — Hardcodiertes `padding-top: 6rem` auf `#dbw-immo-suite` entfernt.
+
+### Behoben
+- **Doppelte Telefonnummer** — Redundanter Telefon-Link unterhalb der CTA-Buttons (WhatsApp/Anfragen) in der Sidebar entfernt. Nummer bleibt nur beim Ansprechpartner.
+- **Karten-Platzhalter** — Pin-Icon und Text vertikal+horizontal zentriert (flexbox).
+
+---
+
 ## [1.12.1] — 2026-06-03
 
 DSGVO-Konformitaet und kritische Bugfixes aus dem Audit.

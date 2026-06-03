@@ -1644,6 +1644,45 @@
 /* =========================================
    SINGLE: Map
    ========================================= */
+/* Map Consent Placeholder (DSGVO) */
+#dbw-immo-suite .dbw-map-placeholder {
+	height: 350px;
+	border-radius: var(--dbw-radius);
+	margin: 1.5rem 0;
+	background: var(--dbw-bg-muted);
+	border: 2px dashed var(--dbw-border);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#dbw-immo-suite .dbw-map-placeholder__inner {
+	text-align: center;
+	padding: 2rem;
+	color: var(--dbw-gray);
+}
+
+#dbw-immo-suite .dbw-map-placeholder__inner svg {
+	color: var(--dbw-accent);
+	margin-bottom: 0.75rem;
+}
+
+#dbw-immo-suite .dbw-map-placeholder__text {
+	font-size: 1rem;
+	margin: 0 0 1rem;
+	color: var(--dbw-text);
+}
+
+#dbw-immo-suite .dbw-map-placeholder__btn {
+	margin-bottom: 0.75rem;
+}
+
+#dbw-immo-suite .dbw-map-placeholder__hint {
+	font-size: 0.78rem;
+	color: var(--dbw-gray);
+	margin: 0;
+}
+
 #dbw-immo-suite #dbw-map {
 	height: 350px;
 	border-radius: var(--dbw-radius);
@@ -1652,6 +1691,7 @@
 }
 
 @media (max-width: 768px) {
+	#dbw-immo-suite .dbw-map-placeholder,
 	#dbw-immo-suite #dbw-map {
 		height: 250px;
 	}

@@ -2,6 +2,8 @@
 
 namespace DBW\ImmoSuite\Admin;
 
+if (!defined('ABSPATH')) { exit; }
+
 /**
  * Settings Page for DBW ImmoSuite
  */

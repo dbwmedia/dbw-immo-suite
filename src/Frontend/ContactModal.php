@@ -231,8 +231,9 @@ class ContactModal
                                 <span><?php
                                     $privacy_url = get_privacy_policy_url();
                                     if ($privacy_url) {
-                                        printf(
-                                            esc_html__('Ich stimme der %sDatenschutzerklaerung%s zu.', 'dbw-immo-suite'),
+                                        echo sprintf(
+                                            /* translators: %1$s opening <a> tag, %2$s closing </a> tag */
+                                            __('Ich stimme der %1$sDatenschutzerklaerung%2$s zu.', 'dbw-immo-suite'),
                                             '<a href="' . esc_url($privacy_url) . '" target="_blank" rel="noopener">',
                                             '</a>'
                                         );

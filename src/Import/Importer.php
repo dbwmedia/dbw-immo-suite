@@ -52,7 +52,7 @@ class Importer
                 throw new \Exception(__('Kein gueltiges Import-Verzeichnis konfiguriert.', 'dbw-immo-suite'));
             }
 
-            $this->log_debug('Import-Pfad aufgelöst: ' . $xml_path . ' (konfiguriert: ' . $xml_path_raw . ')');
+            $this->log_debug('Import-Pfad aufgeloest: ' . $xml_path);
 
             $stats = array(
                 'created' => 0,

@@ -351,12 +351,48 @@ get_header(); ?>
 						<?php endif; ?>
 
 						<?php if ($lat && $lng): ?>
-						<div id="dbw-map"></div>
+						<div id="dbw-map-consent" class="dbw-map-placeholder"
+							data-lat="<?php echo esc_attr($lat); ?>"
+							data-lng="<?php echo esc_attr($lng); ?>"
+							data-borlabs-cookie-type="content"
+							data-borlabs-cookie-id="openstreetmap">
+							<div class="dbw-map-placeholder__inner">
+								<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+								<p class="dbw-map-placeholder__text"><?php echo esc_html(\DBW\ImmoSuite\dbw_anrede(
+									__('Klicken Sie, um die Karte zu laden.', 'dbw-immo-suite'),
+									__('Klicke, um die Karte zu laden.', 'dbw-immo-suite')
+								)); ?></p>
+								<button type="button" class="dbw-btn dbw-btn--ghost dbw-map-placeholder__btn" id="dbw-map-load">
+									<?php esc_html_e('Karte laden', 'dbw-immo-suite'); ?>
+								</button>
+								<p class="dbw-map-placeholder__hint"><?php esc_html_e('Dabei werden Daten an OpenStreetMap uebertragen.', 'dbw-immo-suite'); ?></p>
+							</div>
+						</div>
+						<div id="dbw-map" style="display:none;"></div>
 						<?php
-						wp_enqueue_style('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), '1.9.4');
-						wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), '1.9.4', true);
+						// Register Leaflet from local vendor copy (no external CDN)
+						wp_enqueue_style('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.css', array(), '1.9.4');
+						wp_enqueue_script('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.js', array(), '1.9.4', true);
 						wp_add_inline_script('leaflet', sprintf(
-							'(function(){var m=L.map("dbw-map",{scrollWheelZoom:false}).setView([%s,%s],14);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; <a href=\'https://www.openstreetmap.org/copyright\'>OpenStreetMap</a>",maxZoom:18}).addTo(m);L.marker([%s,%s]).addTo(m);})();',
+							'(function(){' .
+							'var consent=document.getElementById("dbw-map-consent");' .
+							'var mapEl=document.getElementById("dbw-map");' .
+							'var btn=document.getElementById("dbw-map-load");' .
+							'if(!consent||!mapEl||!btn)return;' .
+							'function initMap(){' .
+								'consent.style.display="none";' .
+								'mapEl.style.display="block";' .
+								'var m=L.map("dbw-map",{scrollWheelZoom:false}).setView([%s,%s],14);' .
+								'L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; <a href=\'https://www.openstreetmap.org/copyright\'>OpenStreetMap</a>",maxZoom:18}).addTo(m);' .
+								'L.marker([%s,%s]).addTo(m);' .
+							'}' .
+							'btn.addEventListener("click",initMap);' .
+							// Borlabs Cookie integration: auto-init if consent already given
+							'if(window.BorlabsCookie&&window.BorlabsCookie.checkCookieConsent("openstreetmap")){initMap();}' .
+							'document.addEventListener("borlabs-cookie-consent-saved",function(){' .
+								'if(window.BorlabsCookie.checkCookieConsent("openstreetmap")){initMap();}' .
+							'});' .
+							'})();',
 							esc_js($lat), esc_js($lng), esc_js($lat), esc_js($lng)
 						));
 						?>

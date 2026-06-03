@@ -102,6 +102,7 @@ class SchemaOutput
         $schema = array(
             '@context'    => 'https://schema.org',
             '@type'       => 'RealEstateListing',
+            '@id'         => get_permalink($id) . '#listing',
             'url'         => get_permalink($id),
             'name'        => get_the_title($id),
             'description' => wp_strip_all_tags(get_the_excerpt($id) ?: wp_trim_words(get_post_field('post_content', $id), 50, '...')),

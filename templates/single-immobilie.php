@@ -513,7 +513,7 @@ get_header(); ?>
 						<?php endif; ?>
 
 						<?php
-						$energy_class_hl = get_post_meta(get_the_ID(), 'energiepass_wertklasse', true);
+						$energy_class_hl = $energy_class;
 						if (!empty($energy_class_hl)):
 							?>
 							<li class="dbw-highlights-energy"
@@ -608,6 +608,7 @@ get_header(); ?>
 							style="display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem;">
 							<?php if ($contact_img_url): ?>
 								<img src="<?php echo esc_url($contact_img_url); ?>" alt="<?php echo esc_attr($contact_name); ?>"
+									width="60" height="60" loading="lazy"
 									style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
 								<?php
 							else: ?>
@@ -730,9 +731,8 @@ get_header(); ?>
 <div id="dbwLightboxOverlay" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e('Bildergalerie', 'dbw-immo-suite'); ?>"
 	style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
 	<!-- Close -->
-	<button onclick="dbwLightbox.close()" aria-label="<?php esc_attr_e('Schliessen', 'dbw-immo-suite'); ?>"
-		style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;"
-		onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+	<button onclick="dbwLightbox.close()" class="dbw-lightbox-btn dbw-lightbox-btn--close" aria-label="<?php esc_attr_e('Schliessen', 'dbw-immo-suite'); ?>"
+		style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; z-index:100001; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background 0.2s;">
 		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 			stroke-linecap="round" stroke-linejoin="round">
 			<line x1="18" y1="6" x2="6" y2="18"></line>
@@ -740,20 +740,16 @@ get_header(); ?>
 		</svg>
 	</button>
 	<!-- Prev -->
-	<button id="dbwLbPrev" onclick="dbwLightbox.prev()" aria-label="<?php esc_attr_e('Vorheriges Bild', 'dbw-immo-suite'); ?>"
-		style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
-		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
-		onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+	<button id="dbwLbPrev" onclick="dbwLightbox.prev()" class="dbw-lightbox-btn" aria-label="<?php esc_attr_e('Vorheriges Bild', 'dbw-immo-suite'); ?>"
+		style="position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;">
 		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 			stroke-linecap="round" stroke-linejoin="round">
 			<polyline points="15 18 9 12 15 6"></polyline>
 		</svg>
 	</button>
 	<!-- Next -->
-	<button id="dbwLbNext" onclick="dbwLightbox.next()" aria-label="<?php esc_attr_e('Nächstes Bild', 'dbw-immo-suite'); ?>"
-		style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;"
-		onmouseover="this.style.background='rgba(255,255,255,0.2)'"
-		onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+	<button id="dbwLbNext" onclick="dbwLightbox.next()" class="dbw-lightbox-btn" aria-label="<?php esc_attr_e('Nächstes Bild', 'dbw-immo-suite'); ?>"
+		style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:none; color:#fff; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100001; transition: background 0.2s;">
 		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 			stroke-linecap="round" stroke-linejoin="round">
 			<polyline points="9 18 15 12 9 6"></polyline>
@@ -770,8 +766,8 @@ get_header(); ?>
 
 <script>
 	window.dbwLightboxData = {
-		gallery: <?php echo wp_json_encode(array_map(function($gi) { return $gi['full']; }, $gallery_images)); ?>,
-		floorplans: <?php echo wp_json_encode(array_map(function($fpi) { return $fpi['full']; }, $floor_plans)); ?>
+		gallery: <?php echo wp_json_encode(array_map(function($gi) { return array('url' => $gi['full'], 'alt' => $gi['alt']); }, $gallery_images)); ?>,
+		floorplans: <?php echo wp_json_encode(array_map(function($fpi) { return array('url' => $fpi['full'], 'alt' => $fpi['alt'] ?: __('Grundriss', 'dbw-immo-suite')); }, $floor_plans)); ?>
 	};
 </script>
 

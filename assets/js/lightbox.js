@@ -52,7 +52,11 @@
 		show: function () {
 			lbImage.style.opacity = '0';
 			setTimeout(function () {
-				lbImage.src = currentSet[currentIdx];
+				var item = currentSet[currentIdx];
+				var src = (typeof item === 'string') ? item : item.url;
+				var alt = (typeof item === 'string') ? '' : (item.alt || '');
+				lbImage.src = src;
+				lbImage.alt = alt;
 				lbImage.onload = function () { lbImage.style.opacity = '1'; };
 				lbCounter.textContent = (currentIdx + 1) + ' / ' + currentSet.length;
 			}, 120);

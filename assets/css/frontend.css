@@ -175,6 +175,16 @@
 	}
 }
 
+/* Lightbox button hover/focus (replaces inline JS handlers) */
+.dbw-lightbox-btn:hover,
+.dbw-lightbox-btn:focus-visible {
+	background: rgba(255,255,255,0.2) !important;
+}
+.dbw-lightbox-btn--close:hover,
+.dbw-lightbox-btn--close:focus-visible {
+	background: rgba(255,255,255,0.1) !important;
+}
+
 /* Shimmer effect for image loading placeholder */
 @keyframes dbw-shimmer {
 	0% { background-position: -400px 0; }
@@ -312,7 +322,7 @@
 #dbw-immo-suite .dbw-sales-date {
 	display: block;
 	font-size: 0.85rem;
-	color: #95a5a6;
+	color: #767676;
 	margin-top: 5px;
 	font-weight: 500;
 }
@@ -353,7 +363,7 @@
 #dbw-immo-suite .dbw-property-address {
 	display: flex;
 	align-items: center;
-	color: #95a5a6;
+	color: #767676;
 	font-size: 0.9rem;
 	margin-bottom: 1.5rem;
 	gap: 6px;
@@ -418,7 +428,7 @@
 
 #dbw-immo-suite .dbw-meta-label {
 	font-size: 0.7rem;
-	color: #95a5a6;
+	color: #767676;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 	font-weight: 600;
@@ -460,7 +470,7 @@
 
 #dbw-immo-suite .dbw-price-label {
 	font-size: 0.7rem;
-	color: #95a5a6;
+	color: #767676;
 	margin-bottom: 2px;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
@@ -750,7 +760,7 @@
 #dbw-immo-suite .dbw-toolbar-label {
 	font-size: 0.7rem;
 	font-weight: 700;
-	color: #95a5a6;
+	color: #767676;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 	margin-bottom: 2px;
@@ -940,7 +950,7 @@
 #dbw-immo-suite .dbw-filter-group label {
 	font-size: 0.8rem;
 	font-weight: 700;
-	color: #95a5a6;
+	color: #767676;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 }
@@ -1023,7 +1033,7 @@
 	cursor: pointer;
 	padding: 6px 10px;
 	border-radius: 4px;
-	color: #95a5a6;
+	color: #767676;
 	display: flex;
 	align-items: center;
 	justify-content: center;

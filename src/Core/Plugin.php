@@ -84,8 +84,20 @@ class Plugin
     /**
      * Enqueue Admin Scripts
      */
-    public function enqueue_admin_scripts()
+    public function enqueue_admin_scripts($hook)
     {
+        $screen = get_current_screen();
+        if (!$screen) return;
+
+        $allowed = array(
+            'immobilie_page_dbw-immo-import',
+            'immobilie_page_dbw-immo-settings',
+            'immobilie',
+            'edit-immobilie',
+        );
+
+        if (!in_array($screen->id, $allowed, true)) return;
+
         wp_enqueue_script('dbw-immo-admin', DBW_IMMO_SUITE_URL . 'assets/js/admin.js', array('jquery'), DBW_IMMO_SUITE_VERSION, false);
         wp_localize_script('dbw-immo-admin', 'dbwImmoAdmin', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -152,6 +164,9 @@ class Plugin
 
         $plugin_whatsapp = new \DBW\ImmoSuite\Frontend\WhatsAppButton();
         $this->loader->add_action('init', $plugin_whatsapp, 'init');
+
+        $plugin_privacy = new \DBW\ImmoSuite\Core\Privacy();
+        $this->loader->add_action('init', $plugin_privacy, 'init');
 
         $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
         $this->loader->add_action('init', $plugin_block_references, 'init');

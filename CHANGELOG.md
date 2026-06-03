@@ -7,6 +7,39 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.13.0] — 2026-06-03
+
+Umfassendes Audit-Hardening: Sicherheit, Accessibility, SEO und Performance.
+
+### Sicherheit
+- **Escaping Best Practices** — `esc_html()` auf Preis-Labels in ContactModal (Sticky-Bar + Quickfacts), HTML-Entities durch UTF-8-Zeichen ersetzt. `esc_attr()`/`esc_html()` in Settings-Callbacks (`checkbox_callback`, `text_callback`).
+- **Inline-JS entfernt** — `onmouseover`/`onmouseout` auf Lightbox-Buttons durch CSS `:hover`/`:focus-visible` ersetzt.
+
+### Accessibility
+- **WCAG AA Kontrast** — Meta-Label-Farbe von `#95a5a6` (2.8:1) auf `#767676` (4.5:1) angehoben (7 Stellen).
+- **Lightbox alt-Text** — Bildbeschreibungen aus Gallery-Daten werden jetzt an die Lightbox durchgereicht und als `alt`-Attribut gesetzt.
+- **ARIA-Attribute** — `aria-label`, `aria-expanded`, `aria-controls` auf Filter-Toggle. `aria-label`, `aria-pressed` auf View-Switcher (Grid/Liste). Agent-Bild in Success-View hat jetzt `alt="Name"`.
+- **Lightbox Focus-Visible** — Buttons haben jetzt sichtbaren Fokus-Ring per CSS statt JS-Hover.
+
+### SEO
+- **Archiv-OG-Tags** — `og:url`, `og:image` (Fallback: Site-Icon/Logo) und `og:site_name` auf Archiv- und Taxonomie-Seiten.
+- **og:type** — Single-Seiten nutzen jetzt `article` statt `website`.
+- **Title-Filter** — `document_title_parts` greift jetzt auch fuer Archiv- und Taxonomie-Seiten.
+- **JSON-LD @id** — `@id` mit `#listing`-Fragment fuer Entity-Deduplizierung im Schema.
+
+### DSGVO
+- **Privacy-API** — `wp_privacy_personal_data_exporter`/`_eraser` Stub-Hooks registriert (neue `Privacy.php`). Plugin speichert kein PII, aber die Hooks signalisieren DSGVO-Konformitaet.
+
+### Performance
+- **Admin-JS Scope** — `admin.js` wird nur noch auf Plugin-eigenen Seiten geladen (Import, Settings, Property-Edit) statt auf allen Admin-Seiten.
+- **Redundanter Meta-Call** — Doppelter `get_post_meta()` fuer Energieklasse im Single-Template entfernt.
+- **Kontaktperson-Bild** — `width`/`height`-Attribute und `loading="lazy"` ergaenzt.
+
+### Code Quality
+- **Status-Labels i18n** — Fallback-Strings `Referenz`, `Verkauft`, `Reserviert` in `__()` gewrapped.
+
+---
+
 ## [1.12.2] — 2026-06-03
 
 Customizer-Erweiterungen und Kleinigkeiten.

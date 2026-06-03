@@ -85,7 +85,7 @@ class SeoMeta
         echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
         echo '<meta property="og:description" content="' . esc_attr($description) . '">' . "\n";
         echo '<meta property="og:url" content="' . esc_url($url) . '">' . "\n";
-        echo '<meta property="og:type" content="website">' . "\n";
+        echo '<meta property="og:type" content="article">' . "\n";
         echo '<meta property="og:site_name" content="' . esc_attr(get_bloginfo('name')) . '">' . "\n";
 
         if ($image) {
@@ -158,12 +158,31 @@ class SeoMeta
 
         if (!$title) return;
 
+        // Determine archive URL
+        $archive_url = is_tax() ? get_term_link(get_queried_object()) : get_post_type_archive_link('immobilie');
+
+        // Fallback image: site icon or custom logo
+        $archive_image = get_site_icon_url(512);
+        if (!$archive_image) {
+            $custom_logo_id = get_theme_mod('custom_logo');
+            if ($custom_logo_id) {
+                $archive_image = wp_get_attachment_image_url($custom_logo_id, 'full');
+            }
+        }
+
         echo "\n<!-- DBW Immo Suite Archive SEO -->\n";
         echo '<meta name="description" content="' . esc_attr(mb_substr($description, 0, 160)) . '">' . "\n";
         echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
         echo '<meta property="og:description" content="' . esc_attr(mb_substr($description, 0, 160)) . '">' . "\n";
+        if ($archive_url && !is_wp_error($archive_url)) {
+            echo '<meta property="og:url" content="' . esc_url($archive_url) . '">' . "\n";
+        }
         echo '<meta property="og:type" content="website">' . "\n";
+        echo '<meta property="og:site_name" content="' . esc_attr(get_bloginfo('name')) . '">' . "\n";
         echo '<meta property="og:locale" content="de_DE">' . "\n";
+        if ($archive_image) {
+            echo '<meta property="og:image" content="' . esc_url($archive_image) . '">' . "\n";
+        }
         echo '<meta name="twitter:card" content="summary">' . "\n";
         echo "<!-- /DBW Immo Suite Archive SEO -->\n\n";
     }
@@ -203,6 +222,15 @@ class SeoMeta
 
             if ($city && $objektart) {
                 $title_parts['title'] = get_the_title($id) . ' — ' . $objektart . ' in ' . $city;
+            }
+        } elseif (is_post_type_archive('immobilie')) {
+            $settings = get_option('dbw_immo_suite_settings', array());
+            $org_name = !empty($settings['org_name']) ? $settings['org_name'] : get_bloginfo('name');
+            $title_parts['title'] = sprintf(__('Immobilien — %s', 'dbw-immo-suite'), $org_name);
+        } elseif (is_tax(array('objektart', 'vermarktungsart', 'ort'))) {
+            $term = get_queried_object();
+            if ($term && !is_wp_error($term)) {
+                $title_parts['title'] = sprintf(__('Immobilien: %s', 'dbw-immo-suite'), $term->name);
             }
         }
 

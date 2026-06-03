@@ -238,7 +238,7 @@ class Filter
 
                     <!-- Actions -->
                     <div class="dbw-toolbar-actions">
-                        <button type="button" class="dbw-filter-toggle-btn" id="dbw-filter-toggle" title="<?php _e('Erweiterte Filter', 'dbw-immo-suite'); ?>">
+                        <button type="button" class="dbw-filter-toggle-btn" id="dbw-filter-toggle" aria-label="<?php esc_attr_e('Erweiterte Filter', 'dbw-immo-suite'); ?>" aria-expanded="<?php echo $expanded ? 'true' : 'false'; ?>" aria-controls="dbw-filter-content">
                             <span class="dashicons dashicons-arrow-down-alt2"></span>
                         </button>
                         
@@ -249,7 +249,7 @@ class Filter
                 </div>
 
                 <!-- Collapsible Content (Advanced Filters) -->
-                <div class="dbw-filter-content">
+                <div class="dbw-filter-content" id="dbw-filter-content">
                     <div class="dbw-filter-grid">
                         
                         <!-- Vermarktung (Moved back here) -->
@@ -322,10 +322,10 @@ class Filter
             <div class="dbw-start-content-right" style="display: flex; align-items: center; gap: 15px;">
                 <!-- View Switcher -->
                 <div class="dbw-view-switcher">
-                    <button type="button" id="dbw-view-grid" class="dbw-view-btn active" title="<?php _e('Kachelansicht', 'dbw-immo-suite'); ?>">
+                    <button type="button" id="dbw-view-grid" class="dbw-view-btn active" aria-label="<?php esc_attr_e('Kachelansicht', 'dbw-immo-suite'); ?>" aria-pressed="true">
                         <span class="dashicons dashicons-grid-view"></span>
                     </button>
-                    <button type="button" id="dbw-view-list" class="dbw-view-btn" title="<?php _e('Listenansicht', 'dbw-immo-suite'); ?>">
+                    <button type="button" id="dbw-view-list" class="dbw-view-btn" aria-label="<?php esc_attr_e('Listenansicht', 'dbw-immo-suite'); ?>" aria-pressed="false">
                         <span class="dashicons dashicons-list-view"></span>
                     </button>
                 </div>
@@ -369,20 +369,20 @@ class Filter
 
         if ($immo_status === 'referenz') {
             $status_label = isset($settings['reference_badge_text']) && !empty($settings['reference_badge_text']) 
-                ? $settings['reference_badge_text'] : 'Referenz';
+                ? $settings['reference_badge_text'] : __('Referenz', 'dbw-immo-suite');
             $style_class = 'dbw-tag-reference';
             return array('label' => $status_label, 'class' => $style_class);
         }
         
         if ($immo_status === 'verkauft') {
             $status_label = isset($settings['sold_badge_text']) && !empty($settings['sold_badge_text']) 
-                ? $settings['sold_badge_text'] : 'Verkauft';
+                ? $settings['sold_badge_text'] : __('Verkauft', 'dbw-immo-suite');
             $style_class = 'dbw-tag-sold';
             return array('label' => $status_label, 'class' => $style_class);
         }
         
         if ($immo_status === 'reserviert') {
-            $status_label = 'Reserviert';
+            $status_label = __('Reserviert', 'dbw-immo-suite');
             $style_class = 'dbw-tag-reserved'; // Need CSS for this
             return array('label' => $status_label, 'class' => $style_class);
         }

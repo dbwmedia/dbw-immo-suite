@@ -579,7 +579,7 @@ class Settings
 		$val = isset($options[$id]) && $options[$id] == 1 ? 'checked' : '';
 		printf(
 			'<input type="checkbox" id="%s" name="%s[%s]" value="1" %s /> <label for="%s">%s</label>',
-			$id, $this->option_name, $id, $val, $id, $label
+			esc_attr($id), esc_attr($this->option_name), esc_attr($id), $val, esc_attr($id), esc_html($label)
 		);
 	}
 
@@ -592,7 +592,7 @@ class Settings
 			$id, $this->option_name, $id, esc_attr($val)
 		);
 		if ($desc)
-			echo '<p class="description">' . $desc . '</p>';
+			echo '<p class="description">' . wp_kses_post($desc) . '</p>';
 	}
 
 	public function print_display_section_info()

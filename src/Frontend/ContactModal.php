@@ -79,10 +79,10 @@ class ContactModal
                             <p class="dbw-modal__quickfacts">
                                 <?php
                                 $parts = array();
-                                if ($area) $parts[]  = \DBW\ImmoSuite\dbw_format_number($area, 'flaeche') . ' m&sup2;';
+                                if ($area) $parts[]  = \DBW\ImmoSuite\dbw_format_number($area, 'flaeche') . ' m²';
                                 if ($rooms) $parts[] = \DBW\ImmoSuite\dbw_format_number($rooms, 'zimmer') . ' Zi.';
-                                if ($price) $parts[] = \DBW\ImmoSuite\dbw_format_number($price, 'preis') . ' &euro;';
-                                echo implode(' &middot; ', $parts);
+                                if ($price) $parts[] = \DBW\ImmoSuite\dbw_format_number($price, 'preis') . ' €';
+                                echo esc_html(implode(' · ', $parts));
                                 ?>
                             </p>
                         <?php endif; ?>
@@ -280,7 +280,7 @@ class ContactModal
                                         )); ?></p>
                                         <div class="dbw-success__agent-card">
                                             <?php if ($contact_img_url): ?>
-                                                <img src="<?php echo esc_url($contact_img_url); ?>" alt="">
+                                                <img src="<?php echo esc_url($contact_img_url); ?>" alt="<?php echo esc_attr($contact_name); ?>">
                                             <?php endif; ?>
                                             <div>
                                                 <strong><?php echo esc_html($contact_name); ?></strong>
@@ -320,13 +320,13 @@ class ContactModal
             $price_miete = get_post_meta($post_id, 'kaltmiete', true);
             $price_label = '';
             if ($price_kauf > 0) {
-                $price_label = \DBW\ImmoSuite\dbw_format_number($price_kauf, 'preis') . ' &euro;';
+                $price_label = \DBW\ImmoSuite\dbw_format_number($price_kauf, 'preis') . ' €';
             } elseif ($price_miete > 0) {
-                $price_label = \DBW\ImmoSuite\dbw_format_number($price_miete, 'preis') . ' &euro;/mtl.';
+                $price_label = \DBW\ImmoSuite\dbw_format_number($price_miete, 'preis') . ' €/mtl.';
             }
             ?>
             <?php if ($price_label): ?>
-                <span class="dbw-sticky-cta-bar__price"><?php echo $price_label; ?></span>
+                <span class="dbw-sticky-cta-bar__price"><?php echo esc_html($price_label); ?></span>
             <?php endif; ?>
             <button type="button"
                     class="dbw-cta dbw-cta--primary dbw-cta--compact"

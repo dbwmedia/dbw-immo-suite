@@ -201,6 +201,22 @@ class Settings
 		add_settings_field('grayscale_sold', __('Grayscale bei Verkauft', 'dbw-immo-suite'), array($this, 'grayscale_sold_callback'), 'dbw-settings-display', 'section_display');
 		add_settings_field('grayscale_reserved', __('Grayscale bei Reserviert', 'dbw-immo-suite'), array($this, 'grayscale_reserved_callback'), 'dbw-settings-display', 'section_display');
 
+		// ── Preis pro m² ──
+		add_settings_section('section_price_sqm', __('Preis pro m²', 'dbw-immo-suite'), array($this, 'print_price_sqm_section_info'), 'dbw-settings-display');
+		add_settings_field('show_price_per_sqm', __('Preis/m² anzeigen', 'dbw-immo-suite'), array($this, 'show_price_per_sqm_callback'), 'dbw-settings-display', 'section_price_sqm');
+		add_settings_field('show_price_per_sqm_comparison', __('Vergleich anzeigen', 'dbw-immo-suite'), array($this, 'show_price_per_sqm_comparison_callback'), 'dbw-settings-display', 'section_price_sqm');
+		add_settings_field('show_price_per_sqm_archive', __('Auf Karten anzeigen', 'dbw-immo-suite'), array($this, 'show_price_per_sqm_archive_callback'), 'dbw-settings-display', 'section_price_sqm');
+		add_settings_field('price_per_sqm_min_comparables', __('Mind. Vergleichsobjekte', 'dbw-immo-suite'), array($this, 'price_per_sqm_min_comparables_callback'), 'dbw-settings-display', 'section_price_sqm');
+		add_settings_field('price_per_sqm_cache_hours', __('Cache-Dauer (Stunden)', 'dbw-immo-suite'), array($this, 'price_per_sqm_cache_hours_callback'), 'dbw-settings-display', 'section_price_sqm');
+
+		// ── WhatsApp ──
+		add_settings_section('section_whatsapp', __('WhatsApp', 'dbw-immo-suite'), array($this, 'print_whatsapp_section_info'), 'dbw-settings-display');
+		add_settings_field('whatsapp_enabled', __('Aktivieren', 'dbw-immo-suite'), array($this, 'whatsapp_enabled_callback'), 'dbw-settings-display', 'section_whatsapp');
+		add_settings_field('whatsapp_floating', __('Floating-Button', 'dbw-immo-suite'), array($this, 'whatsapp_floating_callback'), 'dbw-settings-display', 'section_whatsapp');
+		add_settings_field('whatsapp_number_override', __('Globale WhatsApp-Nummer', 'dbw-immo-suite'), array($this, 'whatsapp_number_override_callback'), 'dbw-settings-display', 'section_whatsapp');
+		add_settings_field('whatsapp_cta_text', __('Button-Text', 'dbw-immo-suite'), array($this, 'whatsapp_cta_text_callback'), 'dbw-settings-display', 'section_whatsapp');
+		add_settings_field('whatsapp_message_template', __('Nachrichtenvorlage', 'dbw-immo-suite'), array($this, 'whatsapp_message_template_callback'), 'dbw-settings-display', 'section_whatsapp');
+
 		// ── Tab 3: Finanzierungsrechner ──
 		add_settings_section('section_calculator', __('Kaufnebenkosten & Finanzierung', 'dbw-immo-suite'), array($this, 'print_calculator_section_info'), 'dbw-settings-calculator');
 		add_settings_field('calc_notar_percent', __('Notarkosten (%)', 'dbw-immo-suite'), array($this, 'calc_notar_callback'), 'dbw-settings-calculator', 'section_calculator');
@@ -291,6 +307,30 @@ class Settings
 		// Grayscale
 		$new_input['grayscale_sold'] = isset($input['grayscale_sold']) ? 1 : 0;
 		$new_input['grayscale_reserved'] = isset($input['grayscale_reserved']) ? 1 : 0;
+
+		// Price per sqm
+		$new_input['show_price_per_sqm'] = isset($input['show_price_per_sqm']) ? 1 : 0;
+		$new_input['show_price_per_sqm_comparison'] = isset($input['show_price_per_sqm_comparison']) ? 1 : 0;
+		$new_input['show_price_per_sqm_archive'] = isset($input['show_price_per_sqm_archive']) ? 1 : 0;
+		if (isset($input['price_per_sqm_min_comparables'])) {
+			$new_input['price_per_sqm_min_comparables'] = max(1, min(50, (int) $input['price_per_sqm_min_comparables']));
+		}
+		if (isset($input['price_per_sqm_cache_hours'])) {
+			$new_input['price_per_sqm_cache_hours'] = max(1, min(168, (int) $input['price_per_sqm_cache_hours']));
+		}
+
+		// WhatsApp
+		$new_input['whatsapp_enabled'] = isset($input['whatsapp_enabled']) ? 1 : 0;
+		$new_input['whatsapp_floating'] = isset($input['whatsapp_floating']) ? 1 : 0;
+		if (isset($input['whatsapp_number_override'])) {
+			$new_input['whatsapp_number_override'] = sanitize_text_field($input['whatsapp_number_override']);
+		}
+		if (isset($input['whatsapp_cta_text'])) {
+			$new_input['whatsapp_cta_text'] = sanitize_text_field($input['whatsapp_cta_text']);
+		}
+		if (isset($input['whatsapp_message_template'])) {
+			$new_input['whatsapp_message_template'] = sanitize_textarea_field($input['whatsapp_message_template']);
+		}
 
 		// Finance Calculator
 		$calc_floats = array(
@@ -598,6 +638,82 @@ class Settings
 		}
 		</script>
 		<?php
+	}
+
+	public function print_price_sqm_section_info()
+	{
+		print __('Preis-pro-Quadratmeter-Anzeige mit Vergleichswert auf der Einzelansicht und optional auf den Karten.', 'dbw-immo-suite');
+	}
+
+	public function show_price_per_sqm_callback()
+	{
+		$this->checkbox_callback('show_price_per_sqm', __('Preis/m² auf der Einzelansicht anzeigen', 'dbw-immo-suite'));
+	}
+
+	public function show_price_per_sqm_comparison_callback()
+	{
+		$this->checkbox_callback('show_price_per_sqm_comparison', __('Vergleich mit Durchschnitt des gleichen Ortes anzeigen', 'dbw-immo-suite'));
+	}
+
+	public function show_price_per_sqm_archive_callback()
+	{
+		$this->checkbox_callback('show_price_per_sqm_archive', __('Preis/m² als Badge auf Archiv-Karten anzeigen', 'dbw-immo-suite'));
+	}
+
+	public function price_per_sqm_min_comparables_callback()
+	{
+		$this->number_field_callback('price_per_sqm_min_comparables', 3, 1, 1, 50, __('Mindestanzahl Vergleichsobjekte fuer die Durchschnittsanzeige', 'dbw-immo-suite'));
+	}
+
+	public function price_per_sqm_cache_hours_callback()
+	{
+		$this->number_field_callback('price_per_sqm_cache_hours', 24, 1, 1, 168, __('Cache-Dauer fuer Durchschnittswerte in Stunden (Standard: 24)', 'dbw-immo-suite'));
+	}
+
+	public function print_whatsapp_section_info()
+	{
+		print __('WhatsApp-Kontaktbutton auf der Immobilien-Detailseite. Nutzt die Telefonnummer des Ansprechpartners oder eine zentrale Nummer.', 'dbw-immo-suite');
+	}
+
+	public function whatsapp_enabled_callback()
+	{
+		$this->checkbox_callback('whatsapp_enabled', __('WhatsApp-Button global aktivieren', 'dbw-immo-suite'));
+	}
+
+	public function whatsapp_floating_callback()
+	{
+		$this->checkbox_callback('whatsapp_floating', __('Floating-Button (runder Button unten rechts) anzeigen', 'dbw-immo-suite'));
+	}
+
+	public function whatsapp_number_override_callback()
+	{
+		$options = get_option($this->option_name);
+		$val = !empty($options['whatsapp_number_override']) ? $options['whatsapp_number_override'] : '';
+		printf(
+			'<input type="tel" id="whatsapp_number_override" name="%s[whatsapp_number_override]" value="%s" class="regular-text" placeholder="+49 151 22632768" />',
+			esc_attr($this->option_name),
+			esc_attr($val)
+		);
+		echo '<p class="description">' . esc_html__('Ueberschreibt die Kontaktperson-Nummer. Fuer Makler mit zentraler WhatsApp-Business-Nummer. Leer = Nummer aus Objekt-Daten.', 'dbw-immo-suite') . '</p>';
+	}
+
+	public function whatsapp_cta_text_callback()
+	{
+		$this->text_callback('whatsapp_cta_text', 'Per WhatsApp anfragen', __('Beschriftung des WhatsApp-Buttons', 'dbw-immo-suite'));
+	}
+
+	public function whatsapp_message_template_callback()
+	{
+		$options = get_option($this->option_name);
+		$val = !empty($options['whatsapp_message_template']) ? $options['whatsapp_message_template'] : '';
+		$placeholder = "Hallo {ansprechpartner},\n\nich interessiere mich fuer diese Immobilie:\n{titel}\n{url}\n\nKoennten Sie mir weitere Informationen zukommen lassen?";
+		printf(
+			'<textarea id="whatsapp_message_template" name="%s[whatsapp_message_template]" rows="5" class="large-text" placeholder="%s">%s</textarea>',
+			esc_attr($this->option_name),
+			esc_attr($placeholder),
+			esc_textarea($val)
+		);
+		echo '<p class="description">' . esc_html__('Platzhalter: {ansprechpartner}, {titel}, {url}, {name}. Leer = Standardtext (beruecksichtigt Du/Sie-Einstellung).', 'dbw-immo-suite') . '</p>';
 	}
 
 	public function print_calculator_section_info()

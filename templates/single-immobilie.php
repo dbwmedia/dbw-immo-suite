@@ -552,6 +552,13 @@ get_header(); ?>
 					</ul>
 				</div>
 
+				<?php
+				// Price per m² comparison widget
+				if (get_theme_mod('dbw_immo_single_show_price_sqm', true) && class_exists('DBW\ImmoSuite\Frontend\PriceComparison')) {
+					\DBW\ImmoSuite\Frontend\PriceComparison::render_single($id);
+				}
+				?>
+
 				<div class="dbw-agent-card"
 					style="background-color: transparent; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--dbw-radius, 12px); padding: 1.5rem;">
 					<?php if (get_theme_mod('dbw_immo_single_show_contact', true)): ?>

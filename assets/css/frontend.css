@@ -3194,3 +3194,169 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 		transition: none !important;
 	}
 }
+
+/* =========================================
+   Price per m² Comparison
+   ========================================= */
+
+/* -- Single View Widget -- */
+.dbw-price-sqm-card {
+	background: #fff;
+	border: 1px solid var(--dbw-border, #e0e0e0);
+	border-radius: var(--dbw-radius, 8px);
+	padding: 1.25rem;
+	margin-bottom: 1.5rem;
+}
+
+.dbw-price-sqm-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: 0.6rem;
+}
+
+.dbw-price-sqm-label {
+	font-size: 0.85rem;
+	color: var(--dbw-gray, #5f6b6d);
+	font-weight: 500;
+}
+
+.dbw-price-sqm-value {
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: var(--dbw-primary, #2c3e50);
+}
+
+/* Badge */
+.dbw-price-sqm-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.82rem;
+	font-weight: 600;
+	padding: 3px 10px;
+	border-radius: 20px;
+	margin-bottom: 0.8rem;
+}
+
+.dbw-price-sqm-arrow {
+	font-size: 0.7rem;
+}
+
+.dbw-price-sqm-below {
+	background: rgba(40, 167, 69, 0.1);
+	color: #1a7a3a;
+}
+
+.dbw-price-sqm-above {
+	background: rgba(230, 126, 34, 0.1);
+	color: #b5631a;
+}
+
+.dbw-price-sqm-neutral {
+	background: var(--dbw-bg-muted, #f0f2f5);
+	color: var(--dbw-gray, #5f6b6d);
+}
+
+/* Comparison Bar */
+.dbw-price-sqm-bar-wrap {
+	margin-bottom: 0.6rem;
+}
+
+.dbw-price-sqm-bar {
+	position: relative;
+	height: 8px;
+	background: var(--dbw-bg-muted, #f0f2f5);
+	border-radius: 4px;
+	overflow: visible;
+}
+
+.dbw-price-sqm-bar-fill {
+	height: 100%;
+	border-radius: 4px;
+	background: linear-gradient(90deg, #28a745, #e67e22);
+	opacity: 0.25;
+}
+
+.dbw-price-sqm-bar-avg {
+	position: absolute;
+	top: -3px;
+	width: 2px;
+	height: 14px;
+	background: var(--dbw-gray, #5f6b6d);
+	border-radius: 1px;
+	transform: translateX(-50%);
+}
+
+.dbw-price-sqm-bar-marker {
+	position: absolute;
+	top: -4px;
+	width: 16px;
+	height: 16px;
+	background: var(--dbw-accent, #2573a7);
+	border: 2px solid #fff;
+	border-radius: 50%;
+	transform: translateX(-50%);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dbw-price-sqm-bar-legend {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.72rem;
+	color: var(--dbw-gray, #5f6b6d);
+	margin-top: 4px;
+}
+
+/* Disclaimer */
+.dbw-price-sqm-disclaimer {
+	font-size: 0.72rem;
+	color: #999;
+	line-height: 1.4;
+}
+
+/* -- Archive Badge -- */
+.dbw-price-sqm-archive-badge {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	padding: 3px 8px;
+	border-radius: 4px;
+	z-index: 2;
+	line-height: 1;
+	backdrop-filter: blur(4px);
+}
+
+.dbw-price-sqm-badge-neutral {
+	background: rgba(255, 255, 255, 0.9);
+	color: var(--dbw-gray, #5f6b6d);
+}
+
+.dbw-price-sqm-badge-below {
+	background: rgba(40, 167, 69, 0.9);
+	color: #fff;
+}
+
+.dbw-price-sqm-badge-above {
+	background: rgba(230, 126, 34, 0.9);
+	color: #fff;
+}
+
+/* Print */
+@media print {
+	.dbw-price-sqm-card {
+		border: 1px solid #ccc;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+
+	.dbw-price-sqm-bar-fill,
+	.dbw-price-sqm-bar-marker,
+	.dbw-price-sqm-badge-below,
+	.dbw-price-sqm-badge-above {
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+}

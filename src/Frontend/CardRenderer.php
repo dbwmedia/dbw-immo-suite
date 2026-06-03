@@ -132,6 +132,9 @@ class CardRenderer
                 if ($opts['show_energy'] && class_exists('\DBW\ImmoSuite\Frontend\EnergyRenderer')) {
                     EnergyRenderer::render_archive_flag($post_id);
                 }
+                if (class_exists('\DBW\ImmoSuite\Frontend\PriceComparison')) {
+                    PriceComparison::render_archive_badge($post_id);
+                }
                 ?>
             </a>
 

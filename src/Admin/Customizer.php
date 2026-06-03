@@ -98,6 +98,7 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_rooms', true, __('Zimmer anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price', true, __('Preis anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_energy_class', true, __('Energieklasse (Flag) anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price_sqm', false, __('Preis pro m² anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
 
 
         // 4. Section: Detailseite (Single)
@@ -117,6 +118,9 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_similar', true, __('Ähnliche Objekte anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_calculator', true, __('Finanzierungsrechner anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_infra_score', true, __('Infrastruktur-Score anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_price_sqm', true, __('Preis pro m² anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_whatsapp', true, __('WhatsApp-Button anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_whatsapp_floating', false, __('WhatsApp Floating-Button anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
 
         // Highlights Box
         $wp_customize->add_setting('dbw_immo_highlights_bg_style', array(

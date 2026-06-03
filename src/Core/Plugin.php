@@ -147,6 +147,12 @@ class Plugin
         $plugin_infra_score = new \DBW\ImmoSuite\Frontend\InfrastructureScore();
         $this->loader->add_action('init', $plugin_infra_score, 'init');
 
+        $plugin_price_comparison = new \DBW\ImmoSuite\Frontend\PriceComparison();
+        $this->loader->add_action('init', $plugin_price_comparison, 'init');
+
+        $plugin_whatsapp = new \DBW\ImmoSuite\Frontend\WhatsAppButton();
+        $this->loader->add_action('init', $plugin_whatsapp, 'init');
+
         $plugin_block_references = new \DBW\ImmoSuite\blocks\ReferencesBlock();
         $this->loader->add_action('init', $plugin_block_references, 'init');
 

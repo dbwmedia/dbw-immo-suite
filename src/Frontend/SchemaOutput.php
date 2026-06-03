@@ -185,6 +185,16 @@ class SchemaOutput
             }, $features);
         }
 
+        // Price per sqm
+        if ($price > 0 && $area > 0) {
+            $accommodation['additionalProperty'][] = array(
+                '@type'    => 'PropertyValue',
+                'name'     => 'pricePerSquareMeter',
+                'value'    => round($price / $area, 2),
+                'unitText' => 'EUR/SQM',
+            );
+        }
+
         if ($energy_class) {
             $accommodation['additionalProperty'][] = array(
                 '@type' => 'PropertyValue',

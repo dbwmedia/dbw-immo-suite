@@ -512,6 +512,13 @@ img { max-width: 100%; height: auto; display: block; }
                         <tr><td>Stellpl&auml;tze</td><td><?php echo esc_html($fmt($d['areas']['stellplaetze'], 'zimmer')); ?></td></tr>
                     <?php endif; ?>
 
+                    <?php
+                    // Price per m²
+                    if (isset($post_id) && class_exists('DBW\ImmoSuite\Frontend\PriceComparison')) {
+                        echo \DBW\ImmoSuite\Frontend\PriceComparison::render_expose_row($post_id);
+                    }
+                    ?>
+
                     <!-- Spacing row -->
                     <tr><td colspan="2" style="border: none; padding: 4px 0;"></td></tr>
 

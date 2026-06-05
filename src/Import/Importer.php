@@ -1267,15 +1267,16 @@ class Importer
     private function safe_load_xml($file)
     {
         $previous = libxml_use_internal_errors(true);
-        $disable_entities = function_exists('libxml_disable_entity_loader');
 
-        if ($disable_entities) {
+        // PHP 8.0+ disables entity loading by default; calling the deprecated
+        // libxml_disable_entity_loader() on 8.2+ can block simplexml_load_file entirely.
+        if (PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader')) {
             $previous_entities = libxml_disable_entity_loader(true);
         }
 
         $xml = simplexml_load_file($file, 'SimpleXMLElement', LIBXML_NONET);
 
-        if ($disable_entities) {
+        if (PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader')) {
             libxml_disable_entity_loader($previous_entities);
         }
 

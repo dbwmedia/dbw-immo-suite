@@ -7,6 +7,16 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.14.0] — 2026-06-05
+
+### Hinzugefuegt
+- **Lizenz-System** — 30 vorgenierte Lizenzschluessel (SHA256-gehasht im Code, Klartext-Keys in `LICENSE-KEYS.txt`). Ohne gueltige Lizenz wird nur der Admin-Bereich geladen (Settings + Lizenz-Tab). Frontend, Import und Bloecke sind ohne Key deaktiviert.
+- **Lizenz-Tab** in den Plugin-Einstellungen mit Aktivierungsformular und Status-Anzeige.
+- **GitHub Auto-Updater** — Plugin-Updates direkt ueber das WordPress-Dashboard via GitHub (plugin-update-checker v5.7). Kein wordpress.org noetig.
+- **Media Cleanup** — Beim endgueltigen Loeschen einer Immobilie werden alle zugehoerigen Mediathek-Eintraege automatisch mit entfernt. Bilder bleiben erhalten solange der Post im Papierkorb liegt.
+
+---
+
 ## [1.13.0] — 2026-06-03
 
 Umfassendes Audit-Hardening: Sicherheit, Accessibility, SEO und Performance.

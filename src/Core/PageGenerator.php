@@ -45,7 +45,10 @@ class PageGenerator
         }
 
         if ($page_id && !is_wp_error($page_id)) {
-            $current_options = get_option('dbw_immo_suite_settings');
+            $current_options = get_option('dbw_immo_suite_settings', array());
+            if (!is_array($current_options)) {
+                $current_options = array();
+            }
             if (empty($current_options['reference_page_id']) || $current_options['reference_page_id'] != $page_id) {
                 $current_options['reference_page_id'] = $page_id;
                 update_option('dbw_immo_suite_settings', $current_options);

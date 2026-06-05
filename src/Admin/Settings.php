@@ -331,8 +331,15 @@ class Settings
 		}
 	}
 
+	private $is_sanitizing = false;
+
 	public function sanitize($input)
 	{
+		if ($this->is_sanitizing) {
+			return $input;
+		}
+		$this->is_sanitizing = true;
+
 		$new_input = array();
 		// Resolve path key to absolute path (avoids WAF blocking raw paths)
 		if (isset($input['xml_path_key'])) {
@@ -353,7 +360,7 @@ class Settings
 		$new_input['enable_garbage_collection'] = isset($input['enable_garbage_collection']) ? 1 : 0;
 
 		// Anrede
-		$new_input['anrede'] = in_array($input['anrede'] ?? 'sie', ['sie', 'du'], true) ? $input['anrede'] : 'sie';
+		$new_input['anrede'] = in_array($input['anrede'] ?? 'sie', ['sie', 'du'], true) ? ($input['anrede'] ?? 'sie') : 'sie';
 
 		// Grayscale
 		$new_input['grayscale_sold'] = isset($input['grayscale_sold']) ? 1 : 0;
@@ -450,6 +457,7 @@ class Settings
 			do_action('dbw_immo_references_enabled', $new_input);
 		}
 
+		$this->is_sanitizing = false;
 		return $new_input;
 	}
 

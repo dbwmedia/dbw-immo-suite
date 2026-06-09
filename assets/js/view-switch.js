@@ -21,9 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (view === 'list') {
                 listBtn.classList.add('active');
                 propertyGrid.classList.add('is-list-view');
+                listBtn.setAttribute('aria-pressed', 'true');
+                gridBtn.setAttribute('aria-pressed', 'false');
             } else {
                 gridBtn.classList.add('active');
                 propertyGrid.classList.add('is-grid-view');
+                gridBtn.setAttribute('aria-pressed', 'true');
+                listBtn.setAttribute('aria-pressed', 'false');
             }
 
             // Save to localStorage

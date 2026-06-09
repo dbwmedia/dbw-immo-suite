@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
             container.classList.toggle('is-expanded');
+            var expanded = container.classList.contains('is-expanded');
+            toggleBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
         });
     }
 

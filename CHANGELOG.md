@@ -7,6 +7,18 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.16.2] — 2026-06-09
+
+### Geaendert
+- **Karten-Consent Default auf AN** — OSM-Tiles uebertragen die IP-Adresse an OSMF-Server. Consent-Placeholder ist jetzt standardmaessig aktiviert (DSGVO Art. 6(1)(a), LG Muenchen I). Customizer-Label aktualisiert mit DSGVO-Hinweis.
+
+### Behoben
+- **Accessibility: aria-expanded** — Filter-Toggle-Button aktualisiert jetzt `aria-expanded` nach Klick (Screen-Reader bekommen korrekten Status).
+- **Accessibility: aria-pressed** — View-Switch-Buttons (Grid/Liste) aktualisieren `aria-pressed` bei Wechsel.
+- **date_i18n() Escaping** — Verkaufsdatum in CardRenderer wird jetzt mit `esc_html()` ausgegeben.
+
+---
+
 ## [1.16.1] — 2026-06-09
 
 ### Sicherheit

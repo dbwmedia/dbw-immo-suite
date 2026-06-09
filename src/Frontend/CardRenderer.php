@@ -154,7 +154,7 @@ class CardRenderer
                         <div class="dbw-sales-date">
                             <?php
                             if ($opts['is_reference'] && $sales_date) {
-                                echo date_i18n(get_option('date_format'), strtotime($sales_date));
+                                echo esc_html(date_i18n(get_option('date_format'), strtotime($sales_date)));
                             } else {
                                 echo esc_html(get_the_date());
                             }

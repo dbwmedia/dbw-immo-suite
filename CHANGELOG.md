@@ -7,6 +7,13 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.15.5] — 2026-06-09
+
+### Behoben
+- **Listenansicht: "Schlafzimmer" abgeschnitten** — Meta-Grid in der Listenansicht nutzte feste 4 Spalten, die bei schmalem Card-Body den Text abschnitten. Jetzt `repeat(auto-fit, minmax(100px, 1fr))` — Spalten passen sich automatisch an die verfuegbare Breite an.
+
+---
+
 ## [1.15.4] — 2026-06-09
 
 ### Geaendert

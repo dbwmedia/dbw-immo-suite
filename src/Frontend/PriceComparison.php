@@ -176,7 +176,7 @@ class PriceComparison
                     $badge_text = sprintf(
                         __('%s%% unter dem Schnitt in %s', 'dbw-immo-suite'),
                         number_format(abs($dev), 0, ',', '.'),
-                        esc_html($comparison['ort'])
+                        $comparison['ort']
                     );
                 } elseif ($dev >= 5) {
                     $badge_class = 'dbw-price-sqm-above';
@@ -184,14 +184,14 @@ class PriceComparison
                     $badge_text = sprintf(
                         __('%s%% ueber dem Schnitt in %s', 'dbw-immo-suite'),
                         number_format(abs($dev), 0, ',', '.'),
-                        esc_html($comparison['ort'])
+                        $comparison['ort']
                     );
                 } else {
                     $badge_class = 'dbw-price-sqm-neutral';
                     $arrow = '●';
                     $badge_text = sprintf(
                         __('Im Durchschnitt in %s', 'dbw-immo-suite'),
-                        esc_html($comparison['ort'])
+                        $comparison['ort']
                     );
                 }
 

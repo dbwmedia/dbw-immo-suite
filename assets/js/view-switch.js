@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Save to localStorage
-            localStorage.setItem('dbw_immo_view', view);
+            try { localStorage.setItem('dbw_immo_view', view); } catch(e) {}
         };
 
         // Load saved state
-        const savedView = localStorage.getItem('dbw_immo_view') || 'grid';
+        let savedView = 'grid';
+        try { savedView = localStorage.getItem('dbw_immo_view') || 'grid'; } catch(e) {}
         setView(savedView);
 
         // Animated switch via View Transition API (with fallback)

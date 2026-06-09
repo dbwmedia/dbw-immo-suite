@@ -452,6 +452,9 @@ class Settings
 			$new_input['org_email'] = sanitize_email($input['org_email']);
 		}
 
+		// Contact CC
+		$new_input['contact_cc_email'] = sanitize_email($input['contact_cc_email'] ?? '');
+
 		// Trigger Page Generation if enabled and changed
 		$old_options = get_option($this->option_name);
 		$old_enable = isset($old_options['enable_references']) ? $old_options['enable_references'] : 0;

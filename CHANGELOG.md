@@ -7,6 +7,24 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.16.1] — 2026-06-09
+
+### Sicherheit
+- **Zip-Slip Protection** — ZIP-Extraktion prueft jetzt alle Eintrags-Pfade auf `..` und fuehrende `/` bevor extrahiert wird. Manipulierte ZIPs koennen keine Dateien mehr ausserhalb des Zielverzeichnisses schreiben.
+- **XSS via Post-Titel** — `the_title()` durch `esc_html(get_the_title())` ersetzt in der Detailseite.
+- **Lizenzschluessel gehasht in DB** — Aktivierte Keys werden als SHA256-Hash statt Klartext in `wp_options` gespeichert.
+- **CC-Email Sanitisierung** — `contact_cc_email` wird jetzt im `sanitize()`-Callback mit `sanitize_email()` bereinigt.
+
+### Behoben
+- **Accessibility: Focus-Indikatoren** — `outline:none` nur noch auf `:focus:not(:focus-visible)`. Keyboard-Navigation zeigt jetzt sichtbare Fokus-Ringe (`focus-visible`).
+- **Doppel-Escaping in Preis/m²** — Ortsnamen mit Sonderzeichen wurden doppelt escaped (`&amp;amp;`). `esc_html()` nur noch bei der Ausgabe, nicht innerhalb von `sprintf()`.
+- **PDF-Expose Nonce** — `get_the_ID()` durch `get_queried_object_id()` ersetzt fuer zuverlaessige Nonce-Validierung.
+- **localStorage Safari** — `setItem()`/`getItem()` in try/catch gewrapped (crashed in Safari Private Browsing).
+- **PLZ 11xxx Berlin** — Fehlende PLZ-Zuordnung im Finanzrechner ergaenzt (Grunderwerbsteuer war 5.0% statt 6.0%).
+- **Uninstall Cleanup** — 11 fehlende Customizer-Settings, License-Options und Import-Transient in `uninstall.php` ergaenzt.
+
+---
+
 ## [1.16.0] — 2026-06-09
 
 ### Hinzugefuegt

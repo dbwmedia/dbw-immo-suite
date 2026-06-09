@@ -17,6 +17,25 @@ class Importer
     private $current_xml_file;
 
     /**
+     * Safely extract a ZIP archive (Zip-Slip protection).
+     */
+    private function safe_extract_zip(\ZipArchive $zip, $target_dir)
+    {
+        $target_real = realpath($target_dir);
+        if (!$target_real) return false;
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if (strpos($name, '..') !== false || $name[0] === '/') {
+                $this->log_debug('Zip-Slip blocked: ' . $name);
+                return false;
+            }
+        }
+
+        return $zip->extractTo($target_dir);
+    }
+
+    /**
      * IDs of properties processed in the current run (for GC).
      * @var array
      */
@@ -98,7 +117,7 @@ class Importer
                     $zip = new \ZipArchive;
                     if ($zip->open($zip_file) === TRUE) {
                         mkdir($temp_dir, 0755, true);
-                        $zip->extractTo($temp_dir);
+                        if (!$this->safe_extract_zip($zip, $temp_dir)) { $zip->close(); continue; }
                         $zip->close();
 
                         // Find XMLs inside temp_dir
@@ -243,7 +262,7 @@ class Importer
             if (!is_dir($extract_to)) {
                 mkdir($extract_to, 0755, true);
             }
-            $zip->extractTo($extract_to);
+            if (!$this->safe_extract_zip($zip, $extract_to)) { $zip->close(); return; }
             $zip->close();
 
             // Optional: Rename/Move ZIP to '.processed' or similar to avoid re-extraction?
@@ -937,7 +956,7 @@ class Importer
                     $zip = new \ZipArchive;
                     if ($zip->open($zip_file) === TRUE) {
                         mkdir($temp_dir, 0755, true);
-                        $zip->extractTo($temp_dir);
+                        if (!$this->safe_extract_zip($zip, $temp_dir)) { $zip->close(); continue; }
                         $zip->close();
 
                         // Find XMLs recursively (ZIPs may contain subdirectories)

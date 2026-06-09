@@ -23,7 +23,7 @@
 	var PLZ_MAP = {
 		'01': 'Sachsen', '02': 'Sachsen', '03': 'Brandenburg', '04': 'Sachsen',
 		'06': 'Sachsen-Anhalt', '07': 'Thueringen', '08': 'Sachsen', '09': 'Sachsen',
-		'10': 'Berlin', '12': 'Berlin', '13': 'Berlin', '14': 'Brandenburg',
+		'10': 'Berlin', '11': 'Berlin', '12': 'Berlin', '13': 'Berlin', '14': 'Brandenburg',
 		'15': 'Brandenburg', '16': 'Brandenburg', '17': 'Mecklenburg-Vorpommern',
 		'18': 'Mecklenburg-Vorpommern', '19': 'Mecklenburg-Vorpommern',
 		'20': 'Hamburg', '21': 'Niedersachsen', '22': 'Hamburg', '23': 'Schleswig-Holstein',

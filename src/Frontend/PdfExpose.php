@@ -30,11 +30,12 @@ class PdfExpose
         }
 
         // Verify nonce for bot protection
-        if (empty($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field($_GET['_wpnonce']), 'dbw_immo_expose_' . get_the_ID())) {
+        $post_id = get_queried_object_id();
+        if (empty($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field($_GET['_wpnonce']), 'dbw_immo_expose_' . $post_id)) {
             wp_die(__('Ungueltiger Link.', 'dbw-immo-suite'), 403);
         }
 
-        $this->render_expose(get_the_ID());
+        $this->render_expose($post_id);
         exit;
     }
 

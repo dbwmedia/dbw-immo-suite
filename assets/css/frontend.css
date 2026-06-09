@@ -61,11 +61,20 @@
 	margin: 0;
 }
 
-/* Remove default focus outline if we have custom styles */
+/* Custom focus styles — hide outline only for mouse, keep for keyboard */
+#dbw-immo-suite input:focus:not(:focus-visible),
+#dbw-immo-suite select:focus:not(:focus-visible) {
+	outline: none;
+}
+
 #dbw-immo-suite input:focus,
 #dbw-immo-suite select:focus {
-	outline: none;
 	border-color: var(--dbw-accent);
+}
+
+#dbw-immo-suite :focus-visible {
+	outline: 2px solid var(--dbw-accent);
+	outline-offset: 2px;
 }
 
 /* Special case for Toolbar inputs which need no border */
@@ -3199,7 +3208,7 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 }
 
 .dbw-infra-cat-header:hover,
-.dbw-infra-cat-header:focus {
+.dbw-infra-cat-header:focus:not(:focus-visible) {
 	background: none;
 	color: inherit;
 	outline: none;

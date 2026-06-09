@@ -138,7 +138,7 @@ get_header(); ?>
 		<!-- Header -->
 		<div class="dbw-single-header">
 			<h1 class="dbw-single-title">
-				<?php the_title(); ?>
+				<?php echo esc_html(get_the_title()); ?>
 			</h1>
 			<div class="dbw-single-address">
 				<span class="dashicons dashicons-location"></span>

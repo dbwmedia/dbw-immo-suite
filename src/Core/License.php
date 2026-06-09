@@ -87,7 +87,7 @@ class License
         $key = isset($_POST['dbw_immo_license_key']) ? sanitize_text_field($_POST['dbw_immo_license_key']) : '';
 
         if (self::validate_key($key)) {
-            update_option(self::OPTION_KEY, $key);
+            update_option(self::OPTION_KEY, hash('sha256', $key));
             update_option(self::OPTION_STATUS, 'valid');
             $redirect = add_query_arg('dbw_license', 'activated', admin_url('edit.php?post_type=immobilie&page=dbw-immo-suite-settings#tab-license'));
         } else {

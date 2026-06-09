@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Animated switch via View Transition API (with fallback)
         const switchView = (view) => {
             if (document.startViewTransition) {
-                document.startViewTransition(() => setView(view));
+                const t = document.startViewTransition(() => setView(view));
+                t.finished.catch(() => {});
             } else {
                 setView(view);
             }

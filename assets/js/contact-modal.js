@@ -136,6 +136,86 @@
         });
     });
 
+    // --- Expose Request Modal ---
+    var exposeModal = document.getElementById('dbw-expose-modal');
+    if (exposeModal) {
+        var exposeForm = exposeModal.querySelector('#dbw-expose-form');
+        var exposeSubmitBtn = exposeForm ? exposeForm.querySelector('button[type="submit"]') : null;
+        var exposeOriginalText = exposeSubmitBtn ? exposeSubmitBtn.textContent.trim() : '';
+
+        // Open
+        document.querySelectorAll('[data-dbw-open-expose]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                exposeForm.reset();
+                exposeSubmitBtn.disabled = false;
+                exposeSubmitBtn.textContent = exposeOriginalText;
+                var err = exposeForm.querySelector('.dbw-modal__error');
+                if (err) err.remove();
+
+                // Show form, hide success
+                exposeModal.querySelectorAll('[data-expose-step="form"]').forEach(function (el) { el.hidden = false; });
+                exposeModal.querySelectorAll('[data-expose-step="success"]').forEach(function (el) { el.hidden = true; });
+
+                exposeModal.showModal();
+            });
+        });
+
+        // Close
+        exposeModal.querySelectorAll('[data-close-expose]').forEach(function (b) {
+            b.addEventListener('click', function () { exposeModal.close(); });
+        });
+        exposeModal.addEventListener('click', function (e) {
+            if (e.target === exposeModal) exposeModal.close();
+        });
+
+        // Submit
+        if (exposeForm) {
+            exposeForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (exposeForm.website.value) return;
+
+                exposeSubmitBtn.disabled = true;
+                exposeSubmitBtn.textContent = (window.dbwContactModal.i18n && window.dbwContactModal.i18n.sending) || 'Senden\u2026';
+
+                var data = new FormData(exposeForm);
+                data.append('action', 'dbw_immo_expose_request');
+
+                fetch(window.dbwContactModal.ajaxurl, {
+                    method: 'POST',
+                    body: data
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.success) throw new Error(j.data || 'Fehler');
+
+                    // Personalize success
+                    var userName = (exposeForm.querySelector('[name="name"]').value || '').trim();
+                    var firstName = userName.split(' ')[0];
+                    var nameEl = exposeModal.querySelector('[data-expose-name]');
+                    if (nameEl) {
+                        nameEl.textContent = firstName ? ', ' + firstName + '!' : '!';
+                    }
+
+                    // Show success, hide form
+                    exposeModal.querySelectorAll('[data-expose-step="form"]').forEach(function (el) { el.hidden = true; });
+                    exposeModal.querySelectorAll('[data-expose-step="success"]').forEach(function (el) { el.hidden = false; });
+                })
+                .catch(function (err) {
+                    exposeSubmitBtn.disabled = false;
+                    exposeSubmitBtn.textContent = exposeOriginalText;
+                    var msg = err.message || (window.dbwContactModal.i18n && window.dbwContactModal.i18n.network_error) || 'Netzwerkfehler';
+                    var existing = exposeForm.querySelector('.dbw-modal__error');
+                    if (existing) existing.remove();
+                    var errEl = document.createElement('div');
+                    errEl.className = 'dbw-modal__error';
+                    errEl.setAttribute('role', 'alert');
+                    errEl.textContent = msg;
+                    exposeSubmitBtn.parentNode.insertBefore(errEl, exposeSubmitBtn);
+                });
+            });
+        }
+    }
+
     // --- Mobile sticky CTA bar ---
     if (stickyBar) {
         stickyBar.hidden = false;

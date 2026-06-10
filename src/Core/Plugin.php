@@ -171,6 +171,9 @@ class Plugin
         $plugin_whatsapp = new \DBW\ImmoSuite\Frontend\WhatsAppButton();
         $this->loader->add_action('init', $plugin_whatsapp, 'init');
 
+        $plugin_expose_request = new \DBW\ImmoSuite\Frontend\ExposeRequest();
+        $this->loader->add_action('init', $plugin_expose_request, 'init');
+
         $plugin_privacy = new \DBW\ImmoSuite\Core\Privacy();
         $this->loader->add_action('init', $plugin_privacy, 'init');
 

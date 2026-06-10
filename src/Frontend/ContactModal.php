@@ -32,6 +32,12 @@ class ContactModal
                 <span class="dbw-cta__text"><?php esc_html_e('Immobilie anfragen', 'dbw-immo-suite'); ?></span>
             </button>
             <?php
+            // Expose Request CTA Button
+            if (class_exists('DBW\ImmoSuite\Frontend\ExposeRequest')) {
+                ExposeRequest::render_cta_button($post_id);
+            }
+            ?>
+            <?php
             // WhatsApp CTA Button
             if (class_exists('DBW\ImmoSuite\Frontend\WhatsAppButton')) {
                 WhatsAppButton::render_cta_button($post_id);

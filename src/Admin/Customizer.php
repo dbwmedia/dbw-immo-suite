@@ -134,6 +134,7 @@ class Customizer
             'input_attrs' => array('min' => 0, 'max' => 20, 'step' => 1),
         ));
 
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_address', true, __('Adresse anzeigen (wenn aus: Karte wird ebenfalls ausgeblendet)', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_map', true, __('Lage / Karte anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_map_consent', true, __('Karten-Consent anzeigen (DSGVO: OSM-Tiles uebertragen IP-Adresse)', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_energy', true, __('Energieausweis anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
@@ -148,6 +149,7 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_price_sqm', true, __('Preis pro m² anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_whatsapp', true, __('WhatsApp-Button anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_whatsapp_floating', false, __('WhatsApp Floating-Button anzeigen', 'dbw-immo-suite'), 'dbw_immo_single_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_single_show_expose_request', false, __('Expose-Anfrage Button anzeigen (mit Provisionshinweis)', 'dbw-immo-suite'), 'dbw_immo_single_section');
 
         // Highlights Box
         $wp_customize->add_setting('dbw_immo_highlights_bg_style', array(

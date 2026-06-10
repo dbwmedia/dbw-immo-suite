@@ -1836,6 +1836,19 @@
 	box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
 }
 
+/* Expose Request CTA */
+#dbw-immo-suite .dbw-cta--outline {
+	background: transparent;
+	color: var(--dbw-accent, #2573a7);
+	border: 2px solid var(--dbw-accent, #2573a7);
+}
+
+#dbw-immo-suite .dbw-cta--outline:hover {
+	background: var(--dbw-accent, #2573a7);
+	color: #fff;
+	transform: translateY(-1px);
+}
+
 #dbw-immo-suite .dbw-cta--icon-only {
 	flex: 0 0 auto;
 	width: 44px;
@@ -2318,6 +2331,39 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 
 .dbw-privacy a {
 	color: var(--dbw-accent, #3498db);
+}
+
+/* Legal / Provision Acknowledgment */
+.dbw-legal {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	font-size: 0.82rem;
+	color: #555;
+	margin: 12px 0 8px;
+	cursor: pointer;
+	padding: 10px 12px;
+	background: #f8f9fa;
+	border: 1px solid var(--dbw-border, #e0e0e0);
+	border-radius: var(--dbw-radius, 8px);
+	line-height: 1.45;
+}
+
+.dbw-legal input {
+	margin-top: 3px;
+	flex-shrink: 0;
+}
+
+/* Expose intro text */
+.dbw-expose__intro {
+	font-size: 0.9rem;
+	color: #666;
+	margin: 0 0 1.2rem;
+}
+
+/* Compact modal variant */
+.dbw-modal--compact .dbw-modal__body {
+	padding: 0 24px 16px;
 }
 
 /* Honeypot */

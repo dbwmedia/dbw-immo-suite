@@ -135,15 +135,19 @@ get_header(); ?>
 		$main_image_item = !empty($gallery_images) ? $gallery_images[0] : null;
 		?>
 
+		<?php $show_address = get_theme_mod('dbw_immo_single_show_address', true); ?>
+
 		<!-- Header -->
 		<div class="dbw-single-header">
 			<h1 class="dbw-single-title">
 				<?php echo esc_html(get_the_title()); ?>
 			</h1>
+			<?php if ($show_address): ?>
 			<div class="dbw-single-address">
 				<span class="dashicons dashicons-location"></span>
 				<?php echo esc_html(implode(' ', array_filter(array($street, $house_num))) . ', ' . implode(' ', array_filter(array($plz, $city)))); ?>
 			</div>
+			<?php endif; ?>
 		</div>
 
 		<!-- Gallery Slider -->
@@ -342,7 +346,7 @@ get_header(); ?>
 					</div>
 			<?php endif; ?>
 
-				<?php if (($text_lage || ($lat && $lng)) && get_theme_mod('dbw_immo_single_show_map', true)): ?>
+				<?php if (($text_lage || ($lat && $lng)) && get_theme_mod('dbw_immo_single_show_map', true) && $show_address): ?>
 					<div class="dbw-section">
 						<h3 class="dbw-section-title">Lage</h3>
 						<?php if ($text_lage): ?>

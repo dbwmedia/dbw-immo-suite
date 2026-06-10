@@ -264,6 +264,10 @@ class Settings
 		add_settings_field('price_per_sqm_min_comparables', __('Mind. Vergleichsobjekte', 'dbw-immo-suite'), array($this, 'price_per_sqm_min_comparables_callback'), 'dbw-settings-display', 'section_price_sqm');
 		add_settings_field('price_per_sqm_cache_hours', __('Cache-Dauer (Stunden)', 'dbw-immo-suite'), array($this, 'price_per_sqm_cache_hours_callback'), 'dbw-settings-display', 'section_price_sqm');
 
+		// ── Expose-Anfrage ──
+		add_settings_section('section_expose', __('Expose-Anfrage', 'dbw-immo-suite'), array($this, 'print_expose_section_info'), 'dbw-settings-display');
+		add_settings_field('expose_provision_text', __('Provisionshinweis', 'dbw-immo-suite'), array($this, 'expose_provision_text_callback'), 'dbw-settings-display', 'section_expose');
+
 		// ── WhatsApp ──
 		add_settings_section('section_whatsapp', __('WhatsApp', 'dbw-immo-suite'), array($this, 'print_whatsapp_section_info'), 'dbw-settings-display');
 		add_settings_field('whatsapp_enabled', __('Aktivieren', 'dbw-immo-suite'), array($this, 'whatsapp_enabled_callback'), 'dbw-settings-display', 'section_whatsapp');
@@ -450,6 +454,11 @@ class Settings
 		}
 		if (isset($input['org_email'])) {
 			$new_input['org_email'] = sanitize_email($input['org_email']);
+		}
+
+		// Expose Request
+		if (isset($input['expose_provision_text'])) {
+			$new_input['expose_provision_text'] = sanitize_textarea_field($input['expose_provision_text']);
 		}
 
 		// Contact CC
@@ -752,6 +761,25 @@ class Settings
 	public function price_per_sqm_cache_hours_callback()
 	{
 		$this->number_field_callback('price_per_sqm_cache_hours', 24, 1, 1, 168, __('Cache-Dauer fuer Durchschnittswerte in Stunden (Standard: 24)', 'dbw-immo-suite'));
+	}
+
+	public function print_expose_section_info()
+	{
+		print __('Der Expose-Anfrage-Button wird im Customizer aktiviert (Detailansicht > Expose-Anfrage Button). Hier kann der rechtliche Hinweistext konfiguriert werden.', 'dbw-immo-suite');
+	}
+
+	public function expose_provision_text_callback()
+	{
+		$options = get_option($this->option_name);
+		$val = !empty($options['expose_provision_text']) ? $options['expose_provision_text'] : '';
+		$placeholder = 'Ich nehme zur Kenntnis, dass bei Zustandekommen eines Kaufvertrages eine Maklerprovision in der im Expose genannten Hoehe anfaellt.';
+		printf(
+			'<textarea id="expose_provision_text" name="%s[expose_provision_text]" rows="3" class="large-text" placeholder="%s">%s</textarea>',
+			esc_attr($this->option_name),
+			esc_attr($placeholder),
+			esc_textarea($val)
+		);
+		echo '<p class="description">' . esc_html__('Dieser Text wird als Pflicht-Checkbox im Expose-Anfrage-Formular angezeigt. Leer = Standardtext.', 'dbw-immo-suite') . '</p>';
 	}
 
 	public function print_whatsapp_section_info()

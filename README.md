@@ -23,7 +23,9 @@ Entwickelt fuer den professionellen Einsatz und nahtlose Integration in jede Wor
 ### Modernes Frontend
 
 #### Archiv & Listenansicht
-- **Grid View** (Kachelansicht) + **List View** (horizontal) mit Live-Switcher
+- **Grid View** (Kachelansicht) + **List View** (horizontal) + **Karten-View** mit Live-Switcher
+- **Kartenansicht** — alle gefilterten Objekte als Marker auf OpenStreetMap (Leaflet lokal, Consent-faehig), Popups mit Bild/Titel/Preis, Auto-Zoom
+- **Merkliste (Favoriten)** — Herz auf jeder Karte, localStorage-basiert (kein Account, DSGVO-neutral), Merklisten-Ansicht mit Zaehler in der Toolbar
 - **Erweiterte Filterleiste** — Objekttyp, Standort (Ort/PLZ), Vermarktungsart, Preis, Flaeche, Zimmer
 - **Sortierung** — Datum, Preis (aufsteigend/absteigend inkl. Kauf+Miete gemischt), Flaeche
 - **Pagination** mit konfigurierbarer Seitengroesse

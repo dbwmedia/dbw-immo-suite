@@ -34,10 +34,20 @@ get_header(); ?>
 		} else {
 			the_posts_pagination();
 		}
+		?>
 
-	else:
-		echo '<p>' . __('Keine Immobilien gefunden.', 'dbw-immo-suite') . '</p>';
-	endif;
+	<?php else: ?>
+		<div class="dbw-property-grid">
+			<p class="dbw-no-results"><?php _e('Keine Immobilien gefunden.', 'dbw-immo-suite'); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php
+	// Map view container — rendered outside the have_posts() branch so the
+	// view switcher and favorites view keep working on empty result pages
+	if (class_exists('DBW\ImmoSuite\Frontend\ArchiveMap')) {
+		\DBW\ImmoSuite\Frontend\ArchiveMap::render();
+	}
 	?>
 </div>
 

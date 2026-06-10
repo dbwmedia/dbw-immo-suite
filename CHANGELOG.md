@@ -7,6 +7,14 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.18.0] — 2026-06-10
+
+### Hinzugefuegt
+- **Merkliste (Favoriten)** — Herz-Button auf allen Immobilien-Karten (Archiv, Bloecke, Shortcodes). Gemerkte Objekte werden im localStorage des Besuchers gespeichert (kein Account, keine Cookies, DSGVO-neutral). Neuer "Merkliste"-Button in der Archiv-Toolbar mit Zaehler zeigt die gemerkten Objekte als Karten-Grid (AJAX, nur veroeffentlichte Objekte). Geloeschte/deaktivierte Objekte werden automatisch aus der Merkliste entfernt. Customizer-Toggle "Merkliste (Favoriten-Herz) anzeigen".
+- **Kartenansicht im Archiv** — Dritter Button im View-Switcher (Kachel/Liste/Karte). Zeigt alle Objekte des aktuellen Filters (bis 200) als Marker auf einer OpenStreetMap-Karte (Leaflet, lokal gebuendelt) mit Popup (Bild, Titel, Preis, Link) und automatischem Zoom auf alle Marker. Respektiert den Karten-Consent (Borlabs-Integration wie auf der Detailseite). Automatisch deaktiviert, wenn "Adresse anzeigen" aus ist (Marker wuerden den Standort verraten). Customizer-Toggle "Kartenansicht im Archiv anzeigen".
+
+---
+
 ## [1.17.1] — 2026-06-10
 
 ### Sicherheit

@@ -112,6 +112,8 @@ class Customizer
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price', true, __('Preis anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_energy_class', true, __('Energieklasse (Flag) anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
         $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_price_sqm', false, __('Preis pro m² anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_favorites', true, __('Merkliste (Favoriten-Herz) anzeigen', 'dbw-immo-suite'), 'dbw_immo_archive_section');
+        $this->add_toggle_setting($wp_customize, 'dbw_immo_archive_show_map_view', true, __('Kartenansicht im Archiv anzeigen (benoetigt Geo-Daten; bei ausgeblendeter Adresse automatisch aus)', 'dbw-immo-suite'), 'dbw_immo_archive_section');
 
 
         // 4. Section: Detailseite (Single)

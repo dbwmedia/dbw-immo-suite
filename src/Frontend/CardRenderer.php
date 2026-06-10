@@ -139,6 +139,11 @@ class CardRenderer
             </a>
 
             <div class="dbw-property-content">
+                <?php
+                if (class_exists('\DBW\ImmoSuite\Frontend\Favorites')) {
+                    Favorites::render_card_button($post_id);
+                }
+                ?>
                 <div class="dbw-card-body">
                     <h2 class="dbw-property-title">
                         <a href="<?php the_permalink(); ?>"><?php echo esc_html(self::get_display_title($post_id)); ?></a>

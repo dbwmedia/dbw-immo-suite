@@ -3526,3 +3526,191 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 		-webkit-print-color-adjust: exact;
 	}
 }
+/* ============================================================
+   Favorites (Merkliste) — v1.18.0
+   ============================================================ */
+
+#dbw-immo-suite .dbw-property-content {
+	position: relative;
+}
+
+#dbw-immo-suite .dbw-fav-btn {
+	position: absolute;
+	top: -22px;
+	right: 14px;
+	z-index: 3;
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.06);
+	background: var(--dbw-white, #fff);
+	color: var(--dbw-gray, #5f6b6d);
+	cursor: pointer;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+	transition: transform 0.2s ease, color 0.2s ease;
+	padding: 0;
+}
+
+#dbw-immo-suite .dbw-fav-btn:hover {
+	transform: scale(1.1);
+	color: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-fav-btn.is-active {
+	color: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-fav-btn.is-active svg {
+	fill: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-property-grid.is-list-view .dbw-fav-btn {
+	top: 10px;
+	right: 10px;
+}
+
+/* Toolbar toggle */
+#dbw-immo-suite .dbw-fav-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 14px;
+	border-radius: 999px;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	background: var(--dbw-white, #fff);
+	color: var(--dbw-dark, #2c3e50);
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+#dbw-immo-suite .dbw-fav-toggle:hover {
+	border-color: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-fav-toggle.is-active {
+	background: #e74c3c;
+	border-color: #e74c3c;
+	color: #fff;
+}
+
+#dbw-immo-suite .dbw-fav-toggle.has-items svg {
+	fill: #e74c3c;
+	color: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-fav-toggle.is-active svg {
+	fill: #fff;
+	color: #fff;
+}
+
+#dbw-immo-suite .dbw-fav-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 5px;
+	border-radius: 999px;
+	background: var(--dbw-light, #f4f6f7);
+	color: var(--dbw-dark, #2c3e50);
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+#dbw-immo-suite .dbw-fav-toggle.is-active .dbw-fav-count {
+	background: rgba(255, 255, 255, 0.25);
+	color: #fff;
+}
+
+#dbw-immo-suite .dbw-fav-empty {
+	grid-column: 1 / -1;
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--dbw-gray, #5f6b6d);
+}
+
+#dbw-immo-suite .dbw-property-grid.is-loading {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* ============================================================
+   Archive Map View — v1.18.0
+   ============================================================ */
+
+#dbw-immo-suite .dbw-archive-map-wrapper {
+	margin: 1.5rem 0;
+}
+
+#dbw-immo-suite #dbw-archive-map {
+	height: 600px;
+	border-radius: var(--dbw-radius, 12px);
+	z-index: 1;
+}
+
+#dbw-immo-suite .dbw-archive-map-empty {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--dbw-gray, #5f6b6d);
+}
+
+.dbw-map-popup {
+	min-width: 200px;
+}
+
+.dbw-map-popup__img {
+	width: 100%;
+	height: 110px;
+	object-fit: cover;
+	border-radius: 8px;
+	display: block;
+	margin-bottom: 8px;
+}
+
+.dbw-map-popup__title {
+	display: block;
+	font-weight: 700;
+	font-size: 0.95rem;
+	color: var(--dbw-dark, #2c3e50);
+	text-decoration: none;
+	margin-bottom: 4px;
+}
+
+.dbw-map-popup__title:hover {
+	text-decoration: underline;
+}
+
+.dbw-map-popup__price {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--dbw-accent, #2573a7);
+}
+
+@media (max-width: 768px) {
+	#dbw-immo-suite #dbw-archive-map {
+		height: 70vh;
+	}
+
+	#dbw-immo-suite .dbw-fav-toggle__label {
+		display: none;
+	}
+}
+
+/* The hidden attribute must beat the display:grid/flex rules above */
+#dbw-immo-suite .dbw-property-grid[hidden],
+#dbw-immo-suite .dbw-pagination[hidden],
+#dbw-immo-suite .dbw-archive-map-wrapper[hidden] {
+	display: none !important;
+}
+
+#dbw-immo-suite .dbw-no-results {
+	grid-column: 1 / -1;
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--dbw-gray, #5f6b6d);
+}

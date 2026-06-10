@@ -320,6 +320,8 @@ class Filter
             </div>
 
             <div class="dbw-start-content-right" style="display: flex; align-items: center; gap: 15px;">
+                <?php Favorites::render_toolbar_button(); ?>
+
                 <!-- View Switcher -->
                 <div class="dbw-view-switcher">
                     <button type="button" id="dbw-view-grid" class="dbw-view-btn active" aria-label="<?php esc_attr_e('Kachelansicht', 'dbw-immo-suite'); ?>" aria-pressed="true">
@@ -328,6 +330,11 @@ class Filter
                     <button type="button" id="dbw-view-list" class="dbw-view-btn" aria-label="<?php esc_attr_e('Listenansicht', 'dbw-immo-suite'); ?>" aria-pressed="false">
                         <span class="dashicons dashicons-list-view"></span>
                     </button>
+                    <?php if (ArchiveMap::is_enabled()): ?>
+                    <button type="button" id="dbw-view-map" class="dbw-view-btn" aria-label="<?php esc_attr_e('Kartenansicht', 'dbw-immo-suite'); ?>" aria-pressed="false">
+                        <span class="dashicons dashicons-location-alt"></span>
+                    </button>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="dbw-sort-control">

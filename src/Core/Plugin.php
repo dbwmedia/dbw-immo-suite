@@ -174,6 +174,9 @@ class Plugin
         $plugin_expose_request = new \DBW\ImmoSuite\Frontend\ExposeRequest();
         $this->loader->add_action('init', $plugin_expose_request, 'init');
 
+        $plugin_favorites = new \DBW\ImmoSuite\Frontend\Favorites();
+        $this->loader->add_action('init', $plugin_favorites, 'init');
+
         $plugin_privacy = new \DBW\ImmoSuite\Core\Privacy();
         $this->loader->add_action('init', $plugin_privacy, 'init');
 
@@ -197,9 +200,28 @@ class Plugin
      */
     public function enqueue_public_scripts()
     {
-        // Register assets so blocks/shortcodes can enqueue them on-demand
+        // Register assets so blocks/shortcodes can enqueue them on-demand.
+        // favorites.js is a dependency of frontend.js so heart buttons work
+        // everywhere cards render (archive, blocks, shortcodes).
+        $frontend_deps = array();
+        if (\DBW\ImmoSuite\Frontend\Favorites::is_enabled()) {
+            wp_register_script('dbw-immo-favorites-js', DBW_IMMO_SUITE_URL . 'assets/js/favorites.js', array(), DBW_IMMO_SUITE_VERSION, true);
+            wp_localize_script('dbw-immo-favorites-js', 'dbwFavorites', array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'i18n'    => array(
+                    'add'    => __('Zur Merkliste hinzufuegen', 'dbw-immo-suite'),
+                    'remove' => __('Von der Merkliste entfernen', 'dbw-immo-suite'),
+                    'empty'  => \DBW\ImmoSuite\dbw_anrede(
+                        __('Noch keine Objekte gemerkt. Klicken Sie das Herz auf einer Immobilie, um sie hier zu sammeln.', 'dbw-immo-suite'),
+                        __('Noch keine Objekte gemerkt. Klicke das Herz auf einer Immobilie, um sie hier zu sammeln.', 'dbw-immo-suite')
+                    ),
+                ),
+            ));
+            $frontend_deps[] = 'dbw-immo-favorites-js';
+        }
+
         wp_register_style('dbw-immo-frontend', DBW_IMMO_SUITE_URL . 'assets/css/frontend.css', array(), DBW_IMMO_SUITE_VERSION, 'all');
-        wp_register_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', array(), DBW_IMMO_SUITE_VERSION, true);
+        wp_register_script('dbw-immo-frontend-js', DBW_IMMO_SUITE_URL . 'assets/js/frontend.js', $frontend_deps, DBW_IMMO_SUITE_VERSION, true);
         wp_register_script('dbw-immo-view-switch-js', DBW_IMMO_SUITE_URL . 'assets/js/view-switch.js', array(), DBW_IMMO_SUITE_VERSION, true);
 
         // Auto-enqueue on immobilie CPT pages, archives, and taxonomy pages
@@ -207,6 +229,14 @@ class Plugin
             wp_enqueue_style('dbw-immo-frontend');
             wp_enqueue_script('dbw-immo-frontend-js');
             wp_enqueue_script('dbw-immo-view-switch-js');
+        }
+
+        // Archive map view (Leaflet from local vendor copy)
+        if ((is_post_type_archive('immobilie') || is_tax(array('objektart', 'vermarktungsart', 'ort')))
+            && \DBW\ImmoSuite\Frontend\ArchiveMap::is_enabled()) {
+            wp_enqueue_style('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.css', array(), '1.9.4');
+            wp_enqueue_script('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.js', array(), '1.9.4', true);
+            wp_enqueue_script('dbw-immo-archive-map-js', DBW_IMMO_SUITE_URL . 'assets/js/archive-map.js', array('leaflet'), DBW_IMMO_SUITE_VERSION, true);
         }
 
         // Single property page scripts (lightbox + contact modal)

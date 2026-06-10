@@ -26,7 +26,8 @@ class Importer
 
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = $zip->getNameIndex($i);
-            if (strpos($name, '..') !== false || $name[0] === '/') {
+            // Block traversal, absolute paths (Unix + Windows drive/UNC) and unreadable entries
+            if ($name === false || $name === '' || strpos($name, '..') !== false || preg_match('#^([a-zA-Z]:)?[/\\\\]#', $name)) {
                 $this->log_debug('Zip-Slip blocked: ' . $name);
                 return false;
             }
@@ -481,7 +482,7 @@ class Importer
             foreach ($xml->infrastruktur->distanzen as $dist) {
                 $type = (string)$dist['distanz_zu'];
                 $val = (string)$dist;
-                update_post_meta($post_id, 'distanz_' . strtolower($type), $val);
+                update_post_meta($post_id, 'distanz_' . sanitize_key($type), $val);
                 $infra_data[$type] = $val;
             }
             // Optional: Store all as array for easier looping if needed
@@ -1313,15 +1314,15 @@ class Importer
 
     private function log_debug($msg)
     {
-        // Store log in plugin directory (not publicly accessible via URL)
         $log_dir = DBW_IMMO_SUITE_PATH . 'logs';
         if (!is_dir($log_dir)) {
             wp_mkdir_p($log_dir);
-            // Protect log directory from web access
+            // Protect log directory from web access (Apache/LiteSpeed)
             @file_put_contents($log_dir . '/.htaccess', "Deny from all\n");
             @file_put_contents($log_dir . '/index.php', "<?php // Silence is golden.\n");
         }
-        $log_file = $log_dir . '/import.log';
+        // Unguessable filename so the log stays private on NGINX too (no .htaccess support)
+        $log_file = $log_dir . '/import-' . wp_hash('dbw_immo_import_log') . '.log';
         $entry = date('Y-m-d H:i:s') . ' - ' . wp_strip_all_tags($msg) . PHP_EOL;
         @file_put_contents($log_file, $entry, FILE_APPEND);
     }

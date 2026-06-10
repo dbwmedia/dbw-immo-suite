@@ -147,7 +147,7 @@ class ContactForm
 
         $headers = array(
             'Content-Type: text/plain; charset=UTF-8',
-            'Reply-To: ' . $name . ' <' . $email . '>',
+            'Reply-To: "' . str_replace('"', '', $name) . '" <' . $email . '>',
         );
 
         // Optional CC from settings

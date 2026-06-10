@@ -8,7 +8,7 @@
 
 	var lbImage = document.getElementById('dbwLbImage');
 	var lbCounter = document.getElementById('dbwLbCounter');
-	var closeBtn = overlay.querySelector('[aria-label]');
+	var closeBtn = overlay.querySelector('.dbw-lightbox-btn--close');
 	var currentSet = [];
 	var currentIdx = 0;
 	var previousFocus = null;
@@ -58,6 +58,7 @@
 				lbImage.src = src;
 				lbImage.alt = alt;
 				lbImage.onload = function () { lbImage.style.opacity = '1'; };
+				lbImage.onerror = function () { lbImage.style.opacity = '1'; };
 				lbCounter.textContent = (currentIdx + 1) + ' / ' + currentSet.length;
 			}, 120);
 		}

@@ -191,10 +191,10 @@ class Filter
         $location = isset($_GET['location']) ? sanitize_text_field($_GET['location']) : '';
         $marketing = isset($_GET['marketing']) ? sanitize_title($_GET['marketing']) : '';
         $type = isset($_GET['type']) ? sanitize_title($_GET['type']) : '';
-        $price_min = isset($_GET['price_min']) ? esc_attr($_GET['price_min']) : '';
-        $price_max = isset($_GET['price_max']) ? esc_attr($_GET['price_max']) : '';
-        $area = isset($_GET['area_min']) ? esc_attr($_GET['area_min']) : '';
-        $rooms = isset($_GET['rooms_min']) ? esc_attr($_GET['rooms_min']) : '';
+        $price_min = isset($_GET['price_min']) ? sanitize_text_field($_GET['price_min']) : '';
+        $price_max = isset($_GET['price_max']) ? sanitize_text_field($_GET['price_max']) : '';
+        $area = isset($_GET['area_min']) ? sanitize_text_field($_GET['area_min']) : '';
+        $rooms = isset($_GET['rooms_min']) ? sanitize_text_field($_GET['rooms_min']) : '';
         
         // Auto-expand only if advanced filters are active (not just basic search)
         $has_advanced = $marketing || $type || $price_min || $price_max || $area || $rooms;
@@ -269,21 +269,21 @@ class Filter
                         <div class="dbw-filter-group dbw-filter-double">
                             <label><?php _e('Preis (€)', 'dbw-immo-suite'); ?></label>
                             <div class="dbw-input-group">
-                                <input type="number" name="price_min" placeholder="von" value="<?php echo $price_min; ?>" step="1000">
-                                <input type="number" name="price_max" placeholder="bis" value="<?php echo $price_max; ?>" step="1000">
+                                <input type="number" name="price_min" placeholder="von" value="<?php echo esc_attr($price_min); ?>" step="1000">
+                                <input type="number" name="price_max" placeholder="bis" value="<?php echo esc_attr($price_max); ?>" step="1000">
                             </div>
                         </div>
 
                         <!-- Fläche -->
                         <div class="dbw-filter-group">
                             <label><?php _e('Fläche (m²)', 'dbw-immo-suite'); ?></label>
-                            <input type="number" name="area_min" placeholder="ab" value="<?php echo $area; ?>">
+                            <input type="number" name="area_min" placeholder="ab" value="<?php echo esc_attr($area); ?>">
                         </div>
 
                         <!-- Zimmer -->
                         <div class="dbw-filter-group">
                             <label><?php _e('Zimmer', 'dbw-immo-suite'); ?></label>
-                            <input type="number" name="rooms_min" placeholder="ab" value="<?php echo $rooms; ?>">
+                            <input type="number" name="rooms_min" placeholder="ab" value="<?php echo esc_attr($rooms); ?>">
                         </div>
                     </div>
 

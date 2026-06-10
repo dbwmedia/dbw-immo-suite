@@ -104,6 +104,11 @@
 		return document.getElementById(id);
 	}
 
+	function setText(id, val) {
+		var e = el(id);
+		if (e) e.textContent = val;
+	}
+
 	function init() {
 		var container = el('dbw-finance-calculator');
 		if (!container) return;
@@ -120,53 +125,54 @@
 		var gesamtkosten = kaufpreis + gestAmount + notarAmount + grundbuchAmount + provisionAmount;
 
 		// Labels
-		el('dbw-calc-headline').textContent = i18n.headline;
-		el('dbw-calc-label-kaufpreis').textContent = i18n.kaufpreis;
-		el('dbw-calc-label-gest').textContent = i18n.grunderwerbsteuer;
-		el('dbw-calc-label-notar').textContent = i18n.notarkosten;
-		el('dbw-calc-label-grundbuch').textContent = i18n.grundbuchamt;
-		el('dbw-calc-label-provision').textContent = i18n.maklerprovision;
-		el('dbw-calc-label-gesamt').textContent = i18n.gesamtkosten;
-		el('dbw-calc-label-ek').textContent = i18n.eigenkapital;
-		el('dbw-calc-label-zins').textContent = i18n.zinssatz;
-		el('dbw-calc-label-tilgung').textContent = i18n.tilgung;
-		el('dbw-calc-label-darlehen').textContent = i18n.darlehenssumme;
-		el('dbw-calc-label-rate').textContent = i18n.monatliche_rate;
-		el('dbw-calc-label-zinskosten').textContent = i18n.zinskosten_10j;
-		el('dbw-calc-fin-headline').textContent = i18n.finanzierung;
-		el('dbw-calc-hinweis').textContent = i18n.hinweis;
+		setText('dbw-calc-headline', i18n.headline);
+		setText('dbw-calc-label-kaufpreis', i18n.kaufpreis);
+		setText('dbw-calc-label-gest', i18n.grunderwerbsteuer);
+		setText('dbw-calc-label-notar', i18n.notarkosten);
+		setText('dbw-calc-label-grundbuch', i18n.grundbuchamt);
+		setText('dbw-calc-label-provision', i18n.maklerprovision);
+		setText('dbw-calc-label-gesamt', i18n.gesamtkosten);
+		setText('dbw-calc-label-ek', i18n.eigenkapital);
+		setText('dbw-calc-label-zins', i18n.zinssatz);
+		setText('dbw-calc-label-tilgung', i18n.tilgung);
+		setText('dbw-calc-label-darlehen', i18n.darlehenssumme);
+		setText('dbw-calc-label-rate', i18n.monatliche_rate);
+		setText('dbw-calc-label-zinskosten', i18n.zinskosten_10j);
+		setText('dbw-calc-fin-headline', i18n.finanzierung);
+		setText('dbw-calc-hinweis', i18n.hinweis);
 
 		// Detail percentages
 		if (bundesland) {
-			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ' \u2014 ' + getBundeslandDisplay(bundesland) + ')';
+			setText('dbw-calc-gest-detail', '(' + fmtPct(gestRate) + ' \u2014 ' + getBundeslandDisplay(bundesland) + ')');
 		} else if (GEST_OVERRIDE > 0) {
-			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ')';
+			setText('dbw-calc-gest-detail', '(' + fmtPct(gestRate) + ')');
 		} else {
-			el('dbw-calc-gest-detail').textContent = '(' + fmtPct(gestRate) + ' \u2014 ' + i18n.bundesland_unknown + ')';
+			setText('dbw-calc-gest-detail', '(' + fmtPct(gestRate) + ' \u2014 ' + i18n.bundesland_unknown + ')');
 		}
-		el('dbw-calc-notar-detail').textContent = '(' + fmtPct(NOTAR_RATE) + ')';
-		el('dbw-calc-grundbuch-detail').textContent = '(' + fmtPct(GRUNDBUCH_RATE) + ')';
+		setText('dbw-calc-notar-detail', '(' + fmtPct(NOTAR_RATE) + ')');
+		setText('dbw-calc-grundbuch-detail', '(' + fmtPct(GRUNDBUCH_RATE) + ')');
 
 		// Provision
 		var provisionRow = el('dbw-calc-provision-row');
 		if (provision.value > 0) {
-			el('dbw-calc-provision-detail').textContent = '(' + provision.display + ')';
-			el('dbw-calc-provision').textContent = fmtCur(provisionAmount);
-		} else {
+			setText('dbw-calc-provision-detail', '(' + provision.display + ')');
+			setText('dbw-calc-provision', fmtCur(provisionAmount));
+		} else if (provisionRow) {
 			provisionRow.hidden = true;
 		}
 
 		// Fill values
-		el('dbw-calc-kaufpreis').textContent = fmtCur(kaufpreis);
-		el('dbw-calc-gest').textContent = fmtCur(gestAmount);
-		el('dbw-calc-notar').textContent = fmtCur(notarAmount);
-		el('dbw-calc-grundbuch').textContent = fmtCur(grundbuchAmount);
-		el('dbw-calc-gesamt').textContent = fmtCur(gesamtkosten);
+		setText('dbw-calc-kaufpreis', fmtCur(kaufpreis));
+		setText('dbw-calc-gest', fmtCur(gestAmount));
+		setText('dbw-calc-notar', fmtCur(notarAmount));
+		setText('dbw-calc-grundbuch', fmtCur(grundbuchAmount));
+		setText('dbw-calc-gesamt', fmtCur(gesamtkosten));
 
 		// Slider setup with backend defaults
 		var ekSlider = el('dbw-calc-eigenkapital');
 		var zinsSlider = el('dbw-calc-zinssatz');
 		var tilgungSlider = el('dbw-calc-tilgung');
+		if (!ekSlider || !zinsSlider || !tilgungSlider) return;
 
 		ekSlider.max = Math.round(gesamtkosten);
 		ekSlider.value = Math.round(gesamtkosten * 0.2);
@@ -193,13 +199,13 @@
 				if (restschuld <= 0) break;
 			}
 
-			el('dbw-calc-ek-output').textContent = fmtCur(eigenkapital);
-			el('dbw-calc-zins-output').textContent = fmtPct(zinssatz);
-			el('dbw-calc-tilgung-output').textContent = fmtPct(tilgung);
+			setText('dbw-calc-ek-output', fmtCur(eigenkapital));
+			setText('dbw-calc-zins-output', fmtPct(zinssatz));
+			setText('dbw-calc-tilgung-output', fmtPct(tilgung));
 
-			el('dbw-calc-darlehen').textContent = fmtCur(darlehen);
-			el('dbw-calc-rate').textContent = fmtCur(monatsrate);
-			el('dbw-calc-zinskosten').textContent = fmtCur(totalZins);
+			setText('dbw-calc-darlehen', fmtCur(darlehen));
+			setText('dbw-calc-rate', fmtCur(monatsrate));
+			setText('dbw-calc-zinskosten', fmtCur(totalZins));
 
 			updateFill(ekSlider);
 			updateFill(zinsSlider);

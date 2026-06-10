@@ -7,6 +7,42 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.17.1] — 2026-06-10
+
+### Sicherheit
+- **Expose-Anfrage: Status-Check** — Anfragen sind nur noch fuer veroeffentlichte Immobilien moeglich. Vorher konnten per ID-Iteration Drafts/private Objekte erkannt und Mails mit deren Titel ausgeloest werden.
+- **Expose-Anfrage: Rate-Limit gehaertet** — Limit haengt jetzt nur noch an der IP (vorher umgehbar ueber beliebige E-Mail-Adressen) und wird direkt nach dem Check gesetzt (Race Condition bei parallelen Requests geschlossen).
+- **Zip-Slip-Check erweitert** — Blockt jetzt auch Windows-Laufwerkspfade (`C:\`), UNC-Pfade und unlesbare ZIP-Eintraege.
+- **Import-Log mit unratbarem Dateinamen** — `import.log` heisst jetzt `import-<hash>.log` (Hash aus Site-Keys), damit das Log auch auf NGINX/LiteSpeed (kein .htaccess-Support) nicht abrufbar ist.
+- **Reply-To RFC-5322-Quoting** — Name im Reply-To-Header wird in Kontaktformular und Expose-Anfrage jetzt gequotet (Sonderzeichen wie Kommas konnten den Header malformen).
+- **distanz_-Meta-Keys sanitisiert** — XML-Attribut `distanz_zu` laeuft beim Import jetzt durch `sanitize_key()`.
+
+### Behoben
+- **Lizenz deaktivierte sich selbst** — Das Lizenzfeld wurde mit dem gespeicherten SHA256-Hash vorbefuellt; erneutes Klicken auf "Aktivieren" validierte den Hash als Key, schlug fehl und loeschte den Lizenzstatus. Feld ist jetzt leer, aktiver Key wird maskiert angezeigt. Speicherung nutzt jetzt dieselbe Kanonisierung wie die Validierung (strtoupper/trim). Bestandsinstallationen mit Klartext-Key in der DB werden automatisch auf Hash migriert. Toter `register_setting`-Call entfernt (haette Klartext-Speicherung via options.php erlaubt).
+- **"Adresse ausblenden" wirkt jetzt ueberall** — Schema.org JSON-LD gab trotz aktiviertem Toggle weiterhin Strasse und Geo-Koordinaten im Quelltext aus; das PDF-Expose enthielt die Strasse. Beides respektiert jetzt den Customizer-Schalter (Expose zeigt nur noch PLZ/Ort).
+- **Leaflet-Enqueue in wp_enqueue_scripts** — CSS/JS der Karte wurde mitten im Template (nach `wp_head()`) enqueued und konnte je nach Theme nicht laden. Jetzt regulaer im Hook, conditional auf Detailseite + Geo-Daten + Karten-/Adress-Toggle.
+- **Expose-Modal unabhaengig vom Kontakt-Modal** — Der Expose-Anfrage-Button funktionierte nur, wenn auch das Kontakt-Modal im DOM war (Early Return im JS). Beide Modals sind jetzt entkoppelt, fehlende Elemente crashen das Script nicht mehr.
+- **Lightbox haengt nicht mehr bei 404-Bildern** — `onerror`-Handler ergaenzt; Close-Button wird jetzt ueber eine eindeutige Klasse statt `[aria-label]` selektiert.
+- **Finanzrechner robust gegen fehlende DOM-Elemente** — Safe-Setter mit Null-Checks fuer alle 30 Output-Zugriffe.
+- **Accessibility: Fokus-Ringe im Modal** — `.dbw-modal__close`, `.dbw-step__back` und Toolbar-Select zeigen bei Keyboard-Fokus jetzt einen sichtbaren Fokus-Ring (`:focus-visible`).
+- **Uninstall-Cleanup** — Neue Customizer-Settings `dbw_immo_single_show_address` und `dbw_immo_single_show_expose_request` werden mit entfernt.
+
+### Geaendert
+- **i18n: ~77 Strings uebersetzbar gemacht** — Hardcodierte deutsche UI-Strings in `single-immobilie.php` (31) und `expose.php` (46) sind jetzt in `__()`/`esc_html_e()` gewrappt.
+- **CSS-Scoping** — `.dbw-cta-phone` und `.dbw-filter-content` (reduced-motion) jetzt unter `#dbw-immo-suite` gescoped; totes Font-Awesome-`content` entfernt.
+- **Performance: Infrastruktur-Score memoiert** — `calculate()` lief pro Seitenaufruf doppelt (Enqueue + Render), Ergebnis wird jetzt pro Request gecacht.
+- **Filter-Inputs** — Escaping erfolgt jetzt bei der Ausgabe statt bei der Zuweisung (WP-Konvention).
+
+---
+
+## [1.17.0] — 2026-06-09
+
+### Hinzugefuegt
+- **Expose-Anfrage Button** — Optionaler CTA "Expose anfordern" auf der Detailseite (Customizer-Toggle) mit kompaktem Modal: Name, E-Mail, Telefon, Pflicht-Checkboxen fuer Datenschutz und Provisionshinweis (rechtssicher, Text in den Einstellungen konfigurierbar). Versand per Mail an die Kontaktperson, Honeypot + Rate-Limiting.
+- **Adresse ausblenden** — Neuer Customizer-Toggle "Adresse anzeigen". Wenn deaktiviert, werden Adresszeile und Karte auf der Detailseite ausgeblendet (fuer diskrete Vermarktung).
+
+---
+
 ## [1.16.2] — 2026-06-09
 
 ### Geaendert

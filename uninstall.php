@@ -43,6 +43,7 @@ $mods_to_remove = array(
     'dbw_immo_expose_btn_text',
     'dbw_immo_archive_top_spacing', 'dbw_immo_single_top_spacing',
     'dbw_immo_archive_show_price_sqm',
+    'dbw_immo_single_show_address', 'dbw_immo_single_show_expose_request',
 );
 
 foreach ($mods_to_remove as $mod) {

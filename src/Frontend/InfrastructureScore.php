@@ -71,7 +71,7 @@ class InfrastructureScore
             return;
         }
 
-        $post_id = get_the_ID();
+        $post_id = get_queried_object_id();
         $data = self::calculate($post_id);
 
         if ($data === null) {
@@ -145,6 +145,12 @@ class InfrastructureScore
      */
     public static function calculate($post_id)
     {
+        // Memoize per request — calculate() runs in both enqueue_assets() and render()
+        static $cache = array();
+        if (array_key_exists($post_id, $cache)) {
+            return $cache[$post_id];
+        }
+
         $all_meta = get_post_custom($post_id);
 
         // Collect all distanz_ values
@@ -164,7 +170,7 @@ class InfrastructureScore
 
         // Minimum 3 distance fields required
         if (count($distances) < 3) {
-            return null;
+            return $cache[$post_id] = null;
         }
 
         // Calculate per-category scores
@@ -209,12 +215,12 @@ class InfrastructureScore
         }
 
         if ($total_weight === 0) {
-            return null;
+            return $cache[$post_id] = null;
         }
 
         $overall = round($weighted_sum / $total_weight, 1);
 
-        return array(
+        return $cache[$post_id] = array(
             'score'      => $overall,
             'label'      => self::get_score_label($overall),
             'color'      => self::get_score_color($overall),

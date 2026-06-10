@@ -194,7 +194,6 @@ class Settings
 	private function render_license_tab()
 	{
 		$is_valid = \DBW\ImmoSuite\Core\License::is_valid();
-		$stored_key = get_option(\DBW\ImmoSuite\Core\License::OPTION_KEY, '');
 
 		// Feedback messages
 		if (isset($_GET['dbw_license'])) {
@@ -210,7 +209,7 @@ class Settings
 		<?php if ($is_valid) : ?>
 			<div style="background:#d4edda; border-left:4px solid #00a32a; padding:12px 16px; margin-bottom:16px; border-radius:0 4px 4px 0;">
 				<strong><?php esc_html_e('Lizenz aktiv', 'dbw-immo-suite'); ?></strong><br>
-				<code><?php echo esc_html($stored_key); ?></code>
+				<code>DBWIS-&bull;&bull;&bull;&bull;-&bull;&bull;&bull;&bull;-&bull;&bull;&bull;&bull;</code>
 			</div>
 		<?php endif; ?>
 
@@ -222,7 +221,7 @@ class Settings
 					<th scope="row"><label for="dbw_immo_license_key"><?php esc_html_e('Lizenzschlüssel', 'dbw-immo-suite'); ?></label></th>
 					<td>
 						<input type="text" id="dbw_immo_license_key" name="dbw_immo_license_key"
-							   value="<?php echo esc_attr($stored_key); ?>"
+							   value=""
 							   class="regular-text" placeholder="DBWIS-XXXX-XXXX-XXXX" style="font-family:monospace;" />
 					</td>
 				</tr>
@@ -765,7 +764,7 @@ class Settings
 
 	public function print_expose_section_info()
 	{
-		print __('Der Expose-Anfrage-Button wird im Customizer aktiviert (Detailansicht > Expose-Anfrage Button). Hier kann der rechtliche Hinweistext konfiguriert werden.', 'dbw-immo-suite');
+		print esc_html__('Der Expose-Anfrage-Button wird im Customizer aktiviert (Detailansicht > Expose-Anfrage Button). Hier kann der rechtliche Hinweistext konfiguriert werden.', 'dbw-immo-suite');
 	}
 
 	public function expose_provision_text_callback()

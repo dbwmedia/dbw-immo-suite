@@ -114,7 +114,11 @@ class SchemaOutput
             $schema['image'] = $images;
         }
 
-        if ($lat && $lng) {
+        // Respect the "hide address" toggle — otherwise the schema would leak
+        // street and coordinates that are hidden in the visible page.
+        $show_address = (bool) get_theme_mod('dbw_immo_single_show_address', true);
+
+        if ($show_address && $lat && $lng) {
             $schema['geo'] = array(
                 '@type'     => 'GeoCoordinates',
                 'latitude'  => $lat,
@@ -123,7 +127,7 @@ class SchemaOutput
         }
 
         $full_street = trim(($street ?: '') . ' ' . ($house_num ?: ''));
-        if ($full_street || $zip || $city) {
+        if ($show_address && ($full_street || $zip || $city)) {
             $schema['address'] = array_filter(array(
                 '@type'           => 'PostalAddress',
                 'streetAddress'   => $full_street ?: null,

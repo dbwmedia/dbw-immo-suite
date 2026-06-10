@@ -211,6 +211,18 @@ class Plugin
 
         // Single property page scripts (lightbox + contact modal)
         if (is_singular('immobilie')) {
+            // Leaflet (local vendor copy) — enqueued here so the CSS lands in wp_head,
+            // not mid-template after the head is already printed
+            $map_post_id = get_queried_object_id();
+            $lat = get_post_meta($map_post_id, 'geo_breite', true);
+            $lng = get_post_meta($map_post_id, 'geo_laenge', true);
+            if ($lat && $lng
+                && get_theme_mod('dbw_immo_single_show_map', true)
+                && get_theme_mod('dbw_immo_single_show_address', true)) {
+                wp_enqueue_style('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.css', array(), '1.9.4');
+                wp_enqueue_script('leaflet', DBW_IMMO_SUITE_URL . 'assets/vendor/leaflet/leaflet.js', array(), '1.9.4', true);
+            }
+
             wp_enqueue_script('dbw-immo-lightbox', DBW_IMMO_SUITE_URL . 'assets/js/lightbox.js', array(), DBW_IMMO_SUITE_VERSION, true);
             wp_enqueue_script('dbw-immo-contact-modal', DBW_IMMO_SUITE_URL . 'assets/js/contact-modal.js', array(), DBW_IMMO_SUITE_VERSION, true);
             wp_localize_script('dbw-immo-contact-modal', 'dbwContactModal', array(

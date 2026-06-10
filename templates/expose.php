@@ -21,14 +21,14 @@ $addr_full   = implode(', ', array_filter(array($addr_street, $addr_city)));
 $price_label = '';
 $price_value = '';
 if ($d['pricing']['kaufpreis'] > 0) {
-    $price_label = 'Kaufpreis';
+    $price_label = __('Kaufpreis', 'dbw-immo-suite');
     $price_value = $fmt($d['pricing']['kaufpreis'], 'preis') . ' &euro;';
 } elseif ($d['pricing']['kaltmiete'] > 0) {
-    $price_label = 'Kaltmiete';
+    $price_label = __('Kaltmiete', 'dbw-immo-suite');
     $price_value = $fmt($d['pricing']['kaltmiete'], 'preis') . ' &euro;';
 } else {
-    $price_label = 'Preis';
-    $price_value = 'Auf Anfrage';
+    $price_label = __('Preis', 'dbw-immo-suite');
+    $price_value = __('Auf Anfrage', 'dbw-immo-suite');
 }
 
 // Main image
@@ -51,7 +51,7 @@ $primary = get_theme_mod('dbw_immo_color_primary', '#2c3e50');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php echo esc_html($d['title']); ?> — Expose</title>
+<title><?php echo esc_html(sprintf(__('%s — Expose', 'dbw-immo-suite'), $d['title'])); ?></title>
 <style>
 /* ── Reset & Base ─────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -365,7 +365,7 @@ img { max-width: 100%; height: auto; display: block; }
         __('Expose bereit. Waehlen Sie im Druckdialog "Als PDF speichern".', 'dbw-immo-suite'),
         __('Expose bereit. Waehle im Druckdialog "Als PDF speichern".', 'dbw-immo-suite')
     )); ?>
-    <button onclick="window.print()">PDF speichern / Drucken</button>
+    <button onclick="window.print()"><?php esc_html_e('PDF speichern / Drucken', 'dbw-immo-suite'); ?></button>
 </div>
 
 <!-- ═══════════════════════════════════════════════
@@ -395,28 +395,28 @@ img { max-width: 100%; height: auto; display: block; }
         <div class="cover-facts">
             <?php if ($d['areas']['wohnflaeche'] > 0): ?>
                 <div class="cover-fact">
-                    <div class="cover-fact-label">Wohnfl&auml;che</div>
+                    <div class="cover-fact-label"><?php _e('Wohnfl&auml;che', 'dbw-immo-suite'); ?></div>
                     <div class="cover-fact-value"><?php echo esc_html($fmt($d['areas']['wohnflaeche'], 'flaeche')); ?> m&sup2;</div>
                 </div>
             <?php endif; ?>
 
             <?php if ($d['areas']['zimmer'] > 0): ?>
                 <div class="cover-fact">
-                    <div class="cover-fact-label">Zimmer</div>
+                    <div class="cover-fact-label"><?php esc_html_e('Zimmer', 'dbw-immo-suite'); ?></div>
                     <div class="cover-fact-value"><?php echo esc_html($fmt($d['areas']['zimmer'], 'zimmer')); ?></div>
                 </div>
             <?php endif; ?>
 
             <?php if ($d['areas']['grundstueck'] > 0): ?>
                 <div class="cover-fact">
-                    <div class="cover-fact-label">Grundst&uuml;ck</div>
+                    <div class="cover-fact-label"><?php _e('Grundst&uuml;ck', 'dbw-immo-suite'); ?></div>
                     <div class="cover-fact-value"><?php echo esc_html($fmt($d['areas']['grundstueck'], 'flaeche')); ?> m&sup2;</div>
                 </div>
             <?php endif; ?>
 
             <?php if ($d['energy']['baujahr']): ?>
                 <div class="cover-fact">
-                    <div class="cover-fact-label">Baujahr</div>
+                    <div class="cover-fact-label"><?php esc_html_e('Baujahr', 'dbw-immo-suite'); ?></div>
                     <div class="cover-fact-value"><?php echo esc_html($d['energy']['baujahr']); ?></div>
                 </div>
             <?php endif; ?>
@@ -457,7 +457,7 @@ img { max-width: 100%; height: auto; display: block; }
             <!-- Description -->
             <?php if ($d['texts']['beschreibung']): ?>
                 <div class="section">
-                    <h2 class="section-title">Beschreibung</h2>
+                    <h2 class="section-title"><?php esc_html_e('Beschreibung', 'dbw-immo-suite'); ?></h2>
                     <div style="font-size: 9.5pt; line-height: 1.6;">
                         <?php echo wp_kses_post(wpautop($d['texts']['beschreibung'])); ?>
                     </div>
@@ -467,7 +467,7 @@ img { max-width: 100%; height: auto; display: block; }
             <!-- Equipment -->
             <?php if (!empty($d['features']) || $d['texts']['ausstattung']): ?>
                 <div class="section">
-                    <h2 class="section-title">Ausstattung</h2>
+                    <h2 class="section-title"><?php esc_html_e('Ausstattung', 'dbw-immo-suite'); ?></h2>
                     <?php if (!empty($d['features'])): ?>
                         <div class="feature-badges">
                             <?php foreach ($d['features'] as $f): ?>
@@ -488,28 +488,28 @@ img { max-width: 100%; height: auto; display: block; }
         <div class="col-side">
             <!-- Price Details -->
             <div class="section">
-                <h2 class="section-title">Eckdaten</h2>
+                <h2 class="section-title"><?php esc_html_e('Eckdaten', 'dbw-immo-suite'); ?></h2>
                 <table class="facts-table">
                     <?php if ($d['areas']['wohnflaeche'] > 0): ?>
-                        <tr><td>Wohnfl&auml;che</td><td><?php echo esc_html($fmt($d['areas']['wohnflaeche'], 'flaeche')); ?> m&sup2;</td></tr>
+                        <tr><td><?php _e('Wohnfl&auml;che', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['wohnflaeche'], 'flaeche')); ?> m&sup2;</td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['nutzflaeche'] > 0): ?>
-                        <tr><td>Nutzfl&auml;che</td><td><?php echo esc_html($fmt($d['areas']['nutzflaeche'], 'flaeche')); ?> m&sup2;</td></tr>
+                        <tr><td><?php _e('Nutzfl&auml;che', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['nutzflaeche'], 'flaeche')); ?> m&sup2;</td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['grundstueck'] > 0): ?>
-                        <tr><td>Grundst&uuml;ck</td><td><?php echo esc_html($fmt($d['areas']['grundstueck'], 'flaeche')); ?> m&sup2;</td></tr>
+                        <tr><td><?php _e('Grundst&uuml;ck', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['grundstueck'], 'flaeche')); ?> m&sup2;</td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['zimmer'] > 0): ?>
-                        <tr><td>Zimmer</td><td><?php echo esc_html($fmt($d['areas']['zimmer'], 'zimmer')); ?></td></tr>
+                        <tr><td><?php esc_html_e('Zimmer', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['zimmer'], 'zimmer')); ?></td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['schlafzimmer'] > 0): ?>
-                        <tr><td>Schlafzimmer</td><td><?php echo esc_html($fmt($d['areas']['schlafzimmer'], 'zimmer')); ?></td></tr>
+                        <tr><td><?php esc_html_e('Schlafzimmer', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['schlafzimmer'], 'zimmer')); ?></td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['badezimmer'] > 0): ?>
-                        <tr><td>Badezimmer</td><td><?php echo esc_html($fmt($d['areas']['badezimmer'], 'zimmer')); ?></td></tr>
+                        <tr><td><?php esc_html_e('Badezimmer', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['badezimmer'], 'zimmer')); ?></td></tr>
                     <?php endif; ?>
                     <?php if ($d['areas']['stellplaetze'] > 0): ?>
-                        <tr><td>Stellpl&auml;tze</td><td><?php echo esc_html($fmt($d['areas']['stellplaetze'], 'zimmer')); ?></td></tr>
+                        <tr><td><?php _e('Stellpl&auml;tze', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['areas']['stellplaetze'], 'zimmer')); ?></td></tr>
                     <?php endif; ?>
 
                     <?php
@@ -523,28 +523,28 @@ img { max-width: 100%; height: auto; display: block; }
                     <tr><td colspan="2" style="border: none; padding: 4px 0;"></td></tr>
 
                     <?php if ($d['pricing']['kaufpreis'] > 0): ?>
-                        <tr><td>Kaufpreis</td><td><?php echo esc_html($fmt($d['pricing']['kaufpreis'], 'preis')); ?> &euro;</td></tr>
+                        <tr><td><?php esc_html_e('Kaufpreis', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['pricing']['kaufpreis'], 'preis')); ?> &euro;</td></tr>
                         <?php if ($d['pricing']['hausgeld'] > 0): ?>
-                            <tr><td>Hausgeld</td><td><?php echo esc_html($fmt($d['pricing']['hausgeld'], 'preis')); ?> &euro;</td></tr>
+                            <tr><td><?php esc_html_e('Hausgeld', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['pricing']['hausgeld'], 'preis')); ?> &euro;</td></tr>
                         <?php endif; ?>
                         <?php if ($d['pricing']['provision']): ?>
-                            <tr><td>K&auml;uferprovision</td><td><?php
+                            <tr><td><?php _e('K&auml;uferprovision', 'dbw-immo-suite'); ?></td><td><?php
                                 echo esc_html($d['pricing']['provision']);
                                 if (strpos($d['pricing']['provision'], 'MwSt') === false && strpos($d['pricing']['provision'], '%') !== false) {
-                                    echo ' inkl. ges. MwSt.';
+                                    echo ' ' . esc_html__('inkl. ges. MwSt.', 'dbw-immo-suite');
                                 }
                             ?></td></tr>
                         <?php endif; ?>
                     <?php elseif ($d['pricing']['kaltmiete'] > 0): ?>
-                        <tr><td>Kaltmiete</td><td><?php echo esc_html($fmt($d['pricing']['kaltmiete'], 'preis')); ?> &euro;</td></tr>
+                        <tr><td><?php esc_html_e('Kaltmiete', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['pricing']['kaltmiete'], 'preis')); ?> &euro;</td></tr>
                         <?php if ($d['pricing']['nebenkosten'] > 0): ?>
-                            <tr><td>Nebenkosten</td><td><?php echo esc_html($fmt($d['pricing']['nebenkosten'], 'preis')); ?> &euro;</td></tr>
+                            <tr><td><?php esc_html_e('Nebenkosten', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['pricing']['nebenkosten'], 'preis')); ?> &euro;</td></tr>
                         <?php endif; ?>
                         <?php if ($d['pricing']['warmmiete'] > 0): ?>
-                            <tr><td>Warmmiete</td><td><?php echo esc_html($fmt($d['pricing']['warmmiete'], 'preis')); ?> &euro;</td></tr>
+                            <tr><td><?php esc_html_e('Warmmiete', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($fmt($d['pricing']['warmmiete'], 'preis')); ?> &euro;</td></tr>
                         <?php endif; ?>
                     <?php else: ?>
-                        <tr><td>Preis</td><td>Auf Anfrage</td></tr>
+                        <tr><td><?php esc_html_e('Preis', 'dbw-immo-suite'); ?></td><td><?php esc_html_e('Auf Anfrage', 'dbw-immo-suite'); ?></td></tr>
                     <?php endif; ?>
                 </table>
             </div>
@@ -561,7 +561,7 @@ img { max-width: 100%; height: auto; display: block; }
 
     <?php if ($d['texts']['lage'] || !empty($d['distances'])): ?>
         <div class="section">
-            <h2 class="section-title">Lage</h2>
+            <h2 class="section-title"><?php esc_html_e('Lage', 'dbw-immo-suite'); ?></h2>
             <?php if ($d['texts']['lage']): ?>
                 <div style="font-size: 9.5pt; line-height: 1.6; margin-bottom: 1em;">
                     <?php echo wp_kses_post(wpautop($d['texts']['lage'])); ?>
@@ -569,7 +569,7 @@ img { max-width: 100%; height: auto; display: block; }
             <?php endif; ?>
 
             <?php if (!empty($d['distances'])): ?>
-                <h3 style="font-size: 10pt; font-weight: 600; margin-bottom: 0.5em; color: #444;">Entfernungen</h3>
+                <h3 style="font-size: 10pt; font-weight: 600; margin-bottom: 0.5em; color: #444;"><?php esc_html_e('Entfernungen', 'dbw-immo-suite'); ?></h3>
                 <table class="facts-table">
                     <?php foreach ($d['distances'] as $label => $value): ?>
                         <tr><td><?php echo esc_html($label); ?></td><td><?php echo esc_html($value); ?> km</td></tr>
@@ -589,25 +589,25 @@ img { max-width: 100%; height: auto; display: block; }
 
     <?php if ($d['energy']['klasse'] || $d['energy']['endenergie']): ?>
         <div class="section">
-            <h2 class="section-title">Energie &amp; Heizung</h2>
+            <h2 class="section-title"><?php _e('Energie &amp; Heizung', 'dbw-immo-suite'); ?></h2>
             <table class="facts-table" style="margin-bottom: 10px;">
                 <?php if ($d['energy']['baujahr']): ?>
-                    <tr><td>Baujahr</td><td><?php echo esc_html($d['energy']['baujahr']); ?></td></tr>
+                    <tr><td><?php esc_html_e('Baujahr', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($d['energy']['baujahr']); ?></td></tr>
                 <?php endif; ?>
                 <?php if ($d['energy']['art']): ?>
-                    <tr><td>Ausweistyp</td><td><?php echo esc_html(ucfirst(strtolower($d['energy']['art'])) . 'sausweis'); ?></td></tr>
+                    <tr><td><?php esc_html_e('Ausweistyp', 'dbw-immo-suite'); ?></td><td><?php echo esc_html(ucfirst(strtolower($d['energy']['art'])) . 'sausweis'); ?></td></tr>
                 <?php endif; ?>
                 <?php if ($d['energy']['endenergie']): ?>
-                    <tr><td>Endenergieverbrauch</td><td><?php echo esc_html($d['energy']['endenergie']); ?> kWh/(m&sup2;&middot;a)</td></tr>
+                    <tr><td><?php esc_html_e('Endenergieverbrauch', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($d['energy']['endenergie']); ?> kWh/(m&sup2;&middot;a)</td></tr>
                 <?php endif; ?>
                 <?php if ($d['energy']['traeger']): ?>
-                    <tr><td>Energietr&auml;ger</td><td><?php echo esc_html(ucwords(strtolower(str_replace('_', ' ', $d['energy']['traeger'])))); ?></td></tr>
+                    <tr><td><?php _e('Energietr&auml;ger', 'dbw-immo-suite'); ?></td><td><?php echo esc_html(ucwords(strtolower(str_replace('_', ' ', $d['energy']['traeger'])))); ?></td></tr>
                 <?php endif; ?>
                 <?php if ($d['energy']['gueltig']): ?>
-                    <tr><td>G&uuml;ltig bis</td><td><?php echo esc_html(date_i18n('d.m.Y', strtotime($d['energy']['gueltig']))); ?></td></tr>
+                    <tr><td><?php _e('G&uuml;ltig bis', 'dbw-immo-suite'); ?></td><td><?php echo esc_html(date_i18n('d.m.Y', strtotime($d['energy']['gueltig']))); ?></td></tr>
                 <?php endif; ?>
                 <?php if ($energy_class): ?>
-                    <tr><td>Energieeffizienzklasse</td><td><strong><?php echo esc_html($energy_class); ?></strong></td></tr>
+                    <tr><td><?php esc_html_e('Energieeffizienzklasse', 'dbw-immo-suite'); ?></td><td><strong><?php echo esc_html($energy_class); ?></strong></td></tr>
                 <?php endif; ?>
             </table>
 
@@ -626,7 +626,7 @@ img { max-width: 100%; height: auto; display: block; }
 
     <?php if ($d['texts']['sonstiges']): ?>
         <div class="section">
-            <h2 class="section-title">Sonstiges</h2>
+            <h2 class="section-title"><?php esc_html_e('Sonstiges', 'dbw-immo-suite'); ?></h2>
             <div style="font-size: 9.5pt; line-height: 1.6;">
                 <?php echo wp_kses_post(wpautop($d['texts']['sonstiges'])); ?>
             </div>
@@ -647,7 +647,7 @@ if (!empty($gallery_for_grid) || !empty($d['images']['floorplans'])):
 
     <?php if (!empty($gallery_for_grid)): ?>
         <div class="section">
-            <h2 class="section-title">Bildergalerie</h2>
+            <h2 class="section-title"><?php esc_html_e('Bildergalerie', 'dbw-immo-suite'); ?></h2>
             <div class="img-grid">
                 <?php foreach ($gallery_for_grid as $img): ?>
                     <img src="<?php echo esc_url($img['url']); ?>" alt="<?php echo esc_attr($img['alt']); ?>">
@@ -658,7 +658,7 @@ if (!empty($gallery_for_grid) || !empty($d['images']['floorplans'])):
 
     <?php if (!empty($d['images']['floorplans'])): ?>
         <div class="section">
-            <h2 class="section-title">Grundrisse</h2>
+            <h2 class="section-title"><?php esc_html_e('Grundrisse', 'dbw-immo-suite'); ?></h2>
             <div class="img-grid img-grid-full">
                 <?php foreach ($d['images']['floorplans'] as $fp): ?>
                     <img src="<?php echo esc_url($fp['url']); ?>" alt="<?php echo esc_attr($fp['alt']); ?>" style="object-fit: contain; background: #f5f5f5;">
@@ -720,25 +720,22 @@ if (!empty($gallery_for_grid) || !empty($d['images']['floorplans'])):
         <table class="facts-table" style="max-width: 350px;">
             <?php if ($d['org']['phone']): ?>
                 <?php $org_phone = $phone_fmt($d['org']['phone']); ?>
-                <tr><td>Telefon</td><td><?php echo esc_html($org_phone['display']); ?></td></tr>
+                <tr><td><?php esc_html_e('Telefon', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($org_phone['display']); ?></td></tr>
             <?php endif; ?>
             <?php if ($d['org']['email']): ?>
-                <tr><td>E-Mail</td><td><?php echo esc_html($d['org']['email']); ?></td></tr>
+                <tr><td><?php esc_html_e('E-Mail', 'dbw-immo-suite'); ?></td><td><?php echo esc_html($d['org']['email']); ?></td></tr>
             <?php endif; ?>
             <?php if ($d['org']['url']): ?>
-                <tr><td>Web</td><td><?php echo esc_html(preg_replace('#^https?://#', '', $d['org']['url'])); ?></td></tr>
+                <tr><td><?php esc_html_e('Web', 'dbw-immo-suite'); ?></td><td><?php echo esc_html(preg_replace('#^https?://#', '', $d['org']['url'])); ?></td></tr>
             <?php endif; ?>
         </table>
     </div>
 
     <!-- Disclaimer -->
     <div class="disclaimer">
-        Alle Angaben sind ohne Gew&auml;hr und basieren auf Informationen, die uns vom Eigent&uuml;mer &uuml;bermittelt wurden.
-        Wir &uuml;bernehmen keine Gew&auml;hr f&uuml;r die Vollst&auml;ndigkeit, Richtigkeit und Aktualit&auml;t dieser Angaben.
-        Irrtum und Zwischen&auml;nderungen vorbehalten. Dieses Expos&eacute; ist nur f&uuml;r den Empf&auml;nger bestimmt.
-        Eine Weitergabe an Dritte ist ohne unsere ausdr&uuml;ckliche Zustimmung nicht gestattet.
+        <?php _e('Alle Angaben sind ohne Gew&auml;hr und basieren auf Informationen, die uns vom Eigent&uuml;mer &uuml;bermittelt wurden. Wir &uuml;bernehmen keine Gew&auml;hr f&uuml;r die Vollst&auml;ndigkeit, Richtigkeit und Aktualit&auml;t dieser Angaben. Irrtum und Zwischen&auml;nderungen vorbehalten. Dieses Expos&eacute; ist nur f&uuml;r den Empf&auml;nger bestimmt. Eine Weitergabe an Dritte ist ohne unsere ausdr&uuml;ckliche Zustimmung nicht gestattet.', 'dbw-immo-suite'); ?>
         <br><br>
-        Stand: <?php echo esc_html(date_i18n('d.m.Y')); ?> &mdash; <?php echo esc_html($d['org']['name']); ?>
+        <?php esc_html_e('Stand:', 'dbw-immo-suite'); ?> <?php echo esc_html(date_i18n('d.m.Y')); ?> &mdash; <?php echo esc_html($d['org']['name']); ?>
     </div>
 
 </div>

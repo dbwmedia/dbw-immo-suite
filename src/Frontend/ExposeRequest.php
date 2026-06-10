@@ -34,10 +34,7 @@ class ExposeRequest
         $text = isset($settings['expose_provision_text']) ? $settings['expose_provision_text'] : '';
 
         if (empty($text)) {
-            $text = \DBW\ImmoSuite\dbw_anrede(
-                'Ich nehme zur Kenntnis, dass bei Zustandekommen eines Kaufvertrages eine Maklerprovision in der im Expose genannten Hoehe anfaellt. Die Provisionshoehe entnehme ich dem Expose.',
-                'Ich nehme zur Kenntnis, dass bei Zustandekommen eines Kaufvertrages eine Maklerprovision in der im Expose genannten Hoehe anfaellt. Die Provisionshoehe entnehme ich dem Expose.'
-            );
+            $text = __('Ich nehme zur Kenntnis, dass bei Zustandekommen eines Kaufvertrages eine Maklerprovision in der im Expose genannten Hoehe anfaellt. Die Provisionshoehe entnehme ich dem Expose.', 'dbw-immo-suite');
         }
 
         return $text;
@@ -189,14 +186,15 @@ class ExposeRequest
     {
         check_ajax_referer('dbw_immo_expose_nonce', 'nonce');
 
-        // Rate limiting
-        $rate_key = 'dbw_expose_' . md5(sanitize_email($_POST['email'] ?? '') . $_SERVER['REMOTE_ADDR']);
+        // Rate limiting (keyed by IP only — email would be attacker-controlled)
+        $rate_key = 'dbw_expose_' . md5($_SERVER['REMOTE_ADDR'] ?? '');
         if (get_transient($rate_key)) {
             wp_send_json_error(\DBW\ImmoSuite\dbw_anrede(
                 __('Bitte warten Sie einen Moment, bevor Sie erneut absenden.', 'dbw-immo-suite'),
                 __('Bitte warte einen Moment, bevor du erneut absendest.', 'dbw-immo-suite')
             ));
         }
+        set_transient($rate_key, 1, 120);
 
         // Honeypot
         if (!empty($_POST['website'])) {
@@ -224,7 +222,7 @@ class ExposeRequest
         }
 
         $property = get_post($post_id);
-        if (!$property || $property->post_type !== 'immobilie' || $property->post_status === 'trash') {
+        if (!$property || $property->post_type !== 'immobilie' || $property->post_status !== 'publish') {
             wp_send_json_error(__('Immobilie nicht gefunden.', 'dbw-immo-suite'));
         }
 
@@ -253,7 +251,7 @@ class ExposeRequest
 
         $headers = array(
             'Content-Type: text/plain; charset=UTF-8',
-            'Reply-To: ' . $name . ' <' . $email . '>',
+            'Reply-To: "' . str_replace('"', '', $name) . '" <' . $email . '>',
         );
 
         // Optional CC
@@ -264,8 +262,6 @@ class ExposeRequest
         }
 
         $sent = wp_mail($to, $subject, $body, $headers);
-
-        set_transient($rate_key, 1, 120);
 
         if ($sent) {
             wp_send_json_success(\DBW\ImmoSuite\dbw_anrede(

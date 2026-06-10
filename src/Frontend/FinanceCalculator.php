@@ -28,7 +28,9 @@ class FinanceCalculator
             return;
         }
 
-        $post_id = get_the_ID();
+        // get_queried_object_id() is reliable in wp_enqueue_scripts (before the loop);
+        // the first get_post_meta() call primes the full meta cache for this post
+        $post_id = get_queried_object_id();
         $kaufpreis = (float) get_post_meta($post_id, 'kaufpreis', true);
 
         if ($kaufpreis <= 0) {

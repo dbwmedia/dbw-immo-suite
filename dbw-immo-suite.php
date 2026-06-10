@@ -1,13 +1,18 @@
 <?php
 /**
- * Plugin Name: Immo Suite
- * Plugin URI: https://dennisbuchwald.de/immo-suite
- * Description: Die Brücke zwischen Maklersoftware und moderner Website. Immo Suite importiert OpenImmo XML, strukturiert Immobilien als sauberen Custom Post Type und sorgt für eine performante, zeitgemäße Darstellung im Frontend.
- * Version: 1.17.0
- * Author: Dennis Buchwald
- * Author URI: https://dennisbuchwald.de
- * Text Domain: dbw-immo-suite
- * Domain Path: /languages
+ * Plugin Name:       Immo Suite
+ * Plugin URI:        https://dennisbuchwald.de/apps/immo-suite
+ * Description:       Die Brücke zwischen Maklersoftware und moderner Website. Immo Suite importiert OpenImmo XML, strukturiert Immobilien als sauberen Custom Post Type und sorgt für eine performante, zeitgemäße Darstellung im Frontend.
+ * Version:           1.17.1
+ * Requires at least: 6.4
+ * Requires PHP:      8.1
+ * Author:            Dennis Buchwald
+ * Author URI:        https://dennisbuchwald.de
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       dbw-immo-suite
+ * Domain Path:       /languages
+ * Update URI:        https://dennisbuchwald.de/apps/immo-suite
  */
 
 namespace DBW\ImmoSuite;
@@ -17,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define Constants
-define('DBW_IMMO_SUITE_VERSION', '1.17.0');
+define('DBW_IMMO_SUITE_VERSION', '1.17.1');
 define('DBW_IMMO_SUITE_PATH', plugin_dir_path(__FILE__));
 define('DBW_IMMO_SUITE_URL', plugin_dir_url(__FILE__));
 

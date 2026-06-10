@@ -101,10 +101,12 @@ class PdfExpose
             'stellplaetze'      => $m('anzahl_stellplaetze'),
         );
 
-        // Address
+        // Address — respect the "hide address" toggle: keep city-level info,
+        // but never expose the street in the public expose.
+        $show_address = (bool) get_theme_mod('dbw_immo_single_show_address', true);
         $address = array(
-            'strasse'    => $m('strasse'),
-            'hausnummer' => $m('hausnummer'),
+            'strasse'    => $show_address ? $m('strasse') : '',
+            'hausnummer' => $show_address ? $m('hausnummer') : '',
             'plz'        => $m('plz'),
             'ort'        => $m('ort'),
         );

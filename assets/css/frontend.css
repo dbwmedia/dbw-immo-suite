@@ -171,7 +171,7 @@
 		transition: none;
 	}
 	/* Filter toggle */
-	.dbw-filter-content {
+	#dbw-immo-suite .dbw-filter-content {
 		transition: none !important;
 	}
 	/* Lightbox fade */
@@ -519,8 +519,6 @@
 }
 
 #dbw-immo-suite .dbw-button-expose::after {
-	content: '\f178';
-	/* Long arrow right from dashicons/fa? Using simple Dashicon or similar? */
 	/* Since we don't have FA loaded reliably, let's use a simple arrow char or leave mostly text */
 	content: '→';
 	margin-left: 6px;
@@ -795,8 +793,11 @@
 }
 
 #dbw-immo-suite .dbw-toolbar-select:focus {
-	outline: none;
 	color: var(--dbw-primary);
+}
+
+#dbw-immo-suite .dbw-toolbar-select:focus:not(:focus-visible) {
+	outline: none;
 }
 
 /* Divider */
@@ -1807,7 +1808,7 @@
 	}
 }
 
-.dbw-cta-phone {
+#dbw-immo-suite .dbw-cta-phone {
 	display: block;
 	text-align: center;
 	margin-top: 4px;
@@ -1816,7 +1817,7 @@
 	text-decoration: none;
 }
 
-.dbw-cta-phone:hover {
+#dbw-immo-suite .dbw-cta-phone:hover {
 	color: var(--dbw-accent, #3498db);
 	text-decoration: underline;
 }
@@ -2038,7 +2039,8 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 }
 
 .dbw-modal__close:focus-visible {
-	outline: none;
+	outline: 2px solid var(--dbw-accent, #3498db);
+	outline-offset: 2px;
 	background: #eee;
 }
 
@@ -2113,6 +2115,9 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 	font-size: 0.85rem;
 	font-family: inherit;
 	transition: color 0.15s;
+}
+
+.dbw-step__back:focus:not(:focus-visible) {
 	outline: none;
 }
 
@@ -2122,6 +2127,8 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 
 .dbw-step__back:focus-visible {
 	color: var(--dbw-text);
+	outline: 2px solid var(--dbw-accent, #3498db);
+	outline-offset: 2px;
 }
 
 /* Body (legacy compat) */

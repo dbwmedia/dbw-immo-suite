@@ -239,6 +239,10 @@ class Filter
         wp_reset_postdata();
         $html = ob_get_clean();
 
+        if (!$query->found_posts) {
+            $html = self::render_empty_state();
+        }
+
         $markers = array();
         if (class_exists('\DBW\ImmoSuite\Frontend\ArchiveMap') && ArchiveMap::is_enabled()) {
             $markers = ArchiveMap::collect_markers($args);
@@ -369,6 +373,51 @@ class Filter
         }
 
         return $html;
+    }
+
+    /**
+     * Empty state for "no results": message, reset button and up to
+     * three current properties as suggestions. Returned as grid content
+     * (the box spans all columns, suggestions are normal grid items).
+     */
+    public static function render_empty_state()
+    {
+        ob_start();
+        ?>
+        <div class="dbw-empty-state">
+            <svg class="dbw-empty-state__icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <path d="M8 11l2-2 2 2v3H8z"/>
+            </svg>
+            <h3 class="dbw-empty-state__title"><?php esc_html_e('Keine Immobilien gefunden', 'dbw-immo-suite'); ?></h3>
+            <p class="dbw-empty-state__text"><?php echo esc_html(\DBW\ImmoSuite\dbw_anrede(
+                __('Fuer diese Suche gibt es aktuell keine Treffer. Passen Sie die Filter an oder schauen Sie sich unsere aktuellen Objekte an.', 'dbw-immo-suite'),
+                __('Fuer diese Suche gibt es aktuell keine Treffer. Passe die Filter an oder schau dir unsere aktuellen Objekte an.', 'dbw-immo-suite')
+            )); ?></p>
+            <a href="<?php echo esc_url(get_post_type_archive_link('immobilie')); ?>" class="dbw-btn dbw-btn--primary dbw-filter-reset">
+                <?php esc_html_e('Filter zurücksetzen', 'dbw-immo-suite'); ?>
+            </a>
+        </div>
+        <?php
+        $suggestions = new \WP_Query(array(
+            'post_type'      => 'immobilie',
+            'post_status'    => 'publish',
+            'posts_per_page' => 3,
+            'no_found_rows'  => true,
+            'meta_query'     => array(CardRenderer::get_exclude_sold_meta_query()),
+        ));
+
+        if ($suggestions->have_posts()) {
+            echo '<div class="dbw-empty-state__hint">' . esc_html__('Vielleicht interessant', 'dbw-immo-suite') . '</div>';
+            while ($suggestions->have_posts()) {
+                $suggestions->the_post();
+                CardRenderer::render();
+            }
+        }
+        wp_reset_postdata();
+
+        return ob_get_clean();
     }
 
     /**

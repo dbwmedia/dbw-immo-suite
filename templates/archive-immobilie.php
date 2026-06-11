@@ -37,7 +37,13 @@ get_header(); ?>
 
 	<?php else: ?>
 		<div class="dbw-property-grid">
-			<p class="dbw-no-results"><?php _e('Keine Immobilien gefunden.', 'dbw-immo-suite'); ?></p>
+			<?php
+			if (class_exists('DBW\ImmoSuite\Frontend\Filter')) {
+				echo \DBW\ImmoSuite\Frontend\Filter::render_empty_state(); // phpcs:ignore -- escaped internally
+			} else {
+				echo '<p class="dbw-no-results">' . esc_html__('Keine Immobilien gefunden.', 'dbw-immo-suite') . '</p>';
+			}
+			?>
 		</div>
 	<?php endif; ?>
 

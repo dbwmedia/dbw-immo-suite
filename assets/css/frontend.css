@@ -4247,3 +4247,50 @@ body.admin-bar #dbw-immo-suite .dbw-section-nav {
 		navigation: none;
 	}
 }
+
+/* ============================================================
+   Empty states (v2.0)
+   ============================================================ */
+
+#dbw-immo-suite .dbw-empty-state {
+	grid-column: 1 / -1;
+	text-align: center;
+	padding: 3.5rem 1.5rem 2.5rem;
+	background: var(--dbw-white, #fff);
+	border: 1px dashed var(--dbw-border, #ddd);
+	border-radius: 12px;
+}
+
+#dbw-immo-suite .dbw-empty-state__icon {
+	color: var(--dbw-accent, #2573a7);
+	opacity: 0.5;
+	margin-bottom: 1rem;
+}
+
+#dbw-immo-suite .dbw-fav-empty .dbw-empty-state__icon {
+	color: #e74c3c;
+}
+
+#dbw-immo-suite .dbw-empty-state__title {
+	margin: 0 0 0.5rem;
+	font-size: 1.3rem;
+	color: var(--dbw-primary);
+}
+
+#dbw-immo-suite .dbw-empty-state__text {
+	max-width: 480px;
+	margin: 0 auto 1.5rem;
+	color: var(--dbw-gray, #5f6b6d);
+}
+
+#dbw-immo-suite .dbw-empty-state .dbw-btn {
+	display: inline-block;
+}
+
+#dbw-immo-suite .dbw-empty-state__hint {
+	grid-column: 1 / -1;
+	margin-top: 1rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--dbw-primary);
+}

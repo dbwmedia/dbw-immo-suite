@@ -287,8 +287,8 @@
             });
         });
 
-        // Reset link
-        container.addEventListener('click', function (e) {
+        // Reset links (filter footer + empty state) — suite-wide delegation
+        suite.addEventListener('click', function (e) {
             var reset = e.target.closest('.dbw-filter-reset');
             if (!reset) return;
             e.preventDefault();

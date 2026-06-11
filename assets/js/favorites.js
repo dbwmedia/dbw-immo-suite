@@ -74,9 +74,22 @@
         e.preventDefault();
 
         var id = parseInt(btn.dataset.dbwFav, 10);
-        toggleFavorite(id);
+        var added = toggleFavorite(id);
         syncButton(btn);
         updateCount();
+
+        // Micro-interaction: pop + burst ring on add
+        btn.classList.remove('dbw-pop');
+        if (added) {
+            void btn.offsetWidth; // restart animation
+            btn.classList.add('dbw-pop');
+        }
+
+        if (typeof window.dbwToast === 'function') {
+            window.dbwToast(
+                added ? (i18n.addedToast || 'Zur Merkliste hinzugefuegt') : (i18n.removedToast || 'Von der Merkliste entfernt')
+            );
+        }
 
         // In favorites view: remove the card when unfavorited
         if (favMode && !isFavorite(id)) {

@@ -203,14 +203,22 @@ class Plugin
         // Register assets so blocks/shortcodes can enqueue them on-demand.
         // favorites.js is a dependency of frontend.js so heart buttons work
         // everywhere cards render (archive, blocks, shortcodes).
-        $frontend_deps = array();
+        wp_register_script('dbw-immo-toast', DBW_IMMO_SUITE_URL . 'assets/js/toast.js', array(), DBW_IMMO_SUITE_VERSION, true);
+        wp_localize_script('dbw-immo-toast', 'dbwToastI18n', array(
+            'copied'     => __('Link kopiert', 'dbw-immo-suite'),
+            'copyManual' => __('Link kopieren:', 'dbw-immo-suite'),
+        ));
+
+        $frontend_deps = array('dbw-immo-toast');
         if (\DBW\ImmoSuite\Frontend\Favorites::is_enabled()) {
-            wp_register_script('dbw-immo-favorites-js', DBW_IMMO_SUITE_URL . 'assets/js/favorites.js', array(), DBW_IMMO_SUITE_VERSION, true);
+            wp_register_script('dbw-immo-favorites-js', DBW_IMMO_SUITE_URL . 'assets/js/favorites.js', array('dbw-immo-toast'), DBW_IMMO_SUITE_VERSION, true);
             wp_localize_script('dbw-immo-favorites-js', 'dbwFavorites', array(
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'i18n'    => array(
-                    'add'    => __('Zur Merkliste hinzufuegen', 'dbw-immo-suite'),
-                    'remove' => __('Von der Merkliste entfernen', 'dbw-immo-suite'),
+                    'add'          => __('Zur Merkliste hinzufuegen', 'dbw-immo-suite'),
+                    'remove'       => __('Von der Merkliste entfernen', 'dbw-immo-suite'),
+                    'addedToast'   => __('Zur Merkliste hinzugefuegt', 'dbw-immo-suite'),
+                    'removedToast' => __('Von der Merkliste entfernt', 'dbw-immo-suite'),
                     'empty'  => \DBW\ImmoSuite\dbw_anrede(
                         __('Noch keine Objekte gemerkt. Klicken Sie das Herz auf einer Immobilie, um sie hier zu sammeln.', 'dbw-immo-suite'),
                         __('Noch keine Objekte gemerkt. Klicke das Herz auf einer Immobilie, um sie hier zu sammeln.', 'dbw-immo-suite')

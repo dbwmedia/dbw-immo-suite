@@ -170,7 +170,7 @@ get_header(); ?>
 				<div style="position: absolute; top: 20px; right: 20px; z-index: 1; display:flex; gap: 10px;">
 					<?php if (get_theme_mod('dbw_immo_single_show_share', true)): ?>
 						<button
-							onclick="navigator.share ? navigator.share({title: document.title, url: window.location.href}).catch(console.error) : alert('<?php echo esc_js(__('Ihr Browser unterstützt diese Funktion leider nicht direkt. Bitte kopieren Sie die URL.', 'dbw-immo-suite')); ?>')"
+							data-dbw-share
 							class="dbw-gallery-btn"
 							aria-label="<?php esc_attr_e('Teilen', 'dbw-immo-suite'); ?>"
 							style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor:pointer; padding:0;">

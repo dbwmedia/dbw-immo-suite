@@ -65,6 +65,9 @@ class Plugin
         $property_details = new \DBW\ImmoSuite\Admin\PropertyDetails();
         $this->loader->add_action('admin_init', $property_details, 'init');
 
+        $admin_columns = new \DBW\ImmoSuite\Admin\AdminColumns();
+        $this->loader->add_action('init', $admin_columns, 'init');
+
         $import_dashboard = new \DBW\ImmoSuite\Admin\ImportDashboard();
         $this->loader->add_action('init', $import_dashboard, 'init');
 

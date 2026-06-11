@@ -126,8 +126,10 @@ class License
 
         echo '<div class="notice notice-warning"><p>';
         echo '<strong>Immo Suite:</strong> ';
-        echo 'Bitte aktiviere deine Lizenz unter ';
-        echo '<a href="' . esc_url(admin_url('edit.php?post_type=immobilie&page=dbw-immo-suite-settings#tab-license')) . '">Einstellungen</a>.';
+        echo esc_html__('Bitte aktiviere deine Lizenz unter', 'dbw-immo-suite') . ' ';
+        echo '<a href="' . esc_url(admin_url('edit.php?post_type=immobilie&page=dbw-immo-suite-settings#tab-license')) . '">' . esc_html__('Einstellungen', 'dbw-immo-suite') . '</a>. ';
+        echo esc_html__('Noch keinen Schlüssel?', 'dbw-immo-suite') . ' ';
+        echo '<a href="' . esc_url(\DBW\ImmoSuite\Admin\Settings::get_license_request_mailto()) . '">' . esc_html__('Lizenz per E-Mail anfragen', 'dbw-immo-suite') . '</a>';
         echo '</p></div>';
     }
 }

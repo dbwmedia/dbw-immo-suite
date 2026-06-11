@@ -7,6 +7,16 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [2.0.1] — 2026-06-11
+
+### Hinzugefuegt
+- **Lizenz anfragen** — Wer noch keinen Schluessel hat, kann die Lizenz direkt anfragen: Button im Lizenz-Tab und Link in der Admin-Notice oeffnen das E-Mail-Programm mit vorformulierter Anfrage an technik@dbw-media.de (inkl. Website-URL).
+
+### Behoben
+- **Karten-Typografie auf kleinen Phones** — Titel, Preis und "Zum Exposé"-Button auf den Archiv-Karten waren auf iPhone-SE-Breite zu gross und brachen um; jetzt kompaktere Groessen unter 480px.
+
+---
+
 ## [2.0.0] — 2026-06-11
 
 Grosses UI/UX-Release: Das Frontend fuehlt sich jetzt wie eine moderne App an — Filtern ohne Reload, Micro-Interactions, nahtlose Uebergaenge. Jedes Feature wurde einzeln committet und ist gezielt revertierbar.

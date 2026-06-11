@@ -4294,3 +4294,32 @@ body.admin-bar #dbw-immo-suite .dbw-section-nav {
 	font-weight: 700;
 	color: var(--dbw-primary);
 }
+
+/* ============================================================
+   Card typography tuning on small phones (v2.0.1)
+   ============================================================ */
+
+@media (max-width: 480px) {
+	#dbw-immo-suite .dbw-property-title {
+		font-size: 1.1rem;
+	}
+
+	#dbw-immo-suite .dbw-price-value {
+		font-size: 1.15rem;
+		white-space: nowrap;
+	}
+
+	#dbw-immo-suite .dbw-button-expose {
+		padding: 9px 14px;
+		font-size: 0.85rem;
+		white-space: nowrap;
+	}
+
+	#dbw-immo-suite .dbw-card-meta-grid .dbw-meta-value {
+		font-size: 0.95rem;
+	}
+
+	#dbw-immo-suite .dbw-card-footer {
+		gap: 10px;
+	}
+}

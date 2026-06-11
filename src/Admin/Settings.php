@@ -228,7 +228,34 @@ class Settings
 			</table>
 			<?php submit_button(__('Lizenz aktivieren', 'dbw-immo-suite'), 'primary', 'submit', false); ?>
 		</form>
+
+		<?php if (!$is_valid) : ?>
+			<div style="margin-top:24px; padding:16px; background:#f6f7f7; border-left:4px solid #2271b1; border-radius:0 4px 4px 0; max-width:560px;">
+				<strong><?php esc_html_e('Noch keinen Lizenzschlüssel?', 'dbw-immo-suite'); ?></strong>
+				<p style="margin:8px 0 12px;"><?php esc_html_e('Fordere deine Lizenz direkt bei dbw media an – wir melden uns schnellstmöglich zurück.', 'dbw-immo-suite'); ?></p>
+				<a class="button button-secondary" href="<?php echo esc_url(self::get_license_request_mailto()); ?>">
+					<?php esc_html_e('Lizenz per E-Mail anfragen', 'dbw-immo-suite'); ?>
+				</a>
+			</div>
+		<?php endif; ?>
 		<?php
+	}
+
+	/**
+	 * Prefilled mailto link for requesting a license from dbw media.
+	 */
+	public static function get_license_request_mailto()
+	{
+		$subject = 'Lizenz-Anfrage: DBW Immo Suite';
+		$body = "Hallo dbw media Team,\n\n"
+			. "wir moechten die DBW Immo Suite gerne lizenzieren.\n\n"
+			. 'Website: ' . home_url() . "\n"
+			. "Firma: \n"
+			. "Ansprechpartner: \n"
+			. "Telefon (optional): \n\n"
+			. 'Viele Gruesse';
+
+		return 'mailto:technik@dbw-media.de?subject=' . rawurlencode($subject) . '&body=' . rawurlencode($body);
 	}
 
 	public function page_init()

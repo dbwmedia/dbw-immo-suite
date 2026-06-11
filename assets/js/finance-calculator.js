@@ -109,6 +109,36 @@
 		if (e) e.textContent = val;
 	}
 
+	// Smoothly tween currency outputs while sliders are dragged
+	var tweenState = {};
+	var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	function setCurTween(id, target) {
+		var e = el(id);
+		if (!e) return;
+		if (REDUCED_MOTION) {
+			tweenState[id] = target;
+			e.textContent = fmtCur(target);
+			return;
+		}
+		var from = (typeof tweenState[id] === 'number') ? tweenState[id] : target;
+		tweenState[id] = target;
+		if (from === target) {
+			e.textContent = fmtCur(target);
+			return;
+		}
+		var start = performance.now();
+		var dur = 220;
+		function frame(now) {
+			if (tweenState[id] !== target) return; // a newer tween took over
+			var t = Math.min(1, (now - start) / dur);
+			var eased = 1 - Math.pow(1 - t, 2);
+			e.textContent = fmtCur(from + (target - from) * eased);
+			if (t < 1) requestAnimationFrame(frame);
+		}
+		requestAnimationFrame(frame);
+	}
+
 	function init() {
 		var container = el('dbw-finance-calculator');
 		if (!container) return;
@@ -203,9 +233,9 @@
 			setText('dbw-calc-zins-output', fmtPct(zinssatz));
 			setText('dbw-calc-tilgung-output', fmtPct(tilgung));
 
-			setText('dbw-calc-darlehen', fmtCur(darlehen));
-			setText('dbw-calc-rate', fmtCur(monatsrate));
-			setText('dbw-calc-zinskosten', fmtCur(totalZins));
+			setCurTween('dbw-calc-darlehen', darlehen);
+			setCurTween('dbw-calc-rate', monatsrate);
+			setCurTween('dbw-calc-zinskosten', totalZins);
 
 			updateFill(ekSlider);
 			updateFill(zinsSlider);

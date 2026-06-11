@@ -2727,7 +2727,8 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
    ========================================= */
 #dbw-immo-suite .dbw-sidebar {
 	position: sticky;
-	top: 120px;
+	/* nav offset (fixed theme header) + height of the section nav */
+	top: calc(var(--dbw-nav-offset, 2rem) + 90px);
 }
 
 @media (max-width: 768px) {
@@ -4212,9 +4213,9 @@ body.admin-bar #dbw-immo-suite .dbw-section-nav {
 	transition: width 0.15s linear;
 }
 
-/* Anchor offset so sections land below the sticky nav */
+/* Anchor offset so sections land below the sticky nav (+ theme header) */
 #dbw-immo-suite .dbw-main-col .dbw-section {
-	scroll-margin-top: 90px;
+	scroll-margin-top: calc(var(--dbw-nav-offset, 0px) + 90px);
 }
 
 /* ============================================================
@@ -4322,4 +4323,30 @@ body.admin-bar #dbw-immo-suite .dbw-section-nav {
 	#dbw-immo-suite .dbw-card-footer {
 		gap: 10px;
 	}
+}
+
+/* ============================================================
+   Theme bleed protection (v2.0.2)
+   Themes style bare <article>/<h2>/<a> aggressively (e.g. Astra:
+   .ast-article-post gets padding/margins). Pin the properties our
+   cards rely on so any theme renders them identically.
+   ============================================================ */
+
+#dbw-immo-suite .dbw-property-card {
+	margin: 0;
+	padding: 0;
+	max-width: none;
+	float: none;
+}
+
+#dbw-immo-suite .dbw-property-card .dbw-property-title {
+	padding: 0;
+	border: none;
+}
+
+#dbw-immo-suite .dbw-property-card .dbw-property-image,
+#dbw-immo-suite .dbw-property-card .dbw-button-expose,
+#dbw-immo-suite .dbw-property-card .dbw-property-title a {
+	box-shadow: none;
+	text-decoration: none;
 }

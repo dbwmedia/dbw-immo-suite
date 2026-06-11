@@ -264,7 +264,9 @@ class Customizer
                 --dbw-radius: {$radius}px;
             }
             #dbw-immo-suite.dbw-immo-archive-container { padding-top: {$archive_top}rem; }
-            #dbw-immo-suite.dbw-single-property-container { padding-top: {$single_top}rem; }
+            /* --dbw-nav-offset: sticky edge for section nav + sidebar, so they
+               clear fixed theme headers (same value as the top spacing) */
+            #dbw-immo-suite.dbw-single-property-container { padding-top: {$single_top}rem; --dbw-nav-offset: {$single_top}rem; }
             {$grid_style}
         </style>";
     }

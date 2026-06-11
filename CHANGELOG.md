@@ -7,6 +7,14 @@ und dieses Projekt verwendet [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [2.0.2] — 2026-06-11
+
+### Behoben
+- **Theme-Bleed-Schutz fuer Karten** — Themes wie Astra stylen nackte `<article>`-Elemente (Padding, Margin, max-width); die Immobilien-Karten pinnen diese Eigenschaften jetzt explizit (`padding: 0` etc.) und sehen in jedem Theme identisch aus.
+- **Sticky-Stosskante bei fixen Theme-Headern** — Der Customizer-Wert "Abstand nach oben" (Detailansicht) wirkt jetzt zusaetzlich als Offset fuer die Sektions-Navigation und die Highlights-Sidebar. Beide verschwinden damit nicht mehr hinter sticky Theme-Headern; Anker-Sprungziele beruecksichtigen den Offset ebenfalls.
+
+---
+
 ## [2.0.1] — 2026-06-11
 
 ### Hinzugefuegt

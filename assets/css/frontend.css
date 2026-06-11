@@ -4143,3 +4143,76 @@ body:has(dialog[open]) .dbw-whatsapp-floating {
 	outline: 2px solid var(--dbw-accent, #2573a7);
 	outline-offset: 1px;
 }
+
+/* ============================================================
+   Sticky section nav + reading progress (v2.0)
+   ============================================================ */
+
+#dbw-immo-suite .dbw-section-nav {
+	position: sticky;
+	top: var(--dbw-nav-offset, 0px);
+	z-index: 50;
+	background: rgba(255, 255, 255, 0.92);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border-radius: 10px;
+	border: 1px solid var(--dbw-border-light, #eee);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+}
+
+body.admin-bar #dbw-immo-suite .dbw-section-nav {
+	top: calc(var(--dbw-nav-offset, 0px) + 32px);
+}
+
+#dbw-immo-suite .dbw-section-nav__inner {
+	display: flex;
+	gap: 4px;
+	padding: 8px;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+#dbw-immo-suite .dbw-section-nav__inner::-webkit-scrollbar {
+	display: none;
+}
+
+#dbw-immo-suite .dbw-section-nav__link {
+	flex: 0 0 auto;
+	padding: 7px 14px;
+	border-radius: 999px;
+	font-size: 0.86rem;
+	font-weight: 600;
+	color: var(--dbw-gray, #5f6b6d);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background 0.2s ease, color 0.2s ease;
+}
+
+#dbw-immo-suite .dbw-section-nav__link:hover {
+	background: var(--dbw-light, #f4f6f7);
+	color: var(--dbw-primary);
+}
+
+#dbw-immo-suite .dbw-section-nav__link.is-active {
+	background: var(--dbw-primary);
+	color: #fff;
+}
+
+#dbw-immo-suite .dbw-section-nav__progress {
+	height: 3px;
+	background: var(--dbw-border-light, #eee);
+}
+
+#dbw-immo-suite .dbw-section-nav__progress-bar {
+	height: 100%;
+	width: 0;
+	background: var(--dbw-accent, #2573a7);
+	transition: width 0.15s linear;
+}
+
+/* Anchor offset so sections land below the sticky nav */
+#dbw-immo-suite .dbw-main-col .dbw-section {
+	scroll-margin-top: 90px;
+}

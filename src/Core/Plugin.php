@@ -326,7 +326,6 @@ class Plugin
                 array(
                 'slug' => 'dbw-immo-suite',
                 'title' => __('Immo Suite', 'dbw-immo-suite'),
-                'icon' => 'admin-home',
             ),
         )
         );

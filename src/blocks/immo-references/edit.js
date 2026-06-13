@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, RangeControl, CheckboxControl, SelectControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, RangeControl, CheckboxControl, SelectControl, Placeholder } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit({ attributes, setAttributes }) {
     const { status, hidePrice, showDate, postsPerPage, location, columns } = attributes;
@@ -91,12 +90,11 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div id="dbw-immo-suite">
-                <ServerSideRender
-                    block="dbw/immo-references"
-                    attributes={attributes}
-                />
-            </div>
+            <Placeholder
+                icon="building"
+                label={__('Immo Referenzen', 'dbw-immo-suite')}
+                instructions={__('Zeigt verkaufte und Referenz-Objekte an. Vorschau nur im Frontend sichtbar.', 'dbw-immo-suite')}
+            />
         </div>
     );
 }

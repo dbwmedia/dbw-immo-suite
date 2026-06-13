@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, RangeControl, SelectControl, TextControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, RangeControl, SelectControl, TextControl, Placeholder } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit({ attributes, setAttributes }) {
     const { postsPerPage, marketing, propertyType, hidePrice, showDate, onlyHighlights, location, columns, showCtaButton, ctaButtonText, ctaButtonUrl } = attributes;
@@ -131,12 +130,11 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div id="dbw-immo-suite">
-                <ServerSideRender
-                    block="dbw/immo-grid"
-                    attributes={attributes}
-                />
-            </div>
+            <Placeholder
+                icon="index-card"
+                label={__('Immo Grid', 'dbw-immo-suite')}
+                instructions={__('Zeigt aktuelle Immobilien als Karten-Grid an. Vorschau nur im Frontend sichtbar.', 'dbw-immo-suite')}
+            />
         </div>
     );
 }

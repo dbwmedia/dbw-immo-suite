@@ -3,7 +3,7 @@
   "apiVersion": 2,
   "name": "dbw/immo-grid",
   "version": "1.0.0",
-  "title": "DBW Immo Grid",
+  "title": "Immo Grid",
   "category": "dbw-immo-suite",
   "icon": "index-card",
   "description": "Zeigt eine Liste oder Grid von aktuellen Immobilien an.",

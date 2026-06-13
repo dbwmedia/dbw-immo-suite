@@ -74,9 +74,8 @@ class ReferencesBlock
             );
         }
 
-        // Sorting (Newest sales first)
-        $args['orderby'] = 'meta_value';
-        $args['meta_key'] = '_dbw_immo_sales_date';
+        // Sorting (Newest first — using post date to include all statuses)
+        $args['orderby'] = 'date';
         $args['order'] = 'DESC';
 
         $query = new \WP_Query($args);
@@ -120,6 +119,12 @@ class ReferencesBlock
         } else {
             if (is_admin()) {
                 echo '<p>' . __('Keine Referenzen gefunden (Vorschau).', 'dbw-immo-suite') . '</p>';
+            } else {
+                echo '<div id="dbw-immo-suite">';
+                echo '<div class="dbw-immo-references-block">';
+                echo '<p class="dbw-no-results">' . __('Aktuell sind keine Referenzen verfuegbar.', 'dbw-immo-suite') . '</p>';
+                echo '</div>';
+                echo '</div>';
             }
         }
 

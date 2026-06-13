@@ -3,7 +3,7 @@
   "apiVersion": 2,
   "name": "dbw/immo-references",
   "version": "1.0.0",
-  "title": "DBW Immo Referenzen",
+  "title": "Immo Referenzen",
   "category": "dbw-immo-suite",
   "icon": "building",
   "description": "Zeigt verkaufte und Referenz-Objekte an.",
